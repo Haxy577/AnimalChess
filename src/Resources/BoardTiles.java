@@ -13,7 +13,7 @@ public enum BoardTiles {
     LAND(0),
     RIVER(1),
     TRAP(2),
-    ANIMAL_DEN(3);
+    DEN(3);
 
     public final int tileNumber;
 
