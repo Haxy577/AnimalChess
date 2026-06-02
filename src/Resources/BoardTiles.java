@@ -17,6 +17,10 @@ public enum BoardTiles {
 
     public final int tileNumber;
 
+    public static final String defaultBoardPattern = "LLLLLLLLLLLLRRRLLLTLLRRRLLTDTLLLLLTdTLLRRRLLTLLLRRRLLLLLLLLLLLL";
+    public static final String defaultPiecePattern = "610081000000120072002100000000004200000031000000520000000000000000000000000051000000320000004100000000002200710011000000820062";
+    public static final String defaultPattern = defaultBoardPattern + defaultPiecePattern;
+
     BoardTiles(int tileNumber) {
         this.tileNumber = tileNumber;
     }

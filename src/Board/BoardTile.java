@@ -7,8 +7,12 @@ public class BoardTile {
     private BoardTiles type;
     private int playerIndex;
 
-    public BoardTile(BoardTiles type, int playerIndex) {
+    public BoardTile(BoardTiles type) {
         this.type = type;
+    }
+
+    public BoardTile(BoardTiles type, int playerIndex) {
+        this(type);
         this.playerIndex = playerIndex;
     }
 

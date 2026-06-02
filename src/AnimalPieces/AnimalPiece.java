@@ -109,17 +109,16 @@ public abstract class AnimalPiece {
     }
 
     /**
+     * z
      *
-     * @param position
+     * @param source
      * @param gameBoard
      * @return
      */
-    public List<BoardCell> getAllMoves(Point position, BoardCell[][] gameBoard) {
+    public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) {
         ArrayList<BoardCell> allMoves = new ArrayList<>();
-        int row = position.y;
-        int col = position.x;
-        BoardCell source = gameBoard[row][col];
-
+        int row = source.getRow();
+        int col = source.getCol();
 
         if (col > 0 && canMove(source, gameBoard[row][col - 1]))
             allMoves.add(gameBoard[row][col - 1]);
@@ -150,7 +149,8 @@ public abstract class AnimalPiece {
      * @param source the cell containing the piece requesting to move
      * @param destination an array of cells that contain the path the piece is trying to move to. The
      *                    last element of the array is where the piece is attempting to move.
-     * @return {@code true} if the piece is allowed to move to the destination, {@code false} otherwise
+     * @return {@code true} if the piece is allowed to move to the destination, {@code false} if the piece does
+     * not exist nor can move to that destination.
      *
      * @since 1.1
      * @see Animals
@@ -159,6 +159,9 @@ public abstract class AnimalPiece {
      *
      */
     public boolean canMove(BoardCell source, BoardCell... destination) {
+        if (source.getPiece() == null)
+            return false;
+
         AnimalPiece movingPiece = source.getPiece();
         AnimalPiece targetPiece = destination[destination.length - 1].getPiece();
         BoardTile destinationTile = destination[destination.length - 1].getTile();
