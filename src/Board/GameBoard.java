@@ -10,9 +10,9 @@ import java.util.*;
  */
 public class GameBoard {
 
-    final int boardRows;
-    final int boardColumns;
-    private BoardCell[][] gameBoard;
+    public final int boardRows;
+    public final int boardColumns;
+    private final BoardCell[][] gameBoard;
     Map<BoardCell, List<BoardCell>> allPlayerMoves;
 
     public GameBoard() {
@@ -21,56 +21,109 @@ public class GameBoard {
         gameBoard = new BoardCell[boardRows][boardColumns];
     }
 
-    public boolean equals(BoardCell[][] gameBoard) {
-        return this.gameBoard == gameBoard;
+    public void initialize(String pattern) throws IllegalArgumentException {
+        validatePattern(pattern);
+
+        initialize(getBoardPattern(pattern), getPiecePattern(pattern));
     }
 
-    public void initialize(String boardPattern, String piecePattern) {
+    public void initialize(String boardPattern, String piecePattern) throws IllegalArgumentException {
+        validatePattern(boardPattern, piecePattern);
+
+        parseBoardPattern(boardPattern, this.gameBoard);
+        parsePiecePattern(piecePattern, this.gameBoard);
+    }
+
+    public void validatePattern(String pattern) throws IllegalArgumentException {
+        if (pattern == null) {
+            throw new IllegalArgumentException("Invalid pattern! The pattern cannot be null");
+        }
+
+        validatePattern(getBoardPattern(pattern), getPiecePattern(pattern));
+    }
+
+    public void validatePattern(String boardPattern, String piecePattern) throws IllegalArgumentException {
+        validateBoardPattern(boardPattern);
+        validatePiecePattern(piecePattern);
+    }
+
+    public void validateBoardPattern(String pattern) throws IllegalArgumentException {
         final int boardPatternLength = boardColumns * boardRows;
-        final int piecePatternLength = boardColumns * boardRows * 2;
-        String cleanBoard = boardPattern.replaceAll("[^LRTDd]", "");
-        String cleanPiece = piecePattern.replaceAll("[^0-8]", "");
+        int denCount = 0;
 
-        if (cleanBoard.length() != boardPatternLength) {
-            throw new IllegalArgumentException("Invalid pattern length! Expected: " + boardPatternLength + ", Actual: " + cleanBoard.length());
+        if (pattern == null) {
+            throw new IllegalArgumentException("Invalid board pattern! The pattern cannot be null");
         }
 
-        if (cleanPiece.length() != piecePatternLength) {
-            throw new IllegalArgumentException("Invalid pattern length! Expected: " + piecePatternLength + ", Actual: " + cleanPiece.length());
+        if (pattern.length() != boardPatternLength) {
+            throw new IllegalArgumentException("Invalid board pattern length! Expected: " + boardPatternLength + ", Actual: " + pattern.length());
         }
 
-        parseBoardPattern(cleanBoard, this.gameBoard);
-        parsePiecePattern(cleanPiece, this.gameBoard);
+        if (!pattern.replaceAll("[LRTDd]", "").isEmpty()) {
+            throw new IllegalArgumentException("Invalid board pattern! Pattern can only contain the characters: L|R|T|D|d");
+        }
+
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == 'D') {
+                denCount++;
+            }
+            else if (pattern.charAt(i) == 'd') {
+                denCount--;
+            }
+        }
+
+        if (denCount != 0) {
+            throw new IllegalArgumentException("Invalid board pattern! Pattern must only contain one instance of the animal den tile per player");
+        }
     }
 
-    public void initialize(String pattern) {
-        final int boardPatternLength = boardColumns * boardRows;
+    public void validatePiecePattern(String pattern) throws IllegalArgumentException {
         final int piecePatternLength = boardColumns * boardRows * 2;
-        final int expectedLength = boardPatternLength + piecePatternLength;
-        String cleanPattern = pattern.replaceAll("\\s+", "");
+        int tokenIndex = 0;
+        char pieceChar;
+        char playerChar;
 
-        if (cleanPattern.length() != expectedLength) {
-            throw new IllegalArgumentException("Invalid pattern length! Expected: " + expectedLength + ", Actual: " + cleanPattern.length());
+        if (pattern == null) {
+            throw new IllegalArgumentException("Invalid piece pattern! The pattern cannot be null");
         }
 
-        String boardPattern;
-        String piecePattern;
-
-        if (Character.isLetter(cleanPattern.charAt(0))) {
-            boardPattern = cleanPattern.substring(0, boardPatternLength);
-            piecePattern = cleanPattern.substring(boardPatternLength);
-        }
-        else {
-            piecePattern = cleanPattern.substring(0, piecePatternLength);
-            boardPattern = cleanPattern.substring(piecePatternLength);
+        if (pattern.length() != piecePatternLength) {
+            throw new IllegalArgumentException("Invalid piece pattern length! Expected: " + piecePatternLength + ", Actual: " + pattern.length());
         }
 
-        initialize(boardPattern, piecePattern);
+        if (!pattern.replaceAll("[0-8]", "").isEmpty()) {
+            throw new IllegalArgumentException("Invalid piece pattern! Pattern can only contain the characters: 0 to 8");
+        }
+
+        do {
+            pieceChar = pattern.charAt(tokenIndex);
+            playerChar = pattern.charAt(tokenIndex + 1);
+
+            if (pieceChar == '0') {
+                if (playerChar != '0') {
+                    throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (tokenIndex + 1) + "! Expected: 0, Actual: " + playerChar);
+                }
+            }
+
+            if (playerChar != '1' && playerChar != '2') {
+                throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (tokenIndex + 1) + "! Expected: 1|2, Actual: " + playerChar);
+            }
+
+            tokenIndex += 2;
+        } while (tokenIndex < piecePatternLength);
     }
 
-    private void parsePiecePattern(String pattern, BoardCell[][] gameBoard) throws IllegalArgumentException {
+    public String getPiecePattern(String pattern) {
+        return pattern.replaceAll("[^0-8]", "");
+    }
+
+    public String getBoardPattern(String pattern) {
+        return pattern.replaceAll("[^LRTDd]", "");
+    }
+
+    private void parsePiecePattern(String pattern, BoardCell[][] gameBoard){
         String token;
-        char rankChar;
+        int rank;
         int playerIndex;
         int index = 0;
 
@@ -80,30 +133,19 @@ public class GameBoard {
 
                 index += 2;
 
-                if (token.equals("00")) {
-                    gameBoard[row][col].setPiece(null);
-                    continue;
-                }
-
-                rankChar = token.charAt(0);
+                rank = Character.getNumericValue(token.charAt(0));
                 playerIndex = Character.getNumericValue(token.charAt(1));
 
-                if (playerIndex != 1 && playerIndex != 2) {
-                    throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (index + 1) + "! Expected: 1|2, Actual" + playerIndex);
-                }
-
-                switch (rankChar) {
-                    case '1' -> gameBoard[row][col].setPiece(new Mouse(playerIndex));
-                    case '2' -> gameBoard[row][col].setPiece(new Cat(playerIndex));
-                    case '3' -> gameBoard[row][col].setPiece(new Wolf(playerIndex));
-                    case '4' -> gameBoard[row][col].setPiece(new Dog(playerIndex));
-                    case '5' -> gameBoard[row][col].setPiece(new Leopard(playerIndex));
-                    case '6' -> gameBoard[row][col].setPiece(new Tiger(playerIndex));
-                    case '7' -> gameBoard[row][col].setPiece(new Lion(playerIndex));
-                    case '8' -> gameBoard[row][col].setPiece(new Elephant(playerIndex));
-                    default -> {
-                        throw new IllegalArgumentException("Invalid rank token! Expected: [1,8], Actual: " + rankChar);
-                    }
+                switch (rank) {
+                    case 0 -> gameBoard[row][col].setPiece(null);
+                    case 1 -> gameBoard[row][col].setPiece(new Mouse(playerIndex));
+                    case 2 -> gameBoard[row][col].setPiece(new Cat(playerIndex));
+                    case 3 -> gameBoard[row][col].setPiece(new Wolf(playerIndex));
+                    case 4 -> gameBoard[row][col].setPiece(new Dog(playerIndex));
+                    case 5 -> gameBoard[row][col].setPiece(new Leopard(playerIndex));
+                    case 6 -> gameBoard[row][col].setPiece(new Tiger(playerIndex));
+                    case 7 -> gameBoard[row][col].setPiece(new Lion(playerIndex));
+                    case 8 -> gameBoard[row][col].setPiece(new Elephant(playerIndex));
                 }
             }
         }
@@ -119,7 +161,7 @@ public class GameBoard {
      * @param gameBoard
      * @throws IllegalArgumentException
      */
-    private void parseBoardPattern(String pattern, BoardCell[][] gameBoard) throws IllegalArgumentException {
+    private void parseBoardPattern(String pattern, BoardCell[][] gameBoard) {
         int index = 0;
 
         for (int row = 0; row < boardRows; row++) {
@@ -137,7 +179,7 @@ public class GameBoard {
         }
     }
 
-    public String toPattern() {
+    public String toPattern(boolean isBoardPatternFirst) {
         char[] boardPattern = new char[boardRows * boardColumns];
         char[] piecePattern = new char[boardRows * boardColumns * 2];
         int boardIndex = 0;
@@ -163,7 +205,12 @@ public class GameBoard {
             }
         }
 
-        return Arrays.toString(boardPattern).replaceAll("[^LRTDd]", "") + Arrays.toString(piecePattern).replaceAll("[^0-8]", "");
+        if (isBoardPatternFirst) {
+            return new String(boardPattern) + new String(piecePattern);
+        }
+        else {
+            return Arrays.toString(piecePattern) + Arrays.toString(boardPattern);
+        }
     }
 
     private Stack<BoardCell> getAllPlayerPieces(int playerIndex) {
@@ -190,5 +237,9 @@ public class GameBoard {
         }
 
         return allMoves;
+    }
+
+    public boolean equals(BoardCell[][] gameBoard) {
+        return this.gameBoard == gameBoard;
     }
 }
