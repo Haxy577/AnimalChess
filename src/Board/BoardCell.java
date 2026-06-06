@@ -39,4 +39,9 @@ public class BoardCell {
     public int getCol() {
         return col;
     }
+
+    @Override
+    public String toString() {
+        return "(r=" + this.row + ",c=" + this.col + ")," + this.tile.toString() + "," + this.piece.toString();
+    }
 }

@@ -13,13 +13,13 @@ public class Main {
     public static void main(String[] args) {
         GameBoard gameBoard = new GameBoard();
 
-        gameBoard.initialize(null);
+        gameBoard.initialize(BoardTiles.defaultPattern);
         String pattern = gameBoard.toPattern(true);
 
         System.out.println(pattern.equals(BoardTiles.defaultPattern));
         System.out.println(pattern);
         System.out.println(BoardTiles.defaultPattern);
 
-
+        System.out.println(gameBoard.gameBoard[0][0].toString());
     }
 }

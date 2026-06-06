@@ -17,7 +17,7 @@ public class BoardTile {
     }
 
     public BoardTiles getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(BoardTiles type) {
@@ -25,10 +25,15 @@ public class BoardTile {
     }
 
     public int getPlayerIndex() {
-        return playerIndex;
+        return this.playerIndex;
     }
 
     public void setPlayerIndex(int playerIndex) {
         this.playerIndex = playerIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "Tile=" + this.type + "(" + this.playerIndex + ")";
     }
 }

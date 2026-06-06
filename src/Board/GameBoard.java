@@ -12,13 +12,13 @@ public class GameBoard {
 
     public final int boardRows;
     public final int boardColumns;
-    private final BoardCell[][] gameBoard;
+    public final BoardCell[][] gameBoard;
     Map<BoardCell, List<BoardCell>> allPlayerMoves;
 
     public GameBoard() {
-        boardRows = 7;
-        boardColumns = 9;
-        gameBoard = new BoardCell[boardRows][boardColumns];
+        this.boardRows = 7;
+        this.boardColumns = 9;
+        this.gameBoard = new BoardCell[boardRows][boardColumns];
     }
 
     public void initialize(String pattern) throws IllegalArgumentException {
@@ -99,13 +99,11 @@ public class GameBoard {
             pieceChar = pattern.charAt(tokenIndex);
             playerChar = pattern.charAt(tokenIndex + 1);
 
-            if (pieceChar == '0') {
-                if (playerChar != '0') {
-                    throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (tokenIndex + 1) + "! Expected: 0, Actual: " + playerChar);
-                }
+            if (pieceChar == '0' && playerChar != '0') {
+                throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (tokenIndex + 1) + "! Expected: 0, Actual: " + playerChar);
             }
 
-            if (playerChar != '1' && playerChar != '2') {
+            if (pieceChar != '0' && playerChar != '1' && playerChar != '2') {
                 throw new IllegalArgumentException("Invalid playerIndex suffix at char " + (tokenIndex + 1) + "! Expected: 1|2, Actual: " + playerChar);
             }
 
@@ -170,8 +168,8 @@ public class GameBoard {
                     case 'L' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.LAND), row, col);
                     case 'T' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.TRAP), row, col);
                     case 'R' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.RIVER), row, col);
-                    case 'D' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.DEN, 1), row, col);
-                    case 'd' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.DEN, 2), row, col);
+                    case 'D' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.ANIMAL_DEN, 1), row, col);
+                    case 'd' -> gameBoard[row][col] = new BoardCell(new BoardTile(BoardTiles.ANIMAL_DEN, 2), row, col);
                 }
 
                 index++;
@@ -191,7 +189,7 @@ public class GameBoard {
                     case LAND -> boardPattern[boardIndex++] = 'L';
                     case RIVER -> boardPattern[boardIndex++] = 'R';
                     case TRAP -> boardPattern[boardIndex++] = 'T';
-                    case DEN -> boardPattern[boardIndex++] = (col.getTile().getPlayerIndex() == 1) ? 'D' : 'd';
+                    case ANIMAL_DEN -> boardPattern[boardIndex++] = (col.getTile().getPlayerIndex() == 1) ? 'D' : 'd';
                 }
 
                 if (col.getPiece() == null) {
@@ -213,13 +211,16 @@ public class GameBoard {
         }
     }
 
-    private Stack<BoardCell> getAllPlayerPieces(int playerIndex) {
-        Stack<BoardCell> allPieces = new Stack<>();
+    private List<BoardCell> getAllPlayerPieces(int playerIndex) {
+        List<BoardCell> allPieces = new ArrayList<>();
 
         for (BoardCell[] row : this.gameBoard) {
             for (BoardCell column : row) {
+                if (column.getPiece() == null)
+                    continue;
+
                 if (column.getPiece().getPlayerIndex() == playerIndex)
-                    allPieces.push(column);
+                    allPieces.add(column);
             }
         }
 
@@ -228,11 +229,9 @@ public class GameBoard {
 
     public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(int playerIndex) {
         HashMap<BoardCell, List<BoardCell>> allMoves = new HashMap<>();
-        Stack<BoardCell> allPieces = getAllPlayerPieces(playerIndex);
-        BoardCell cell;
+        List<BoardCell> allPieces = getAllPlayerPieces(playerIndex);
 
-        while (!allPieces.empty()) {
-            cell = allPieces.pop();
+        for (BoardCell cell : allPieces) {
             allMoves.put(cell, cell.getPiece().getAllMoves(cell, this.gameBoard));
         }
 
@@ -242,4 +241,9 @@ public class GameBoard {
     public boolean equals(BoardCell[][] gameBoard) {
         return this.gameBoard == gameBoard;
     }
+
+//    @Override
+//    public String toString() {
+//
+//    }
 }

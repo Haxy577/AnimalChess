@@ -17,7 +17,7 @@ public class Mouse extends AnimalPiece {
         AnimalPiece targetPiece = destination[0].getPiece();
         BoardTile destinationTile = destination[0].getTile();
 
-        if (destinationTile.getType() == BoardTiles.DEN &&
+        if (destinationTile.getType() == BoardTiles.ANIMAL_DEN &&
                 destinationTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
         else if (targetPiece == null)

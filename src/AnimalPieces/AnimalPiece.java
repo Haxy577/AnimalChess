@@ -108,6 +108,11 @@ public abstract class AnimalPiece {
         this.color = color;
     }
 
+    @Override
+    public String toString() {
+        return "Piece=" + getAnimal() + "(" + getRank() + "),Player=" + getPlayerIndex();
+    }
+
     /**
      * z
      *
@@ -138,6 +143,8 @@ public abstract class AnimalPiece {
     /**
      * Determines whether the movement is valid given it meets the following conditions:
      * <ol>
+     * <li>The piece that is requesting to move must be instantiated</li>
+     * <li>A piece can only move 1 space either horizontally or vertically</li>
      * <li>A piece cannot move to a river tile</li>
      * <li>A piece cannot move to its own den</li>
      * <li>A piece can always move to a cell that is empty/does not contain a piece</li>
@@ -163,14 +170,21 @@ public abstract class AnimalPiece {
             return false;
 
         AnimalPiece movingPiece = source.getPiece();
-        AnimalPiece targetPiece = destination[destination.length - 1].getPiece();
-        BoardTile destinationTile = destination[destination.length - 1].getTile();
+        BoardCell targetCell = destination[destination.length - 1];
+        AnimalPiece targetPiece = targetCell.getPiece();
+        BoardTile targetTile = targetCell.getTile();
 
-        if (destinationTile.getType() == BoardTiles.RIVER)
+        if (targetCell.getRow() < source.getRow() - 1 || targetCell.getRow() > source.getRow() + 1 )
             return false;
 
-        if (destinationTile.getType() == BoardTiles.DEN &&
-                destinationTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetCell.getRow() < source.getCol() - 1 || targetCell.getRow() > source.getCol() + 1 )
+            return false;
+
+        if (targetTile.getType() == BoardTiles.RIVER)
+            return false;
+
+        if (targetTile.getType() == BoardTiles.ANIMAL_DEN &&
+                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
         if (targetPiece == null)
@@ -179,7 +193,7 @@ public abstract class AnimalPiece {
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        if (destinationTile.getType() == BoardTiles.TRAP)
+        if (targetTile.getType() == BoardTiles.TRAP)
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();
