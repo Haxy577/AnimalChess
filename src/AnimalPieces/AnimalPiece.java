@@ -17,12 +17,13 @@ import java.util.ArrayList;
  * and a mutable {@link Color} property that describes the color of the piece to be displayed.
  * </p>
  *
- * @author Richmond Jase Von M. Salvador
- * @version 1.1
- * @since 1.0
- * @see <a href = "https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
+ * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see Animals
  * @see Color
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.6 6/11/2026
+ * @since 1.0
  */
 public abstract class AnimalPiece {
 
@@ -32,8 +33,6 @@ public abstract class AnimalPiece {
      *
      * @since 1.0
      * @see Animals
-     * @see #getAnimal()
-     * @see #getRank()
      */
     private final Animals animal;
 
@@ -43,8 +42,6 @@ public abstract class AnimalPiece {
      *
      * @since 1.0
      * @see Color
-     * @see #getColor()
-     * @see #setColor(Color)
      */
     private Color color;
 
@@ -54,7 +51,6 @@ public abstract class AnimalPiece {
      * This field cannot be changed once set.
      *
      * @since 1.0
-     * @see #getPlayerIndex()
      */
     private final int playerIndex;
 
@@ -69,8 +65,6 @@ public abstract class AnimalPiece {
      *
      * @since 1.0
      * @see Animals
-     * @see #animal
-     * @see #playerIndex
      */
     AnimalPiece(Animals animal, int playerIndex) throws IllegalArgumentException {
         if (animal == null)
@@ -95,9 +89,6 @@ public abstract class AnimalPiece {
      * @since 1.0
      * @see Animals
      * @see Color
-     * @see #animal
-     * @see #playerIndex
-     * @see #color
      */
     AnimalPiece(Animals animal, int playerIndex, Color color) throws IllegalArgumentException {
         this(animal, playerIndex);
@@ -108,17 +99,31 @@ public abstract class AnimalPiece {
         this.color = color;
     }
 
+    /**
+     * Converts the fields of this class to a string
+     *
+     * @return the type of animal this piece is, its rank, and the player controlling this piece
+     *
+     * @since 1.5
+     * @see Animals
+     */
     @Override
     public String toString() {
         return "Piece=" + getAnimal() + "(" + getRank() + "),Player=" + getPlayerIndex();
     }
 
     /**
-     * z
+     * Gets all the possible moves of the piece. This checks whether the piece can move to the four
+     * cardinal directions (up, down, left, and right).
      *
-     * @param source
-     * @param gameBoard
-     * @return
+     * @param source The board cell that contains the piece
+     * @param gameBoard the array of board cells that represents the playing board
+     * @return a list of all the possible moves the piece can do
+     *
+     * @since 1.1
+     * @see BoardCell
+     * @see Board.GameBoard
+     * @see #canMove(BoardCell, BoardCell...)
      */
     public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) {
         ArrayList<BoardCell> allMoves = new ArrayList<>();
@@ -153,6 +158,7 @@ public abstract class AnimalPiece {
      * <li>A piece can always move to a trap tile</li>
      * <li>A piece cannot move to capture an opponent's piece with a higher rank than its own rank</li>
      * </ol>
+     *
      * @param source the cell containing the piece requesting to move
      * @param destination an array of cells that contain the path the piece is trying to move to. The
      *                    last element of the array is where the piece is attempting to move.
@@ -163,7 +169,6 @@ public abstract class AnimalPiece {
      * @see Animals
      * @see BoardTiles
      * @see Board.GameBoard
-     *
      */
     public boolean canMove(BoardCell source, BoardCell... destination) {
         if (source.getPiece() == null)
@@ -203,9 +208,9 @@ public abstract class AnimalPiece {
      * Returns the object's animal type. See {@link Animals} for all possible animal types.
      *
      * @return the animal type of the piece
+     *
      * @since 1.0
      * @see Animals
-     * @see #animal
      */
     public Animals getAnimal() {
         return this.animal;
@@ -216,9 +221,9 @@ public abstract class AnimalPiece {
      * for all possible animal types and its corresponding rank.
      *
      * @return the rank of the object.
+     *
      * @since 1.0
      * @see Animals
-     * @see #animal
      */
     public int getRank() {
         return this.animal.rankNumber;
@@ -229,10 +234,9 @@ public abstract class AnimalPiece {
      * color representations
      *
      * @return the color set to the animal piece
+     *
      * @since 1.0
      * @see Color
-     * @see #setColor(Color)
-     * @see #color
      */
     public Color getColor() {
         return this.color;
@@ -242,8 +246,8 @@ public abstract class AnimalPiece {
      * Returns the index of the player that has control of this animal piece
      *
      * @return the index of the controlling player
+     *
      * @since 1.0
-     * @see #playerIndex
      */
     public int getPlayerIndex() {
         return this.playerIndex;
@@ -254,10 +258,9 @@ public abstract class AnimalPiece {
      * color representations
      *
      * @param color the new color that the piece would take
+     *
      * @since 1.0
      * @see Color
-     * @see #getColor()
-     * @see #color
      */
     public void setColor(Color color) {
         this.color = color;

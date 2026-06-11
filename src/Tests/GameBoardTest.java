@@ -1,6 +1,5 @@
 package Tests;
 
-import Board.BoardCell;
 import Board.GameBoard;
 import Resources.BoardTiles;
 import org.junit.jupiter.params.ParameterizedTest;
