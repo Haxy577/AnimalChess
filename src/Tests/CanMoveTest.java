@@ -1,16 +1,11 @@
 package Tests;
 
 import AnimalPieces.*;
-import Board.BoardCell;
-import Board.BoardTile;
-import Resources.BoardTiles;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CanMoveTest {
 
@@ -33,7 +28,7 @@ class CanMoveTest {
 //        BoardCell moving = new BoardCell(piece, new BoardTile(BoardTiles.LAND, 0));
 //        BoardCell target = new BoardCell(new BoardTile(BoardTiles.RIVER, 0));
 //
-//        assertEquals(expected, moving.getPiece().canMove(moving, target));
+//        assertEquals(expected, moving.getPiece().isMoveValid(moving, target));
 
     }
 }

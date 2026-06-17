@@ -1,10 +1,16 @@
 package Board;
 
-import Resources.BoardTiles;
+import Resources.BOARD_TILES;
 
 /**
+ * Represents the type of board tile a specific board cell has and the index of the player
+ * that has ownership of this specific tile.
+ *
+ * @see BOARD_TILES
+ * @see BoardCell
+ *
  * @author Richmond Jase Von M. Salvador
- * @version 1.6 6/11/2026
+ * @version 1.8 6/17/2026
  * @since 1.1
  */
 public class BoardTile {
@@ -13,9 +19,9 @@ public class BoardTile {
      * Represents the type of the board tile set. This field cannot be changed once set.
      *
      * @since 1.1
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
-    private final BoardTiles type;
+    private final BOARD_TILES TYPE;
 
     /**
      * Represents what player has control over this tile. This field can only have 3 possible values:
@@ -24,37 +30,37 @@ public class BoardTile {
      *
      * @since 1.1
      */
-    private final int playerIndex;
+    private final int PLAYER_INDEX;
 
     /**
-     * Initializes the designated type of this board tile. {@link BoardTiles} contains all
+     * Initializes the designated type of this board tile. {@link BOARD_TILES} contains all
      * possible types. Also initializes the player index to be -1.
      *
      * @param type the type of BoardTiles this tile would be
      *
      * @since 1.2
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
-    public BoardTile(BoardTiles type) {
-        this.type = type;
-        this.playerIndex = -1;
+    public BoardTile(BOARD_TILES type) {
+        this.TYPE = type;
+        this.PLAYER_INDEX = -1;
     }
 
     /**
      * Initializes the designated type of this board tile and the player index.
-     * {@link BoardTiles} contains all possible types.
+     * {@link BOARD_TILES} contains all possible types.
      *
      * @param type the type of BoardTiles this tile would be
      * @throws IllegalArgumentException if the player index does not equal to -1, 1, or 2
      *
      * @since 1.1
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
-    public BoardTile(BoardTiles type, int playerIndex) throws IllegalArgumentException {
-        this.type = type;
+    public BoardTile(BOARD_TILES type, int playerIndex) throws IllegalArgumentException {
+        this.TYPE = type;
 
         if (playerIndex == -1 || playerIndex == 1 || playerIndex == 2)
-            this.playerIndex = playerIndex;
+            this.PLAYER_INDEX = playerIndex;
         else
             throw new IllegalArgumentException("Invalid player index. Can only be: -1, 1, or 2");
     }
@@ -65,10 +71,10 @@ public class BoardTile {
      * @return the type of BoardTiles this tile is
      *
      * @since 1.1
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
-    public BoardTiles getType() {
-        return this.type;
+    public BOARD_TILES getTYPE() {
+        return this.TYPE;
     }
 
     /**
@@ -78,8 +84,8 @@ public class BoardTile {
      *
      * @since 1.1
      */
-    public int getPlayerIndex() {
-        return this.playerIndex;
+    public int getPLAYER_INDEX() {
+        return this.PLAYER_INDEX;
     }
 
     /**
@@ -88,10 +94,10 @@ public class BoardTile {
      * @return the type and player index of the tile
      *
      * @since 1.5
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
     @Override
     public String toString() {
-        return "Tile=" + this.type + "(" + this.playerIndex + ")";
+        return "Tile=" + this.TYPE + "(" + this.PLAYER_INDEX + ")";
     }
 }

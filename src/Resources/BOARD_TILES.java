@@ -8,7 +8,7 @@ package Resources;
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
-public enum BoardTiles {
+public enum BOARD_TILES {
 
     LAND(0, 'L'),
     RIVER(1, 'R'),
@@ -18,7 +18,7 @@ public enum BoardTiles {
     public final int tileNumber;
     public final char patternChar;
 
-    BoardTiles(int tileNumber, char patternChar) {
+    BOARD_TILES(int tileNumber, char patternChar) {
         this.tileNumber = tileNumber;
         this.patternChar = patternChar;
     }

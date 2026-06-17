@@ -8,7 +8,7 @@ package Resources;
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
-public enum Animals {
+public enum ANIMALS {
 
     MOUSE(1),
     CAT(2),
@@ -21,7 +21,7 @@ public enum Animals {
 
     public final int rankNumber;
 
-    Animals(int rankNumber) {
+    ANIMALS(int rankNumber) {
         this.rankNumber = rankNumber;
     }
 }

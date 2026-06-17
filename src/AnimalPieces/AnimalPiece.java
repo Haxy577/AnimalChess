@@ -2,8 +2,10 @@ package AnimalPieces;
 
 import Board.BoardCell;
 import Board.BoardTile;
-import Resources.Animals;
-import Resources.BoardTiles;
+import Board.GameBoard;
+import Resources.ANIMALS;
+import Resources.BOARD_TILES;
+import Resources.DIRECTION;
 
 import java.awt.*;
 import java.util.List;
@@ -12,29 +14,29 @@ import java.util.ArrayList;
 /**
  * Represents an individual animal game piece on the board.
  * <p>
- * Each piece has an immutable {@link Animals} type which determines its animal type and rank,
+ * Each piece has an immutable {@link ANIMALS} type which determines its animal type and rank,
  * an immutable {@link #playerIndex} which determines the index of the player controlling the piece,
  * and a mutable {@link Color} property that describes the color of the piece to be displayed.
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
- * @see Animals
+ * @see ANIMALS
  * @see Color
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.6 6/11/2026
+ * @version 1.8 6/17/2026
  * @since 1.0
  */
 public abstract class AnimalPiece {
 
     /**
-     * The type and corresponding rank of an animal piece. See {@link Animals} for all
+     * The type and corresponding rank of an animal piece. See {@link ANIMALS} for all
      * possible values. This field cannot be changed once set.
      *
      * @since 1.0
-     * @see Animals
+     * @see ANIMALS
      */
-    private final Animals animal;
+    private final ANIMALS animal;
 
     /**
      * The color of the piece to be displayed. See {@link Color} to see all possible ways
@@ -64,9 +66,9 @@ public abstract class AnimalPiece {
      * or the {@link #playerIndex} is a value less than 1.
      *
      * @since 1.0
-     * @see Animals
+     * @see ANIMALS
      */
-    AnimalPiece(Animals animal, int playerIndex) throws IllegalArgumentException {
+    AnimalPiece(ANIMALS animal, int playerIndex) throws IllegalArgumentException {
         if (animal == null)
             throw new IllegalArgumentException("The animal piece must have an animal type and rank");
         if (playerIndex < 1)
@@ -87,10 +89,10 @@ public abstract class AnimalPiece {
      * or the {@link #playerIndex} is a value less than 1.
      *
      * @since 1.0
-     * @see Animals
+     * @see ANIMALS
      * @see Color
      */
-    AnimalPiece(Animals animal, int playerIndex, Color color) throws IllegalArgumentException {
+    AnimalPiece(ANIMALS animal, int playerIndex, Color color) throws IllegalArgumentException {
         this(animal, playerIndex);
 
         if (color == null)
@@ -105,7 +107,7 @@ public abstract class AnimalPiece {
      * @return the type of animal this piece is, its rank, and the player controlling this piece
      *
      * @since 1.5
-     * @see Animals
+     * @see ANIMALS
      */
     @Override
     public String toString() {
@@ -113,41 +115,97 @@ public abstract class AnimalPiece {
     }
 
     /**
-     * Gets all the possible moves of the piece. This checks whether the piece can move to the four
-     * cardinal directions (up, down, left, and right).
+     * Gets all the possible moves of the piece. This checks whether the piece can move 1 space to the four
+     * cardinal directions (UP, DOWN, LEFT, RIGHT).
      *
      * @param source The board cell that contains the piece
      * @param gameBoard the array of board cells that represents the playing board
      * @return a list of all the possible moves the piece can do
      *
-     * @since 1.1
+     * @since 1.8
      * @see BoardCell
-     * @see Board.GameBoard
-     * @see #canMove(BoardCell, BoardCell...)
+     * @see GameBoard
+     * @see DIRECTION
+     * @see #canMoveTo(BoardCell, BoardCell[][], DIRECTION)
      */
     public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) {
-        ArrayList<BoardCell> allMoves = new ArrayList<>();
-        int row = source.getRow();
-        int col = source.getCol();
+        List<BoardCell> allMoves = new ArrayList<>();
+        BoardCell move;
 
-        if (col > 0 && canMove(source, gameBoard[row][col - 1]))
-            allMoves.add(gameBoard[row][col - 1]);
-
-        if (col < gameBoard[row].length - 1 && canMove(source, gameBoard[row][col + 1]))
-            allMoves.add(gameBoard[row][col + 1]);
-
-        if (row > 0 && canMove(source, gameBoard[row - 1][col]))
-            allMoves.add(gameBoard[row - 1][col]);
-
-        if (row < gameBoard.length - 1 && canMove(source, gameBoard[row + 1][col]))
-            allMoves.add(gameBoard[row + 1][col]);
+        for (DIRECTION direction : DIRECTION.values()) {
+            move = canMoveTo(source, gameBoard, direction);
+            if (move != null)
+                allMoves.add(move);
+        }
 
         return allMoves;
     }
 
     /**
+     * Returns the specific board cell that the piece can move on to.
+     *
+     * @param source the piece that is requesting to move
+     * @param gameBoard the array of board cells that represents the playing board
+     * @param direction one of the cardinal direction that the piece is moving towards
+     * @return the BoardCell the piece can move to occupy. Returns {@code null} if there is no valid cell
+     * the piece can move towards
+     *
+     * @since 1.8
+     * @see BoardCell
+     * @see DIRECTION
+     * @see #getDirectionalPath(BoardCell, BoardCell[][], DIRECTION)
+     * @see #isMoveValid(BoardCell, BoardCell)
+     */
+    protected BoardCell canMoveTo(BoardCell source, BoardCell[][] gameBoard, DIRECTION direction) {
+        BoardCell[] path = getDirectionalPath(source, gameBoard, direction);
+
+        BoardCell target = path[0];
+
+        return (isMoveValid(source, target)) ? target : null;
+    }
+
+    /**
+     * Converts a 2d array into a 1d array of board cells. It would take all entries starting from the
+     * adjacent cell relative to the source until the edge of the array based on the direction given.
+     *
+     * @param source the array of board cells that represents the playing board
+     * @param gameBoard the array of board cells that represents the playing board
+     * @param direction one of the cardinal direction that the piece is moving towards
+     * @return an array that contains the path of the piece based on the given direction
+     *
+     * @since 1.8
+     * @see BoardCell
+     * @see DIRECTION
+     */
+    protected BoardCell[] getDirectionalPath(BoardCell source, BoardCell[][] gameBoard, DIRECTION direction) {
+        BoardCell[] path;
+        int row = source.getRow();
+        int col = source.getCol();
+        int deltaRow = (direction == DIRECTION.UP) ? -1 : (direction == DIRECTION.DOWN) ? 1 : 0;
+        int deltaCol = (direction == DIRECTION.LEFT) ? -1 : (direction == DIRECTION.RIGHT) ? 1 : 0;
+        int limit;
+
+        if (deltaRow != 0) {
+            limit = (deltaRow < 0) ? row : gameBoard.length - row;
+        } else {
+            limit = (deltaCol < 0) ? col : gameBoard[0].length - col;
+        }
+
+        path = new BoardCell[limit];
+
+        for (int i = 0; i < limit; i++) {
+            int nextRow = row + (deltaRow * (i + 1));
+            int nextCol = col + (deltaCol * (i + 1));
+            path[i] = gameBoard[nextRow][nextCol];
+        }
+
+        return path;
+    }
+
+    /**
      * Determines whether the movement is valid given it meets the following conditions:
      * <ol>
+     * <li>The boardCells must be instantiated</li>
      * <li>The piece that is requesting to move must be instantiated</li>
      * <li>A piece can only move 1 space either horizontally or vertically</li>
      * <li>A piece cannot move to a river tile</li>
@@ -166,30 +224,31 @@ public abstract class AnimalPiece {
      * not exist nor can move to that destination.
      *
      * @since 1.1
-     * @see Animals
-     * @see BoardTiles
-     * @see Board.GameBoard
+     * @see ANIMALS
+     * @see BOARD_TILES
+     * @see GameBoard
      */
-    public boolean canMove(BoardCell source, BoardCell... destination) {
+    public boolean isMoveValid(BoardCell source, BoardCell destination) {
+        if (source == null || destination == null)
+            return false;
+
         if (source.getPiece() == null)
             return false;
 
         AnimalPiece movingPiece = source.getPiece();
-        BoardCell targetCell = destination[destination.length - 1];
-        AnimalPiece targetPiece = targetCell.getPiece();
-        BoardTile targetTile = targetCell.getTile();
+        AnimalPiece targetPiece = destination.getPiece();
+        BoardTile targetTile = destination.getTile();
+        int distance = Math.abs(source.getCol() - destination.getCol()) +
+                Math.abs(source.getRow() - destination.getRow());
 
-        if (targetCell.getRow() < source.getRow() - 1 || targetCell.getRow() > source.getRow() + 1 )
+        if (distance != 1)
             return false;
 
-        if (targetCell.getRow() < source.getCol() - 1 || targetCell.getRow() > source.getCol() + 1 )
+        if (targetTile.getTYPE() == BOARD_TILES.RIVER)
             return false;
 
-        if (targetTile.getType() == BoardTiles.RIVER)
-            return false;
-
-        if (targetTile.getType() == BoardTiles.ANIMAL_DEN &&
-                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getTYPE() == BOARD_TILES.ANIMAL_DEN &&
+                targetTile.getPLAYER_INDEX() == movingPiece.getPlayerIndex())
             return false;
 
         if (targetPiece == null)
@@ -198,32 +257,32 @@ public abstract class AnimalPiece {
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        if (targetTile.getType() == BoardTiles.TRAP)
+        if (targetTile.getTYPE() == BOARD_TILES.TRAP)
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();
     }
 
     /**
-     * Returns the object's animal type. See {@link Animals} for all possible animal types.
+     * Returns the object's animal type. See {@link ANIMALS} for all possible animal types.
      *
      * @return the animal type of the piece
      *
      * @since 1.0
-     * @see Animals
+     * @see ANIMALS
      */
-    public Animals getAnimal() {
+    public ANIMALS getAnimal() {
         return this.animal;
     }
 
     /**
-     * Returns the corresponding rank associated with the object's animal type. See {@link Animals}
+     * Returns the corresponding rank associated with the object's animal type. See {@link ANIMALS}
      * for all possible animal types and its corresponding rank.
      *
      * @return the rank of the object.
      *
      * @since 1.0
-     * @see Animals
+     * @see ANIMALS
      */
     public int getRank() {
         return this.animal.rankNumber;

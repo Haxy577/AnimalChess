@@ -171,6 +171,8 @@ public class BoardCell {
      */
     @Override
     public String toString() {
+        if (this.piece == null)
+            return "(r=" + this.row + ",c=" + this.col + ")," + this.tile.toString() + ",Piece=null";
         return "(r=" + this.row + ",c=" + this.col + ")," + this.tile.toString() + "," + this.piece.toString();
     }
 }

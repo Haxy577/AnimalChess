@@ -1,8 +1,8 @@
 package Board;
 
 import AnimalPieces.*;
-import Resources.Animals;
-import Resources.BoardTiles;
+import Resources.ANIMALS;
+import Resources.BOARD_TILES;
 
 import java.util.*;
 
@@ -276,7 +276,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see BoardTile
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
     private void parseBoardPattern(String pattern) {
         List<String> tokens = parseTokens(pattern);
@@ -291,11 +291,11 @@ public class GameBoard {
                 int col = boardIndex % this.boardColumns;
 
                 BoardTile tile = switch (tileChar) {
-                    case 'L' -> new BoardTile(BoardTiles.LAND);
-                    case 'R' -> new BoardTile(BoardTiles.RIVER);
-                    case 'T' -> new BoardTile(BoardTiles.TRAP);
-                    case 'A' -> new BoardTile(BoardTiles.ANIMAL_DEN, 1);
-                    case 'a' -> new BoardTile(BoardTiles.ANIMAL_DEN, 2);
+                    case 'L' -> new BoardTile(BOARD_TILES.LAND);
+                    case 'R' -> new BoardTile(BOARD_TILES.RIVER);
+                    case 'T' -> new BoardTile(BOARD_TILES.TRAP);
+                    case 'A' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 1);
+                    case 'a' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 2);
                     default -> {
                         throw new IllegalArgumentException("Invalid tile character. Expected: [LRTAa], Actual: " + tileChar);
                     }
@@ -338,7 +338,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see AnimalPiece
-     * @see Animals
+     * @see ANIMALS
      */
     private void parsePiecePattern(String pattern) throws IllegalArgumentException {
         List<String> tokens = parseTokens(pattern);
@@ -452,7 +452,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see AnimalPiece
-     * @see Animals
+     * @see ANIMALS
      */
     private String toPiecePattern() {
         int maxCapacity = this.boardRows * this.boardColumns;
@@ -512,7 +512,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see BoardTile
-     * @see BoardTiles
+     * @see BOARD_TILES
      */
     private String toBoardPattern() {
         int maxCapacity = this.boardRows * this.boardColumns;
@@ -565,11 +565,11 @@ public class GameBoard {
      * @since 1.7
      */
     private char getTileChar(BoardTile tile) {
-        return switch (tile.getType()) {
+        return switch (tile.getTYPE()) {
             case LAND -> 'L';
             case RIVER -> 'R';
             case TRAP -> 'T';
-            case ANIMAL_DEN -> (tile.getPlayerIndex() == 1) ? 'A' : 'a';
+            case ANIMAL_DEN -> (tile.getPLAYER_INDEX() == 1) ? 'A' : 'a';
         };
     }
 }

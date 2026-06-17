@@ -1,5 +1,4 @@
 import Board.GameBoard;
-import Resources.BoardTiles;
 
 /**
  * @author Richmond Jase Von M. Salvador
@@ -12,5 +11,7 @@ public class Main {
         String defaultPattern = "12L3R3LT2L3R2LTAT5LTaT2L3R2LT3L3R12L|G1E3m1n1C5d3W3p13P3W3D5c1N1M3e1g";
         gameBoard.initialize(defaultPattern);
         System.out.println(gameBoard.toPattern().equals(defaultPattern));
+
+        System.out.println(gameBoard.getAllPlayerMoves(1));
     }
 }
