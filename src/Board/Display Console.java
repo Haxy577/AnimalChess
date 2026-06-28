@@ -8,27 +8,59 @@ import Resources.ANIMALS;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
- * Uses ANSI escape codes to colorize various terrains and denote player ownership.
- * * @author Zachary Tan
- * @version 1.0 6/24/2026
+ * Features dynamic, clash-free player colors for both pieces and Dens.
+ *
+ * @author Zachary Tan
+ * @version 2.0 6/28/2026
  */
 public class ConsoleDisplay {
 
-    // ANSI Text Color Codes (Foreground)
+    // ANSI Text Color Codes for structural elements
     private static final String RESET = "\u001B[0m";
-    private static final String P1_TEXT = "\u001B[1;31m"; // Bold Red for Player 1
-    private static final String P2_TEXT = "\u001B[1;34m"; // Bold Blue for Player 2
-    private static final String HEADER_TEXT = "\u001B[1;37m"; // Bold White for grid coordinates
+    private static final String HEADER_TEXT = "\u001B[1;37m"; // Bold White
 
-    // ANSI Background Color Codes (Terrain)
+    // Fixed ANSI Background Color Codes (Terrain)
     private static final String BG_LAND = "\u001B[42m";    // Green
     private static final String BG_RIVER = "\u001B[44m";   // Blue
     private static final String BG_TRAP = "\u001B[100m";   // Dark Grey
-    private static final String BG_DEN = "\u001B[45m";    // Magenta
 
     /**
-     * Renders the complete game board into the console with coordinate tracking.
-     * * @param gameBoard the 2D array of board cells representing the current state
+     * Enum restricting player color choices to prevent clashing with 
+     * the board's green land, blue river, and grey traps.
+     */
+    public enum PlayerColor {
+        RED("\u001B[1;31m", "\u001B[41m"),
+        YELLOW("\u001B[1;33m", "\u001B[43m"),
+        MAGENTA("\u001B[1;35m", "\u001B[45m"),
+        CYAN("\u001B[1;36m", "\u001B[46m"),
+        WHITE("\u001B[1;37m", "\u001B[47m");
+
+        public final String textCode;
+        public final String bgCode;
+
+        PlayerColor(String textCode, String bgCode) {
+            this.textCode = textCode;
+            this.bgCode = bgCode;
+        }
+    }
+
+    // Default player colors
+    private static PlayerColor p1Color = PlayerColor.RED;
+    private static PlayerColor p2Color = PlayerColor.MAGENTA;
+
+    /**
+     * Allows the main game loop to assign custom colors to each player.
+     */
+    public static void setPlayerColors(PlayerColor p1, PlayerColor p2) {
+        if (p1 == p2) {
+            System.out.println("Warning: Both players selected " + p1.name() + "!");
+        }
+        p1Color = p1;
+        p2Color = p2;
+    }
+
+    /**
+     * Renders the complete game board into the console.
      */
     public static void printBoard(BoardCell[][] gameBoard) {
         if (gameBoard == null || gameBoard.length == 0 || gameBoard[0].length == 0) {
@@ -50,32 +82,29 @@ public class ConsoleDisplay {
 
         // Print Grid Rows
         for (int r = 0; r < rows; r++) {
-            // Print Row Header
             System.out.print(HEADER_TEXT + r + " |" + RESET);
 
             for (int c = 0; c < cols; c++) {
-                BoardCell cell = gameBoard[r][c];
-                System.out.print(getFormattedCell(cell));
+                System.out.print(getFormattedCell(gameBoard[r][c]));
             }
             
-            // End of row reset safety line
             System.out.println(RESET);
         }
         System.out.println("   " + "-----".repeat(cols) + "\n");
     }
 
     /**
-     * Determines the correct background color, foreground color, and text
-     * shorthand representation for an individual cell block.
+     * Formats an individual cell block using the player's chosen colors 
+     * and the specific piece/terrain data.
      */
     private static String getFormattedCell(BoardCell cell) {
         BoardTile tile = cell.getTile();
         AnimalPiece piece = cell.getPiece();
         
         String backgroundCode = BG_LAND;
-        String contentText = " . "; // Default land symbol
+        String contentText = " . "; 
 
-        // 1. Identify Background Terrain Style
+        // 1. Identify Terrain and Apply Background Color
         if (tile != null) {
             BOARD_TILES tileType = tile.getTYPE();
             if (tileType == BOARD_TILES.RIVER) {
@@ -85,26 +114,25 @@ public class ConsoleDisplay {
                 backgroundCode = BG_TRAP;
                 contentText = " x ";
             } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
-                backgroundCode = BG_DEN;
+                // Den background matches the owner's chosen color
+                backgroundCode = (tile.getPLAYER_INDEX() == 1) ? p1Color.bgCode : p2Color.bgCode;
                 contentText = "Ω" + tile.getPLAYER_INDEX() + " ";
             }
         }
 
-        // 2. Overlay Animal Piece Details if Occupied
+        // 2. Overlay Animal Piece (Using the classes you shared)
         if (piece != null) {
-            String textStyle = (piece.getPlayerIndex() == 1) ? P1_TEXT : P2_TEXT;
+            String textStyle = (piece.getPlayerIndex() == 1) ? p1Color.textCode : p2Color.textCode;
             String symbol = getAnimalSymbol(piece.getAnimal());
             
-            // Formats as " M1 " or " T2 " nested inside its background cell color block
             return backgroundCode + textStyle + " " + symbol + piece.getPlayerIndex() + " " + RESET;
         }
 
-        // 3. Return stylized empty tile representation
         return backgroundCode + contentText + RESET;
     }
 
     /**
-     * Maps an ANIMALS enum type to its single-character representation.
+     * Maps the ANIMALS enum to its single-character representation.
      */
     private static String getAnimalSymbol(ANIMALS animal) {
         if (animal == null) return "?";
@@ -116,7 +144,7 @@ public class ConsoleDisplay {
             case DOG:      return "D";
             case LEOPARD:  return "L";
             case TIGER:    return "T";
-            case LION:     return "I"; // Using 'I' for Lion to distinguish clearly from Leopard
+            case LION:     return "I"; // 'I' avoids conflict with Leopard
             case ELEPHANT: return "E";
             default:       return "?";
         }
