@@ -8,31 +8,31 @@ import Resources.ANIMALS;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
- * Features dynamic, clash-free player colors for both pieces and Dens.
+ * Features dynamic player colors and high-contrast token bases for pieces.
  *
  * @author Zachary Tan
  * @version 3 7/03/2026
  */
 public class ConsoleDisplay {
 
-    // ANSI Text Color Codes for structural elements
     private static final String RESET = "\u001B[0m";
     private static final String HEADER_TEXT = "\u001B[1;37m"; // Bold White
 
-    // Fixed ANSI Background Color Codes (Terrain)
+    // Background Color Codes (Terrain)
     private static final String BG_LAND = "\u001B[42m";    // Green
     private static final String BG_RIVER = "\u001B[44m";   // Blue
     private static final String BG_TRAP = "\u001B[100m";   // Dark Grey
+    private static final String BG_TOKEN = "\u001B[40m";   // Black (Piece Base)
 
     /**
-     * Enum restricting player color choices to prevent clashing.
+     * Upgraded to Bright (High-Intensity) text colors for maximum contrast.
      */
     public enum PlayerColor {
-        RED("\u001B[1;31m", "\u001B[41m"),
-        YELLOW("\u001B[1;33m", "\u001B[43m"),
-        MAGENTA("\u001B[1;35m", "\u001B[45m"),
-        CYAN("\u001B[1;36m", "\u001B[46m"),
-        WHITE("\u001B[1;37m", "\u001B[47m");
+        RED("\u001B[1;91m", "\u001B[41m"),
+        YELLOW("\u001B[1;93m", "\u001B[43m"),
+        MAGENTA("\u001B[1;95m", "\u001B[45m"),
+        CYAN("\u001B[1;96m", "\u001B[46m"),
+        WHITE("\u001B[1;97m", "\u001B[47m");
 
         public final String textCode;
         public final String bgCode;
@@ -43,7 +43,6 @@ public class ConsoleDisplay {
         }
     }
 
-    // Default player colors
     private static PlayerColor p1Color = PlayerColor.RED;
     private static PlayerColor p2Color = PlayerColor.MAGENTA;
 
@@ -55,9 +54,6 @@ public class ConsoleDisplay {
         p2Color = p2;
     }
 
-    /**
-     * Renders the complete game board into the console.
-     */
     public static void printBoard(BoardCell[][] gameBoard) {
         if (gameBoard == null || gameBoard.length == 0 || gameBoard[0].length == 0) {
             System.out.println("Cannot render an empty or uninitialized game board.");
@@ -69,14 +65,12 @@ public class ConsoleDisplay {
 
         System.out.println("\n=== ANIMAL CHESS ===");
         
-        // Print Column Headers (Aligned to 4 characters per column)
         System.out.print("   ");
         for (int c = 0; c < cols; c++) {
             System.out.print(HEADER_TEXT + "  " + c + " " + RESET);
         }
         System.out.println("\n   " + "----".repeat(cols));
 
-        // Print Grid Rows
         for (int r = 0; r < rows; r++) {
             System.out.print(HEADER_TEXT + r + " |" + RESET);
 
@@ -89,27 +83,24 @@ public class ConsoleDisplay {
         System.out.println("   " + "----".repeat(cols) + "\n");
     }
 
-    /**
-     * Formats an individual cell block. Standardized to exactly 4 characters wide.
-     */
     private static String getFormattedCell(BoardCell cell) {
         BoardTile tile = cell.getTile();
         AnimalPiece piece = cell.getPiece();
         
         String backgroundCode = BG_LAND;
-        String contentText = "  . "; // 4 chars
+        String contentText = "  . "; 
 
         if (tile != null) {
             BOARD_TILES tileType = tile.getTYPE();
             if (tileType == BOARD_TILES.RIVER) {
                 backgroundCode = BG_RIVER;
-                contentText = "  ~ "; // 4 chars
+                contentText = "  ~ ";
             } else if (tileType == BOARD_TILES.TRAP) {
                 backgroundCode = BG_TRAP;
-                contentText = "  x "; // 4 chars
+                contentText = "  x ";
             } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
                 backgroundCode = (tile.getPLAYER_INDEX() == 1) ? p1Color.bgCode : p2Color.bgCode;
-                contentText = " Ω" + tile.getPLAYER_INDEX() + " "; // 4 chars
+                contentText = "  Ω "; // Number suffix removed
             }
         }
 
@@ -117,7 +108,8 @@ public class ConsoleDisplay {
             String textStyle = (piece.getPlayerIndex() == 1) ? p1Color.textCode : p2Color.textCode;
             String symbol = getAnimalSymbol(piece.getAnimal());
             
-            return backgroundCode + textStyle + " " + symbol + piece.getPlayerIndex() + " " + RESET; // 4 chars
+            // Renders: [Terrain BG] + Space Space + [Black BG Token + Colored Letter] + [Terrain BG] + Space
+            return backgroundCode + "  " + BG_TOKEN + textStyle + symbol + RESET + backgroundCode + " " + RESET;
         }
 
         return backgroundCode + contentText + RESET;
