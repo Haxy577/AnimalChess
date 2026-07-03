@@ -1,7 +1,7 @@
 package Board;
 
 import AnimalPieces.AnimalPiece;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
@@ -88,14 +88,14 @@ public class ConsoleDisplay {
         String contentText = "  . "; 
 
         if (tile != null) {
-            BOARD_TILES tileType = tile.getType();
-            if (tileType == BOARD_TILES.RIVER) {
+            Tiles tileType = tile.getType();
+            if (tileType == Tiles.RIVER) {
                 backgroundCode = BG_RIVER;
                 contentText = "  ~ ";
-            } else if (tileType == BOARD_TILES.TRAP) {
+            } else if (tileType == Tiles.TRAP) {
                 backgroundCode = BG_TRAP;
                 contentText = "  x ";
-            } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
+            } else if (tileType == Tiles.ANIMAL_DEN) {
                 backgroundCode = (tile.getPlayerIndex() == 1) ? p1Color.bgCode : p2Color.bgCode;
                 contentText = "  Ω "; // Number suffix removed
             }

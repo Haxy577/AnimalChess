@@ -3,7 +3,7 @@ package AnimalPieces;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 
 /**
  * Represents the "Mouse" piece in the game Animal Chess.
@@ -55,7 +55,7 @@ public class Mouse extends AnimalPiece {
      * not exist nor can move to that destination.
      *
      * @since 1.8
-     * @see BOARD_TILES
+     * @see Tiles
      * @see GameBoard
      */
     @Override
@@ -76,7 +76,7 @@ public class Mouse extends AnimalPiece {
         if (distance != 1)
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.ANIMAL_DEN &&
+        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
                 targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
@@ -89,7 +89,7 @@ public class Mouse extends AnimalPiece {
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank() || targetPiece instanceof Elephant;

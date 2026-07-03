@@ -1,7 +1,7 @@
 import AnimalPieces.*;
 import Board.BoardCell;
 import Board.BoardTile;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 import Resources.TestBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,7 +18,7 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForNullTests")
     public void sourceIsNull(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile tile = new BoardTile(BOARD_TILES.LAND);
+        BoardTile tile = new BoardTile(Tiles.LAND);
         AnimalPiece piece = test.getInput();
         BoardCell target = new BoardCell(tile, 0, 0);
 
@@ -28,7 +28,7 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForNullTests")
     public void movingToANullCell(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile tile = new BoardTile(BOARD_TILES.LAND);
+        BoardTile tile = new BoardTile(Tiles.LAND);
         AnimalPiece piece = test.getInput();
         BoardCell source = new BoardCell(piece, tile, 0, 0);
 
@@ -42,7 +42,7 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForMovingToTheSameCell")
     public void movingToTheSameCell(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
         AnimalPiece piece = test.getInput();
         BoardCell source = new BoardCell(piece, land, 0, 0);
 
@@ -57,7 +57,7 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForMovingMoreThanOneCell")
     public void movingMoreThanOneCell(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
         AnimalPiece piece = test.getInput();
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(land, 0, 2);
@@ -72,8 +72,8 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForMovingToARiver")
     public void movingToARiver(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         AnimalPiece piece = test.getInput();
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(river, 0, 1);
@@ -89,8 +89,8 @@ public class IsValidMoveTest {
     @MethodSource("provideForMovingToEnemyDen")
     public void movingToEnemyDen(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile den = new BoardTile(BOARD_TILES.ANIMAL_DEN, (piece.getPlayerIndex() == 1) ? 2 : 1);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile den = new BoardTile(Tiles.ANIMAL_DEN, (piece.getPlayerIndex() == 1) ? 2 : 1);
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(den, 0, 1);
 
@@ -105,8 +105,8 @@ public class IsValidMoveTest {
     @MethodSource("provideForMovingToOwnDen")
     public void movingToOwnDen(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile den = new BoardTile(BOARD_TILES.ANIMAL_DEN, piece.getPlayerIndex());
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile den = new BoardTile(Tiles.ANIMAL_DEN, piece.getPlayerIndex());
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(den, 0, 1);
 
@@ -120,7 +120,7 @@ public class IsValidMoveTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForMovingToEmptyTile")
     public void movingToEmptyTile(TestBuilder<AnimalPiece, Boolean> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
         AnimalPiece piece = test.getInput();
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(land, 0, 1);
@@ -136,8 +136,8 @@ public class IsValidMoveTest {
     @MethodSource("provideForMovingToOwnTrapTile")
     public void movingToOwnTrapTile(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile trap = new BoardTile(BOARD_TILES.TRAP, piece.getPlayerIndex());
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile trap = new BoardTile(Tiles.TRAP, piece.getPlayerIndex());
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(trap, 0, 1);
 
@@ -152,8 +152,8 @@ public class IsValidMoveTest {
     @MethodSource("provideForMovingToEnemyTrapTile")
     public void movingToEnemyTrapTile(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile trap = new BoardTile(BOARD_TILES.TRAP, (piece.getPlayerIndex() == 1) ? 2 : 1);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile trap = new BoardTile(Tiles.TRAP, (piece.getPlayerIndex() == 1) ? 2 : 1);
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(trap, 0, 1);
 
@@ -169,8 +169,8 @@ public class IsValidMoveTest {
     public void movingToOwnTrapTileWithEnemyMouse(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         AnimalPiece enemy = new Mouse((piece.getPlayerIndex() == 1) ? 2 : 1);
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile trap = new BoardTile(BOARD_TILES.TRAP, piece.getPlayerIndex());
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile trap = new BoardTile(Tiles.TRAP, piece.getPlayerIndex());
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(enemy, trap, 0, 1);
 
@@ -187,8 +187,8 @@ public class IsValidMoveTest {
     public void movingToEnemyTrapTileWithEnemyElephant(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         AnimalPiece enemy = new Elephant((piece.getPlayerIndex() == 1) ? 2 : 1);
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile trap = new BoardTile(BOARD_TILES.TRAP, (piece.getPlayerIndex() == 1) ? 2 : 1);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile trap = new BoardTile(Tiles.TRAP, (piece.getPlayerIndex() == 1) ? 2 : 1);
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(enemy, trap, 0, 1);
 
@@ -209,8 +209,8 @@ public class IsValidMoveTest {
         else
             enemy = new Mouse((piece.getPlayerIndex() == 1) ? 2 : 1);
 
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell source = new BoardCell(piece, river, 0, 0);
         BoardCell target = new BoardCell(enemy, land, 0, 1);
 
@@ -226,8 +226,8 @@ public class IsValidMoveTest {
     public void capturingPieceOnRiverFromLand(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         AnimalPiece enemy = new Mouse((piece.getPlayerIndex() == 1) ? 2 : 1);
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(enemy, river, 0, 1);
 
@@ -243,7 +243,7 @@ public class IsValidMoveTest {
     public void capturingPieceOnSameTileType(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         AnimalPiece enemy = new Elephant((piece.getPlayerIndex() == 1) ? 2 : 1);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell source = new BoardCell(piece, river, 0, 0);
         BoardCell target = new BoardCell(enemy, river, 0, 1);
 

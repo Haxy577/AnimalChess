@@ -1,7 +1,7 @@
 package Board;
 
 import AnimalPieces.*;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class GameBoard {
      * @since 1.1
      * @see BoardCell
      */
-    private final BoardCell[][] gameBoard;
+    private final BoardCell[][] BOARD;
 
     /**
      * Represents a gameboard pattern that has 9 rows, 7 columns, and the default layout of the game Animal Chess
@@ -77,7 +77,7 @@ public class GameBoard {
     public GameBoard(int row, int column, String pattern) {
         ROWS = row;
         COLUMNS = column;
-        gameBoard = new BoardCell[row][column];
+        BOARD = new BoardCell[row][column];
         initialize(pattern);
     }
 
@@ -127,7 +127,7 @@ public class GameBoard {
                 if (j > 0)
                     string.append(',');
 
-                string.append(gameBoard[i][j].toString());
+                string.append(BOARD[i][j].toString());
             }
             string.append('}');
         }
@@ -152,7 +152,7 @@ public class GameBoard {
 
         List<BoardCell> allPieces = new ArrayList<>();
 
-        for (BoardCell[] row : gameBoard) {
+        for (BoardCell[] row : BOARD) {
             for (BoardCell column : row) {
                 if (column.getPiece() == null)
                     continue;
@@ -182,7 +182,7 @@ public class GameBoard {
         List<BoardCell> allPieces = getAllPlayerPieces(playerIndex);
 
         for (BoardCell cell : allPieces) {
-            allMoves.put(cell, cell.getPiece().getAllMoves(cell, gameBoard));
+            allMoves.put(cell, cell.getPiece().getAllMoves(cell, BOARD));
         }
 
         return allMoves;
@@ -355,7 +355,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see BoardTile
-     * @see BOARD_TILES
+     * @see Tiles
      * @see #parseTokens(String)
      */
     private void parseBoardPattern(String pattern) {
@@ -371,16 +371,16 @@ public class GameBoard {
                 int col = boardIndex % COLUMNS;
 
                 BoardTile tile = switch (tileChar) {
-                    case 'L' -> new BoardTile(BOARD_TILES.LAND);
-                    case 'R' -> new BoardTile(BOARD_TILES.RIVER);
-                    case 'T' -> new BoardTile(BOARD_TILES.TRAP, 1);
-                    case 't' -> new BoardTile(BOARD_TILES.TRAP, 2);
-                    case 'A' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 1);
-                    case 'a' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 2);
+                    case 'L' -> new BoardTile(Tiles.LAND);
+                    case 'R' -> new BoardTile(Tiles.RIVER);
+                    case 'T' -> new BoardTile(Tiles.TRAP, 1);
+                    case 't' -> new BoardTile(Tiles.TRAP, 2);
+                    case 'A' -> new BoardTile(Tiles.ANIMAL_DEN, 1);
+                    case 'a' -> new BoardTile(Tiles.ANIMAL_DEN, 2);
                     default -> throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
                 };
 
-                gameBoard[row][col] = new BoardCell(tile, row, col);
+                BOARD[row][col] = new BoardCell(tile, row, col);
                 boardIndex++;
             }
         }
@@ -443,7 +443,7 @@ public class GameBoard {
                 default -> throw new IllegalArgumentException("Invalid piece character. Expected: [MmCcWwDdPpNnGgEe], Actual: " + tileChar);
             };
 
-            gameBoard[row][col].setPiece(piece);
+            BOARD[row][col].setPiece(piece);
             boardIndex++;
         }
     }
@@ -543,7 +543,7 @@ public class GameBoard {
         int distance = 0;
         char pieceChar;
 
-        for (BoardCell[] row : gameBoard) {
+        for (BoardCell[] row : BOARD) {
             for (BoardCell col : row) {
                 piece = col.getPiece();
 
@@ -595,16 +595,16 @@ public class GameBoard {
      *
      * @since 1.7
      * @see BoardTile
-     * @see BOARD_TILES
+     * @see Tiles
      */
     private String toBoardPattern() {
         int maxCapacity = ROWS * COLUMNS;
         StringBuilder pattern = new StringBuilder(maxCapacity);
         char currentTile;
-        char previousTile = getTileChar(gameBoard[0][0].getTile());
+        char previousTile = getTileChar(BOARD[0][0].getTile());
         int count = 0;
 
-        for (BoardCell[] row : gameBoard) {
+        for (BoardCell[] row : BOARD) {
             for (BoardCell col : row) {
                 currentTile = getTileChar(col.getTile());
 
@@ -646,7 +646,7 @@ public class GameBoard {
      * @return the character representation of the board tile
      *
      * @since 1.7
-     * @see BOARD_TILES
+     * @see Tiles
      */
     private char getTileChar(BoardTile tile) {
         return switch (tile.getType()) {
@@ -665,11 +665,11 @@ public class GameBoard {
         return ROWS;
     }
 
-    public BoardCell[][] getGameBoard() {
-        return gameBoard;
+    public BoardCell[][] getBoard() {
+        return BOARD;
     }
 
     public BoardCell getCell(int row, int column) {
-        return gameBoard[row][column];
+        return BOARD[row][column];
     }
 }

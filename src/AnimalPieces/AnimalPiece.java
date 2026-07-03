@@ -3,8 +3,8 @@ package AnimalPieces;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.BOARD_TILES;
-import Resources.DIRECTION;
+import Resources.Tiles;
+import Resources.Direction;
 
 import java.awt.*;
 import java.util.List;
@@ -103,7 +103,7 @@ public abstract class AnimalPiece {
      * @since 1.8
      * @see BoardCell
      * @see GameBoard
-     * @see DIRECTION
+     * @see Direction
      * @see #canMoveTo(BoardCell, BoardCell[])
      */
     public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) {
@@ -117,7 +117,7 @@ public abstract class AnimalPiece {
         List<BoardCell> allMoves = new ArrayList<>();
         BoardCell move;
 
-        for (DIRECTION direction : DIRECTION.values()) {
+        for (Direction direction : Direction.values()) {
             move = canMoveTo(source, getDirectionalPath(source, gameBoard, direction));
             if (move != null)
                 allMoves.add(move);
@@ -137,8 +137,8 @@ public abstract class AnimalPiece {
      *
      * @since 1.8
      * @see BoardCell
-     * @see DIRECTION
-     * @see #getDirectionalPath(BoardCell, BoardCell[][], DIRECTION)
+     * @see Direction
+     * @see #getDirectionalPath(BoardCell, BoardCell[][], Direction)
      * @see #isMoveValid(BoardCell, BoardCell)
      */
     public BoardCell canMoveTo(BoardCell source, BoardCell[] path) throws IllegalArgumentException {
@@ -166,9 +166,9 @@ public abstract class AnimalPiece {
      *
      * @since 1.8
      * @see BoardCell
-     * @see DIRECTION
+     * @see Direction
      */
-    public BoardCell[] getDirectionalPath(BoardCell source, BoardCell[][] gameBoard, DIRECTION direction) throws IllegalArgumentException {
+    public BoardCell[] getDirectionalPath(BoardCell source, BoardCell[][] gameBoard, Direction direction) throws IllegalArgumentException {
         if (source == null || gameBoard == null)
             throw new IllegalArgumentException("Invalid source and/or gameboard. These parameters cannot be null");
 
@@ -181,8 +181,8 @@ public abstract class AnimalPiece {
         if (!source.equals(gameBoard[row][col]))
             throw new IllegalArgumentException("Invalid source. The specified cell does not exists within the board");
 
-        int deltaRow = (direction == DIRECTION.UP) ? -1 : (direction == DIRECTION.DOWN) ? 1 : 0;
-        int deltaCol = (direction == DIRECTION.LEFT) ? -1 : (direction == DIRECTION.RIGHT) ? 1 : 0;
+        int deltaRow = (direction == Direction.UP) ? -1 : (direction == Direction.DOWN) ? 1 : 0;
+        int deltaCol = (direction == Direction.LEFT) ? -1 : (direction == Direction.RIGHT) ? 1 : 0;
         int limit;
 
         if (deltaRow != 0) {
@@ -223,7 +223,7 @@ public abstract class AnimalPiece {
      * not exist nor can move to that destination.
      *
      * @since 1.1
-     * @see BOARD_TILES
+     * @see Tiles
      * @see GameBoard
      */
     public boolean isMoveValid(BoardCell source, BoardCell destination) {
@@ -242,10 +242,10 @@ public abstract class AnimalPiece {
         if (distance != 1)
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.RIVER)
+        if (targetTile.getType() == Tiles.RIVER)
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.ANIMAL_DEN &&
+        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
                 targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
@@ -255,7 +255,7 @@ public abstract class AnimalPiece {
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();

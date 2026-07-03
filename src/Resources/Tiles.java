@@ -8,12 +8,9 @@ package Resources;
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
-public enum BOARD_TILES {
+public enum Tiles {
 
-    LAND,
-    RIVER,
-    TRAP,
-    ANIMAL_DEN;
+    LAND, RIVER, TRAP, ANIMAL_DEN;
 
     public boolean isLandBased() {
         return this == LAND || this == TRAP || this == ANIMAL_DEN;

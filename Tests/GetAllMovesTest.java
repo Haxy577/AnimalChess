@@ -2,7 +2,7 @@ import AnimalPieces.*;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 import Resources.TestBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,13 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GetAllMovesTest {
     private static List<TestBuilder<BoardCell, Exception>> provideIllegalArguments() {
-        AnimalPiece piece = new Mouse(1);
-        BoardTile tile = new BoardTile(BOARD_TILES.LAND);
+        BoardTile tile = new BoardTile(Tiles.LAND);
         return List.of(
-                new TestBuilder<>(new BoardCell(piece, tile, 2, 2), new IllegalArgumentException()),
-                new TestBuilder<>(new BoardCell(piece, tile, 2, 2), new IllegalArgumentException()),
-                new TestBuilder<>(new BoardCell(piece, tile, 2, 2), new IllegalArgumentException()),
-                new TestBuilder<>(new BoardCell(piece, tile, 2, 2), new IllegalArgumentException())
+                new TestBuilder<>(new BoardCell(new Mouse(1), tile, 2, 2), new IllegalArgumentException())
         );
     }
 
@@ -30,37 +26,37 @@ public class GetAllMovesTest {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(null, gameBoard.getGameBoard()));
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(null, gameBoard.getBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideIllegalArguments")
     public void gameBoardIsNull(TestBuilder<BoardCell, Exception> test) {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
-        BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
+        BoardCell cell = new BoardCell(new BoardTile(Tiles.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideIllegalArguments")
     public void sourceOutsideBoard(TestBuilder<BoardCell, Exception> test) {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
-        BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
+        BoardCell cell = new BoardCell(new BoardTile(Tiles.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideIllegalArguments")
     public void sourceDoesNotExistsInBoard(TestBuilder<BoardCell, Exception> test) {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
-        BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 2,2);
+        BoardCell cell = new BoardCell(new BoardTile(Tiles.LAND), 2,2);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getBoard()));
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEmptyLandCell() {
@@ -74,7 +70,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEmptyRiverCell() {
@@ -88,7 +84,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyMouseOnLand() {
@@ -102,7 +98,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyMouseOnRiver() {
@@ -116,7 +112,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyElephantOnLand() {
@@ -130,7 +126,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyElephantOnOwnTrap() {
@@ -144,7 +140,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyElephantOnEnemyTrap() {
@@ -158,7 +154,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByOwnMouseOnEnemyTrap() {
@@ -172,7 +168,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByRiverTileWithEnemyMouseAtTheEnd() {
@@ -186,7 +182,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByOwnDen() {
@@ -200,7 +196,7 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEnemyDen() {
@@ -214,6 +210,6 @@ public class GetAllMovesTest {
         BoardCell source = test.getInput();
         gameBoard.getCell(2,2).setPiece(source.getPiece());
 
-        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getGameBoard()).size());
+        assertEquals(test.getExpected(), source.getPiece().getAllMoves(source, gameBoard.getBoard()).size());
     }
 }

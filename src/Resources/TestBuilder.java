@@ -23,40 +23,40 @@ import java.util.List;
  * @since 1.11
  */
 public class TestBuilder<I, E> {
-    private final I input;
-    private final E expected;
+    private final I INPUT;
+    private final E EXPECTED;
 
     public TestBuilder(I input, E expected) {
-        this.input = input;
-        this.expected = expected;
+        this.INPUT = input;
+        this.EXPECTED = expected;
     }
 
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        Object inputObj =  input;
-        Object expectedObj = expected;
+        Object inputObj = INPUT;
+        Object expectedObj = EXPECTED;
 
-        if (input == null) {
+        if (INPUT == null) {
             string.append("null");
         }
         else if (inputObj instanceof Object[] array) {
             string.append(Arrays.toString(array));
         }
         else {
-            string.append(input);
+            string.append(INPUT);
         }
 
         string.append(",");
 
-        if (expected == null) {
+        if (EXPECTED == null) {
             string.append("null");
         }
         else if (expectedObj instanceof Object[] array) {
             string.append(Arrays.toString(array));
         }
         else {
-            string.append(expected);
+            string.append(EXPECTED);
         }
 
         return string.toString();
@@ -90,7 +90,7 @@ public class TestBuilder<I, E> {
 
     public static List<TestBuilder<BoardCell, Integer>> provideGetAllMovesTests(Integer defaultExpected, List<AnimalPiece> excluded, Integer excludedExpected) {
         List<TestBuilder<BoardCell, Integer>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : provideAllPieces()) {
             if (piece.getPlayerIndex() == 1) {
@@ -105,10 +105,10 @@ public class TestBuilder<I, E> {
     }
 
     public I getInput() {
-        return input;
+        return INPUT;
     }
 
     public E getExpected() {
-        return expected;
+        return EXPECTED;
     }
 }

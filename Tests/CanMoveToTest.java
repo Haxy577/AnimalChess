@@ -4,7 +4,7 @@ import AnimalPieces.Mouse;
 import AnimalPieces.Tiger;
 import Board.BoardCell;
 import Board.BoardTile;
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 import Resources.TestBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,7 +20,7 @@ public class CanMoveToTest {
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
             if (piece.getPlayerIndex() == 1) {
-                tests.add(new TestBuilder<>(new BoardCell(piece, new BoardTile(BOARD_TILES.LAND), 0, 0), new IllegalArgumentException()));
+                tests.add(new TestBuilder<>(new BoardCell(piece, new BoardTile(Tiles.LAND), 0, 0), new IllegalArgumentException()));
             }
         }
 
@@ -42,7 +42,7 @@ public class CanMoveToTest {
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForPathIsEmpty() {
         List<TestBuilder<BoardCell, BoardCell>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
             if (piece.getPlayerIndex() == 1) {
@@ -72,7 +72,7 @@ public class CanMoveToTest {
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForAdjacentToLandTile() {
         List<TestBuilder<BoardCell, BoardCell>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
         BoardCell expected = new BoardCell(land, 0, 1);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
@@ -86,8 +86,8 @@ public class CanMoveToTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForAdjacentToLandTile")
     public void adjacentToLandTile(TestBuilder<BoardCell, BoardCell> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell[] path = {new BoardCell(land, 0, 1), new BoardCell(river, 0, 2), new BoardCell(land, 0, 3)};
         BoardCell source = test.getInput();
 
@@ -96,8 +96,8 @@ public class CanMoveToTest {
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForAdjacentToRiverTile() {
         List<TestBuilder<BoardCell, BoardCell>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
             if (piece.getPlayerIndex() != 1) {
@@ -122,8 +122,8 @@ public class CanMoveToTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForAdjacentToRiverTile")
     public void adjacentToRiverTile(TestBuilder<BoardCell, BoardCell> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell[] path = {new BoardCell(river, 0, 1), new BoardCell(river, 0, 2), new BoardCell(land, 0, 3)};
         BoardCell source = test.getInput();
 
@@ -132,7 +132,7 @@ public class CanMoveToTest {
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForAdjacentToRiverTileWithAPiece() {
         List<TestBuilder<BoardCell, BoardCell>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
+        BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
             if (piece.getPlayerIndex() == 1) {
@@ -146,8 +146,8 @@ public class CanMoveToTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForAdjacentToRiverTileWithAPiece")
     public void adjacentToRiverTileWithAPiece(TestBuilder<BoardCell, BoardCell> test) {
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell[] path = {new BoardCell(new Mouse(2), river, 0, 1), new BoardCell(river, 0, 2), new BoardCell(land, 0, 3)};
         BoardCell source = test.getInput();
 
@@ -156,8 +156,8 @@ public class CanMoveToTest {
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForJumpingOutsideTheBoard() {
         List<TestBuilder<BoardCell, BoardCell>> tests = new ArrayList<>();
-        BoardTile land = new BoardTile(BOARD_TILES.LAND);
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile land = new BoardTile(Tiles.LAND);
+        BoardTile river = new BoardTile(Tiles.RIVER);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
             if (piece.getPlayerIndex() == 1) {
@@ -173,7 +173,7 @@ public class CanMoveToTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForJumpingOutsideTheBoard")
     public void jumpingOutsideTheBoard(TestBuilder<BoardCell, BoardCell> test) {
-        BoardTile river = new BoardTile(BOARD_TILES.RIVER);
+        BoardTile river = new BoardTile(Tiles.RIVER);
         BoardCell[] path = {new BoardCell(river, 0, 1), new BoardCell(river, 0, 2), new BoardCell(river, 0, 3)};
         BoardCell source = test.getInput();
 

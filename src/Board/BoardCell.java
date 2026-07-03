@@ -35,7 +35,7 @@ public class BoardCell {
      * @see BoardTile
      * @since 1.1
      */
-    private final BoardTile tile;
+    private final BoardTile TILE;
 
     /**
      * Represents the cell's row position relative to the gameBoard array
@@ -43,7 +43,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private final int row;
+    private final int ROW;
 
     /**
      * Represents the cell's column position relative to the gameBoard array
@@ -51,7 +51,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private final int col;
+    private final int COL;
 
     /**
      * Initializes the immutable values/objects of a single cell in the game board.
@@ -73,9 +73,9 @@ public class BoardCell {
         if (row < 0) throw new IllegalArgumentException("Its row position must be within the gameBoard array index range");
         if (col < 0) throw new IllegalArgumentException("Its column position must be within the gameBoard array index range");
 
-        this.tile = tile;
-        this.row = row;
-        this.col = col;
+        this.TILE = tile;
+        this.ROW = row;
+        this.COL = col;
     }
 
     /**
@@ -133,7 +133,7 @@ public class BoardCell {
      * @see BoardTile
      */
     public BoardTile getTile() {
-        return tile;
+        return TILE;
     }
 
     /**
@@ -145,7 +145,7 @@ public class BoardCell {
      * @see GameBoard
      */
     public int getRow() {
-        return row;
+        return ROW;
     }
 
     /**
@@ -157,7 +157,7 @@ public class BoardCell {
      * @see GameBoard
      */
     public int getCol() {
-        return col;
+        return COL;
     }
 
     /**
@@ -171,7 +171,7 @@ public class BoardCell {
      */
     @Override
     public String toString() {
-        return "Cell[row=" + row + ",col=" + col + "," + ((piece == null) ? "Piece[null]" : piece.toString()) + "," + tile.toString() + "]";
+        return "Cell[row=" + ROW + ",col=" + COL + "," + ((piece == null) ? "Piece[null]" : piece.toString()) + "," + TILE.toString() + "]";
     }
 
     /**
@@ -192,8 +192,8 @@ public class BoardCell {
             return false;
 
         if (piece == null && target.getPiece() == null)
-            return tile.equals(target.getTile()) && row == target.getRow() && col == target.getCol();
+            return TILE.equals(target.getTile()) && ROW == target.getRow() && COL == target.getCol();
 
-        return piece.equals(target.getPiece()) && tile.equals(target.getTile()) && row == target.getRow() && col == target.getCol();
+        return piece.equals(target.getPiece()) && TILE.equals(target.getTile()) && ROW == target.getRow() && COL == target.getCol();
     }
 }

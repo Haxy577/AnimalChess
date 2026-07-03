@@ -3,8 +3,8 @@ package AnimalPieces;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.BOARD_TILES;
-import Resources.DIRECTION;
+import Resources.Tiles;
+import Resources.Direction;
 
 /**
  * Represents the "Tiger" piece in the game Animal Chess.
@@ -47,8 +47,8 @@ public class Tiger extends AnimalPiece{
      *
      * @since 1.8
      * @see BoardCell
-     * @see DIRECTION
-     * @see #getDirectionalPath(BoardCell, BoardCell[][], DIRECTION)
+     * @see Direction
+     * @see #getDirectionalPath(BoardCell, BoardCell[][], Direction)
      * @see #isMoveValid(BoardCell, BoardCell)
      */
     @Override
@@ -63,7 +63,7 @@ public class Tiger extends AnimalPiece{
 
         BoardCell target = path[0];
 
-        if (target.getTile().getType() == BOARD_TILES.RIVER)
+        if (target.getTile().getType() == Tiles.RIVER)
             target = canJumpTo(path);
 
         return (isMoveValid(source, target)) ? target : null;
@@ -81,8 +81,8 @@ public class Tiger extends AnimalPiece{
      *
      * @since 1.8
      * @see BoardCell
-     * @see DIRECTION
-     * @see #getDirectionalPath(BoardCell, BoardCell[][], DIRECTION)
+     * @see Direction
+     * @see #getDirectionalPath(BoardCell, BoardCell[][], Direction)
      * @see #isMoveValid(BoardCell, BoardCell)
      */
     private BoardCell canJumpTo(BoardCell[] path) {
@@ -90,9 +90,9 @@ public class Tiger extends AnimalPiece{
         for (int i = 0; i < path.length; i++) {
             target = path[i];
 
-            if (target.getTile().getType() == BOARD_TILES.RIVER && target.getPiece() != null)
+            if (target.getTile().getType() == Tiles.RIVER && target.getPiece() != null)
                 return null;
-            if (target.getTile().getType() != BOARD_TILES.RIVER)
+            if (target.getTile().getType() != Tiles.RIVER)
                 break;
             if (i == path.length - 1)
                 return null;
@@ -121,7 +121,7 @@ public class Tiger extends AnimalPiece{
      * not exist nor can move to that destination.
      *
      * @since 1.8
-     * @see BOARD_TILES
+     * @see Tiles
      * @see GameBoard
      */
     @Override
@@ -136,10 +136,10 @@ public class Tiger extends AnimalPiece{
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile targetTile = destination.getTile();
 
-        if (targetTile.getType() == BOARD_TILES.RIVER)
+        if (targetTile.getType() == Tiles.RIVER)
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.ANIMAL_DEN &&
+        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
                 targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
@@ -149,7 +149,7 @@ public class Tiger extends AnimalPiece{
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        if (targetTile.getType() == BOARD_TILES.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();

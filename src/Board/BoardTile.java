@@ -1,12 +1,12 @@
 package Board;
 
-import Resources.BOARD_TILES;
+import Resources.Tiles;
 
 /**
  * Represents the type of board tile a specific board cell has and the index of the player
  * that has ownership of this specific tile.
  *
- * @see BOARD_TILES
+ * @see Tiles
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
@@ -19,9 +19,9 @@ public class BoardTile {
      * Represents the type of the board tile set. This field cannot be changed once set.
      *
      * @since 1.1
-     * @see BOARD_TILES
+     * @see Tiles
      */
-    private final BOARD_TILES TYPE;
+    private final Tiles TYPE;
 
     /**
      * Represents what player has control over this tile. This field can only have 3 possible values:
@@ -33,17 +33,17 @@ public class BoardTile {
     private final int PLAYER_INDEX;
 
     /**
-     * Initializes the designated type of this board tile. {@link BOARD_TILES} contains all
+     * Initializes the designated type of this board tile. {@link Tiles} contains all
      * possible types. Also initializes the player index to be -1.
      *
      * @param type the type of BoardTiles this tile would be
      * @throws IllegalArgumentException if the specified type is either a trap or an animal den
      *
      * @since 1.2
-     * @see BOARD_TILES
+     * @see Tiles
      */
-    public BoardTile(BOARD_TILES type) {
-        if (type == BOARD_TILES.TRAP || type == BOARD_TILES.ANIMAL_DEN)
+    public BoardTile(Tiles type) {
+        if (type == Tiles.TRAP || type == Tiles.ANIMAL_DEN)
             throw new IllegalArgumentException("The specified board tile must have a player index");
 
         this.TYPE = type;
@@ -52,15 +52,15 @@ public class BoardTile {
 
     /**
      * Initializes the designated type of this board tile and the player index.
-     * {@link BOARD_TILES} contains all possible types.
+     * {@link Tiles} contains all possible types.
      *
      * @param type the type of BoardTiles this tile would be
      * @throws IllegalArgumentException if the player index does not equal to -1, 1, or 2
      *
      * @since 1.1
-     * @see BOARD_TILES
+     * @see Tiles
      */
-    public BoardTile(BOARD_TILES type, int playerIndex) throws IllegalArgumentException {
+    public BoardTile(Tiles type, int playerIndex) throws IllegalArgumentException {
         TYPE = type;
 
         if (playerIndex == -1 || playerIndex == 1 || playerIndex == 2)
@@ -75,9 +75,9 @@ public class BoardTile {
      * @return the type of BoardTiles this tile is
      *
      * @since 1.1
-     * @see BOARD_TILES
+     * @see Tiles
      */
-    public BOARD_TILES getType() {
+    public Tiles getType() {
         return TYPE;
     }
 
@@ -98,7 +98,7 @@ public class BoardTile {
      * @return the type and player index of the tile
      *
      * @since 1.5
-     * @see BOARD_TILES
+     * @see Tiles
      */
     @Override
     public String toString() {
@@ -111,7 +111,7 @@ public class BoardTile {
      * @return true if the fields of the objects are the same, false otherwise
      *
      * @since 1.11
-     * @see BOARD_TILES
+     * @see Tiles
      */
     @Override
     public boolean equals(Object obj) {

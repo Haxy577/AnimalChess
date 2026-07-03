@@ -7,6 +7,6 @@ package Resources;
  * @version 1.8 6/17/2026
  * @since 1.8
  */
-public enum DIRECTION {
+public enum Direction {
     UP,DOWN,LEFT,RIGHT
 }
