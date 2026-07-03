@@ -16,7 +16,7 @@ import AnimalPieces.AnimalPiece;
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.6 6/11/2026
+ * @version 1.11 7/3/2026
  * @since 1.1
  */
 public class BoardCell {
@@ -171,8 +171,29 @@ public class BoardCell {
      */
     @Override
     public String toString() {
-        if (this.piece == null)
-            return "(r=" + this.row + ",c=" + this.col + ")," + this.tile.toString() + ",Piece=null";
-        return "(r=" + this.row + ",c=" + this.col + ")," + this.tile.toString() + "," + this.piece.toString();
+        return "Cell[row=" + row + ",col=" + col + "," + ((piece == null) ? "Piece[null]" : piece.toString()) + "," + tile.toString() + "]";
+    }
+
+    /**
+     * Compares the specified object with the current object based on its animal piece, board tile, row, and column it has
+     * @param obj   the reference object with which to compare.
+     * @return true if the fields of the objects are the same, false otherwise
+     *
+     * @since 1.11
+     * @see AnimalPiece
+     * @see BoardTile
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BoardCell target))
+            return false;
+
+        if (piece == null ^ target.getPiece() == null)
+            return false;
+
+        if (piece == null && target.getPiece() == null)
+            return tile.equals(target.getTile()) && row == target.getRow() && col == target.getCol();
+
+        return piece.equals(target.getPiece()) && tile.equals(target.getTile()) && row == target.getRow() && col == target.getCol();
     }
 }

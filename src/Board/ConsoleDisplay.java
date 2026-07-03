@@ -1,17 +1,14 @@
-package Display;
+package Board;
 
-import Board.BoardCell;
-import Board.BoardTile;
 import AnimalPieces.AnimalPiece;
 import Resources.BOARD_TILES;
-import Resources.ANIMALS;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
  * Features dynamic, clash-free player colors for both pieces and Dens.
  *
  * @author Zachary Tan
- * @version 2.0 6/28/2026
+ * @version 3 7/03/2026
  */
 public class ConsoleDisplay {
 
@@ -25,8 +22,7 @@ public class ConsoleDisplay {
     private static final String BG_TRAP = "\u001B[100m";   // Dark Grey
 
     /**
-     * Enum restricting player color choices to prevent clashing with 
-     * the board's green land, blue river, and grey traps.
+     * Enum restricting player color choices to prevent clashing.
      */
     public enum PlayerColor {
         RED("\u001B[1;31m", "\u001B[41m"),
@@ -48,9 +44,6 @@ public class ConsoleDisplay {
     private static PlayerColor p1Color = PlayerColor.RED;
     private static PlayerColor p2Color = PlayerColor.MAGENTA;
 
-    /**
-     * Allows the main game loop to assign custom colors to each player.
-     */
     public static void setPlayerColors(PlayerColor p1, PlayerColor p2) {
         if (p1 == p2) {
             System.out.println("Warning: Both players selected " + p1.name() + "!");
@@ -72,13 +65,13 @@ public class ConsoleDisplay {
         int cols = gameBoard[0].length;
 
         System.out.println("\n=== ANIMAL CHESS ===");
-        
-        // Print Column Headers
+
+        // Print Column Headers (Aligned to 4 characters per column)
         System.out.print("   ");
         for (int c = 0; c < cols; c++) {
-            System.out.print(HEADER_TEXT + "  " + c + "  " + RESET);
+            System.out.print(HEADER_TEXT + "  " + c + " " + RESET);
         }
-        System.out.println("\n   " + "-----".repeat(cols));
+        System.out.println("\n   " + "----".repeat(cols));
 
         // Print Grid Rows
         for (int r = 0; r < rows; r++) {
@@ -87,66 +80,58 @@ public class ConsoleDisplay {
             for (int c = 0; c < cols; c++) {
                 System.out.print(getFormattedCell(gameBoard[r][c]));
             }
-            
+
             System.out.println(RESET);
         }
-        System.out.println("   " + "-----".repeat(cols) + "\n");
+        System.out.println("   " + "----".repeat(cols) + "\n");
     }
 
     /**
-     * Formats an individual cell block using the player's chosen colors 
-     * and the specific piece/terrain data.
+     * Formats an individual cell block. Standardized to exactly 4 characters wide.
      */
     private static String getFormattedCell(BoardCell cell) {
         BoardTile tile = cell.getTile();
         AnimalPiece piece = cell.getPiece();
-        
-        String backgroundCode = BG_LAND;
-        String contentText = " . "; 
 
-        // 1. Identify Terrain and Apply Background Color
+        String backgroundCode = BG_LAND;
+        String contentText = "  . "; // 4 chars
+
         if (tile != null) {
-            BOARD_TILES tileType = tile.getTYPE();
+            BOARD_TILES tileType = tile.getType();
             if (tileType == BOARD_TILES.RIVER) {
                 backgroundCode = BG_RIVER;
-                contentText = " ~ ";
+                contentText = "  ~ "; // 4 chars
             } else if (tileType == BOARD_TILES.TRAP) {
                 backgroundCode = BG_TRAP;
-                contentText = " x ";
+                contentText = "  x "; // 4 chars
             } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
-                // Den background matches the owner's chosen color
-                backgroundCode = (tile.getPLAYER_INDEX() == 1) ? p1Color.bgCode : p2Color.bgCode;
-                contentText = "Ω" + tile.getPLAYER_INDEX() + " ";
+                backgroundCode = (tile.getPlayerIndex() == 1) ? p1Color.bgCode : p2Color.bgCode;
+                contentText = " Ω" + tile.getPlayerIndex() + " "; // 4 chars
             }
         }
 
-        // 2. Overlay Animal Piece (Using the classes you shared)
         if (piece != null) {
             String textStyle = (piece.getPlayerIndex() == 1) ? p1Color.textCode : p2Color.textCode;
-            String symbol = getAnimalSymbol(piece.getAnimal());
-            
-            return backgroundCode + textStyle + " " + symbol + piece.getPlayerIndex() + " " + RESET;
+            String symbol = getAnimalSymbol(piece.getRank());
+
+            return backgroundCode + textStyle + " " + symbol + piece.getPlayerIndex() + " " + RESET; // 4 chars
         }
 
         return backgroundCode + contentText + RESET;
     }
 
-    /**
-     * Maps the ANIMALS enum to its single-character representation.
-     */
-    private static String getAnimalSymbol(ANIMALS animal) {
-        if (animal == null) return "?";
-        
-        switch (animal) {
-            case MOUSE:    return "M";
-            case CAT:      return "C";
-            case WOLF:     return "W";
-            case DOG:      return "D";
-            case LEOPARD:  return "L";
-            case TIGER:    return "T";
-            case LION:     return "I"; // 'I' avoids conflict with Leopard
-            case ELEPHANT: return "E";
-            default:       return "?";
-        }
+    private static String getAnimalSymbol(int rank) {
+
+        return switch (rank) {
+            case 1 -> "M";
+            case 2 -> "C";
+            case 3 -> "W";
+            case 4 -> "D";
+            case 5 -> "L";
+            case 6 -> "T";
+            case 7 -> "I";
+            case 8 -> "E";
+            default -> "?";
+        };
     }
 }

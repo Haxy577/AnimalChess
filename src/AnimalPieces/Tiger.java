@@ -3,48 +3,45 @@ package AnimalPieces;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.ANIMALS;
 import Resources.BOARD_TILES;
 import Resources.DIRECTION;
 
 /**
  * Represents the "Tiger" piece in the game Animal Chess.
  * <p>
- * This piece has the ANIMAL type of TIGER with the rank of 6.
+ * This piece has the rank of 6.
  * It also has an immutable playerIndex field which represents which player
  * has control over this piece.
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
- * @see ANIMALS
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.8 6/17/2026
+ * @version 1.11 7/4/2026
  * @since 1.1
  */
 public class Tiger extends AnimalPiece{
 
     /**
-     * Creates an animal piece with the animal type of TIGER with rank 6, and the index
+     * Creates an animal piece with the rank of 6, and the index
      * of the player that has control of this piece.
      *
      * @param playerIndex the index of the player controlling this animal piece
      *
      * @since 1.1
-     * @see ANIMALS
      * @see AnimalPiece
      */
     public Tiger(int playerIndex) {
-        super(ANIMALS.TIGER, playerIndex);
+        super(6, playerIndex);
     }
 
     /**
-     * Returns the specific board cell that the piece can move on to.
+     * Returns the specific board cell that the piece can move on to within the specified path.
      *
      * @param source the piece that is requesting to move
-     * @param gameBoard the array of board cells that represents the playing board
-     * @param direction one of the cardinal direction that the piece is moving towards
+     * @param path the path of the moving piece based on the direction
+     * @throws IllegalArgumentException if the provided source is null or does not contain this object
      * @return the BoardCell the piece can move to occupy. Returns {@code null} if there is no valid cell
      * the piece can move towards
      *
@@ -55,10 +52,19 @@ public class Tiger extends AnimalPiece{
      * @see #isMoveValid(BoardCell, BoardCell)
      */
     @Override
-    protected BoardCell canMoveTo(BoardCell source, BoardCell[][] gameBoard, DIRECTION direction) {
-        BoardCell[] path = getDirectionalPath(source, gameBoard, direction);
+    public BoardCell canMoveTo(BoardCell source, BoardCell[] path) throws IllegalArgumentException {
+        if (source == null)
+            throw new IllegalArgumentException("Invalid argument. The specified source cannot be null");
+        if (!this.equals(source.getPiece()))
+            throw new IllegalArgumentException("Invalid argument. The specified source does not contain this object");
 
-        BoardCell target = (path[0].getTile().getTYPE() == BOARD_TILES.RIVER) ? canJumpTo(path) : path[0];
+        if (path == null || path.length == 0)
+            return null;
+
+        BoardCell target = path[0];
+
+        if (target.getTile().getType() == BOARD_TILES.RIVER)
+            target = canJumpTo(path);
 
         return (isMoveValid(source, target)) ? target : null;
     }
@@ -81,13 +87,15 @@ public class Tiger extends AnimalPiece{
      */
     private BoardCell canJumpTo(BoardCell[] path) {
         BoardCell target = null;
-        for (BoardCell boardCell : path) {
-            target = boardCell;
+        for (int i = 0; i < path.length; i++) {
+            target = path[i];
 
-            if (target.getTile().getTYPE() == BOARD_TILES.RIVER && target.getPiece() != null)
+            if (target.getTile().getType() == BOARD_TILES.RIVER && target.getPiece() != null)
                 return null;
-            if (target.getTile().getTYPE() != BOARD_TILES.RIVER)
+            if (target.getTile().getType() != BOARD_TILES.RIVER)
                 break;
+            if (i == path.length - 1)
+                return null;
         }
 
         return target;
@@ -96,13 +104,13 @@ public class Tiger extends AnimalPiece{
     /**
      * Determines whether the movement is valid given it meets the following conditions:
      * <ol>
-     * <li>The boardCells must be instantiated</li>
+     * <li>The parameters must be instantiated</li>
      * <li>The piece that is requesting to move must be instantiated</li>
      * <li>A piece cannot move to a river tile</li>
      * <li>A piece cannot move to its own den</li>
      * <li>A piece can always move to a cell that is empty/does not contain a piece</li>
-     * <li>A piece cannot move to capture a piece that is controlled by the
-     * same player</li>
+     * <li>A piece cannot move to capture a piece that is controlled by the same player</li>
+     * <li>A piece can always move to its own trap tile</li>
      * <li>A piece cannot move to capture an opponent's piece with a higher rank than its own rank</li>
      * </ol>
      *
@@ -113,7 +121,6 @@ public class Tiger extends AnimalPiece{
      * not exist nor can move to that destination.
      *
      * @since 1.8
-     * @see ANIMALS
      * @see BOARD_TILES
      * @see GameBoard
      */
@@ -129,11 +136,11 @@ public class Tiger extends AnimalPiece{
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile targetTile = destination.getTile();
 
-        if (targetTile.getTYPE() == BOARD_TILES.RIVER)
+        if (targetTile.getType() == BOARD_TILES.RIVER)
             return false;
 
-        if (targetTile.getTYPE() == BOARD_TILES.ANIMAL_DEN &&
-                targetTile.getPLAYER_INDEX() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == BOARD_TILES.ANIMAL_DEN &&
+                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
         if (targetPiece == null)
@@ -141,6 +148,9 @@ public class Tiger extends AnimalPiece{
 
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
+
+        if (targetTile.getType() == BOARD_TILES.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+            return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();
     }

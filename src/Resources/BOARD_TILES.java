@@ -4,22 +4,22 @@ package Resources;
  * Represents all the possible tile/square in the board in the game "Animal Chess"
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.6 6/11/2026
+ * @version 1.11 7/4/2026
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
 public enum BOARD_TILES {
 
-    LAND(0, 'L'),
-    RIVER(1, 'R'),
-    TRAP(2, 'T'),
-    ANIMAL_DEN(3, 'A');
+    LAND,
+    RIVER,
+    TRAP,
+    ANIMAL_DEN;
 
-    public final int tileNumber;
-    public final char patternChar;
+    public boolean isLandBased() {
+        return this == LAND || this == TRAP || this == ANIMAL_DEN;
+    }
 
-    BOARD_TILES(int tileNumber, char patternChar) {
-        this.tileNumber = tileNumber;
-        this.patternChar = patternChar;
+    public boolean isWaterBased() {
+        return this == RIVER;
     }
 }

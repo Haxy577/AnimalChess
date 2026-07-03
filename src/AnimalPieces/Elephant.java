@@ -3,45 +3,42 @@ package AnimalPieces;
 import Board.BoardCell;
 import Board.BoardTile;
 import Board.GameBoard;
-import Resources.ANIMALS;
 import Resources.BOARD_TILES;
 
 /**
  * Represents the "Elephant" piece in the game Animal Chess.
  * <p>
- * This piece has the ANIMAL type of ELEPHANT with the rank of 8.
+ * This piece has the rank of 8.
  * It also has an immutable playerIndex field which represents which player
  * has control over this piece.
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
- * @see ANIMALS
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.8 6/17/2026
+ * @version 1.8 7/4/2026
  * @since 1.1
  */
 public class Elephant extends AnimalPiece{
 
     /**
-     * Creates an animal piece with the animal type of ELEPHANT with rank 8, and the index
+     * Creates an animal piece with the rank of 8, and the index
      * of the player that has control of this piece.
      *
      * @param playerIndex the index of the player controlling this animal piece
      *
      * @since 1.1
-     * @see ANIMALS
      * @see AnimalPiece
      */
     public Elephant(int playerIndex) {
-        super(ANIMALS.ELEPHANT, playerIndex);
+        super(8, playerIndex);
     }
 
     /**
      * Determines whether the movement is valid given it meets the following conditions:
      * <ol>
-     * <li>The boardCells must be instantiated</li>
+     * <li>The parameters must be instantiated</li>
      * <li>The piece that is requesting to move must be instantiated</li>
      * <li>A piece can only move 1 space either horizontally or vertically</li>
      * <li>A piece cannot move to a river tile</li>
@@ -60,7 +57,6 @@ public class Elephant extends AnimalPiece{
      * not exist nor can move to that destination.
      *
      * @since 1.8
-     * @see ANIMALS
      * @see BOARD_TILES
      * @see GameBoard
      */
@@ -81,11 +77,11 @@ public class Elephant extends AnimalPiece{
         if (distance != 1)
             return false;
 
-        if (targetTile.getTYPE() == BOARD_TILES.RIVER)
+        if (targetTile.getType() == BOARD_TILES.RIVER)
             return false;
 
-        if (targetTile.getTYPE() == BOARD_TILES.ANIMAL_DEN &&
-                targetTile.getPLAYER_INDEX() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == BOARD_TILES.ANIMAL_DEN &&
+                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
         if (targetPiece == null)
@@ -94,6 +90,6 @@ public class Elephant extends AnimalPiece{
         if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
             return false;
 
-        return targetPiece.getAnimal() != ANIMALS.MOUSE && targetPiece.getRank() <= movingPiece.getRank();
+        return !(targetPiece instanceof Mouse) && targetPiece.getRank() <= movingPiece.getRank();
     }
 }

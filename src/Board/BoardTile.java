@@ -10,7 +10,7 @@ import Resources.BOARD_TILES;
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.8 6/17/2026
+ * @version 1.11 7/1/2026
  * @since 1.1
  */
 public class BoardTile {
@@ -37,11 +37,15 @@ public class BoardTile {
      * possible types. Also initializes the player index to be -1.
      *
      * @param type the type of BoardTiles this tile would be
+     * @throws IllegalArgumentException if the specified type is either a trap or an animal den
      *
      * @since 1.2
      * @see BOARD_TILES
      */
     public BoardTile(BOARD_TILES type) {
+        if (type == BOARD_TILES.TRAP || type == BOARD_TILES.ANIMAL_DEN)
+            throw new IllegalArgumentException("The specified board tile must have a player index");
+
         this.TYPE = type;
         this.PLAYER_INDEX = -1;
     }
@@ -57,10 +61,10 @@ public class BoardTile {
      * @see BOARD_TILES
      */
     public BoardTile(BOARD_TILES type, int playerIndex) throws IllegalArgumentException {
-        this.TYPE = type;
+        TYPE = type;
 
         if (playerIndex == -1 || playerIndex == 1 || playerIndex == 2)
-            this.PLAYER_INDEX = playerIndex;
+            PLAYER_INDEX = playerIndex;
         else
             throw new IllegalArgumentException("Invalid player index. Can only be: -1, 1, or 2");
     }
@@ -73,8 +77,8 @@ public class BoardTile {
      * @since 1.1
      * @see BOARD_TILES
      */
-    public BOARD_TILES getTYPE() {
-        return this.TYPE;
+    public BOARD_TILES getType() {
+        return TYPE;
     }
 
     /**
@@ -84,8 +88,8 @@ public class BoardTile {
      *
      * @since 1.1
      */
-    public int getPLAYER_INDEX() {
-        return this.PLAYER_INDEX;
+    public int getPlayerIndex() {
+        return PLAYER_INDEX;
     }
 
     /**
@@ -98,6 +102,22 @@ public class BoardTile {
      */
     @Override
     public String toString() {
-        return "Tile=" + this.TYPE + "(" + this.PLAYER_INDEX + ")";
+        return "Tile[type=" + TYPE + ",player=" + PLAYER_INDEX + "]";
+    }
+
+    /**
+     * Compares the specified object with the current object based on its type and player index it has
+     * @param obj   the reference object with which to compare.
+     * @return true if the fields of the objects are the same, false otherwise
+     *
+     * @since 1.11
+     * @see BOARD_TILES
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BoardTile target))
+            return false;
+
+        return target.getType() == TYPE && target.getPlayerIndex() == PLAYER_INDEX;
     }
 }

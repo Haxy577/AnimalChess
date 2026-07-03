@@ -1,7 +1,6 @@
 package Board;
 
 import AnimalPieces.*;
-import Resources.ANIMALS;
 import Resources.BOARD_TILES;
 
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.7 6/14/2026
+ * @version 1.11 7/2/2026
  * @since 1.1
  */
 public class GameBoard {
@@ -24,7 +23,7 @@ public class GameBoard {
      *
      * @since 1.1
      */
-    public final int boardRows;
+    private final int ROWS;
 
     /**
      * the number of columns the gameboard has. This field cannot be changed
@@ -32,7 +31,7 @@ public class GameBoard {
      *
      * @since 1.1
      */
-    public final int boardColumns;
+    private final int COLUMNS;
 
     /**
      * Represents the playing field of the game. This is a 2-dimensional array of BoardCell.
@@ -41,7 +40,16 @@ public class GameBoard {
      * @since 1.1
      * @see BoardCell
      */
-    public final BoardCell[][] gameBoard;
+    private final BoardCell[][] gameBoard;
+
+    /**
+     * Represents a gameboard pattern that has 9 rows, 7 columns, and the default layout of the game Animal Chess
+     * in a vertical form
+     *
+     * @since 1.11
+     * @see #initialize(String) 
+     */
+    private static final String DEFAULT_PATTERN = "2LTaT5LT11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
 
     /**
      * Tracks all the possible moves a player can make in a single turn. The key consists
@@ -50,25 +58,43 @@ public class GameBoard {
      *
      * @since 1.1
      * @see BoardCell
-     * @see #getAllPlayerMoves(int)
+     * @see #getAllPlayerMoves(int) 
      */
     Map<BoardCell, List<BoardCell>> allPlayerMoves;
 
     /**
-     * Sets the dimensions of the board and initializes the array for the gameBoard
+     * Constructs the gameboard array with the specified row, columns, and the layout ot each tile and piece within
+     * the gameboard
      *
-     * @since 1.1
+     * @param row the amount of rows the board will have
+     * @param column the amount of columns every row would have
+     * @param pattern the layout of tiles and pieces
+     *
+     * @since 1.11
      * @see BoardCell
+     * @see #initialize(String)
      */
-    public GameBoard() {
-        this.boardRows = 7;
-        this.boardColumns = 9;
-        this.gameBoard = new BoardCell[boardRows][boardColumns];
+    public GameBoard(int row, int column, String pattern) {
+        ROWS = row;
+        COLUMNS = column;
+        gameBoard = new BoardCell[row][column];
+        initialize(pattern);
     }
 
     /**
-     * Sets the dimensions of the game board and initializes the gameboard in accordance
-     * to the given pattern
+     * Constructs a gameboard that has 9 rows and 7 columns with a default layout of the game Animal Chess represented
+     * in a vertical orientation
+     *
+     * @since 1.1
+     * @see BoardCell
+     * @see #DEFAULT_PATTERN
+     */
+    public GameBoard() {
+        this(9, 7, DEFAULT_PATTERN);
+    }
+
+    /**
+     * Constructs a gameboard that has 9 rows and 7 columns with a custom board layout based on the pattern
      *
      * @param pattern the board tile and piece layout of the gameboard
      *
@@ -76,8 +102,38 @@ public class GameBoard {
      * @see #initialize(String)
      */
     public GameBoard(String pattern) {
-        this();
-        initialize(pattern);
+        this(9, 7, pattern);
+    }
+
+    /**
+     * Converts the gameBoard field of this class into a string
+     *
+     * @return the string representation of the gameBoard field
+     *
+     * @since 1.11
+     * @see BoardCell
+     */
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder("GameBoard{");
+
+        for (int i = 0; i < ROWS; i++) {
+            if (i > 0)
+                string.append(',');
+
+            string.append('{');
+
+            for (int j = 0; j < COLUMNS; j++) {
+                if (j > 0)
+                    string.append(',');
+
+                string.append(gameBoard[i][j].toString());
+            }
+            string.append('}');
+        }
+        string.append('}');
+
+        return string.toString();
     }
 
     /**
@@ -85,14 +141,18 @@ public class GameBoard {
      * in a list
      *
      * @param playerIndex the player index of the player that currently has the turn
+     * @throws IllegalArgumentException if the specified player index is not 1 or 2
      * @return all the available pieces of a player
      *
      * @since 1.1
+     * @see BoardCell
      */
-    private List<BoardCell> getAllPlayerPieces(int playerIndex) {
+    private List<BoardCell> getAllPlayerPieces(int playerIndex) throws IllegalArgumentException {
+        if (playerIndex < 1 || playerIndex > 2) throw new IllegalArgumentException("The player index can only be either 1 or 2");
+
         List<BoardCell> allPieces = new ArrayList<>();
 
-        for (BoardCell[] row : this.gameBoard) {
+        for (BoardCell[] row : gameBoard) {
             for (BoardCell column : row) {
                 if (column.getPiece() == null)
                     continue;
@@ -109,17 +169,20 @@ public class GameBoard {
      * Gets all the available moves of a player within a single turn
      *
      * @param playerIndex the player index of the player that currently has the turn
+     * @throws IllegalArgumentException if the specified player index is not 1 or 2
      * @return a map that contains each piece as the key and the available moves of each piece
      * as the values
      *
      * @since 1.1
      */
-    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(int playerIndex) {
+    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(int playerIndex) throws IllegalArgumentException {
+        if (playerIndex < 1 || playerIndex > 2) throw new IllegalArgumentException("The player index can only be either 1 or 2");
+
         HashMap<BoardCell, List<BoardCell>> allMoves = new HashMap<>();
         List<BoardCell> allPieces = getAllPlayerPieces(playerIndex);
 
         for (BoardCell cell : allPieces) {
-            allMoves.put(cell, cell.getPiece().getAllMoves(cell, this.gameBoard));
+            allMoves.put(cell, cell.getPiece().getAllMoves(cell, gameBoard));
         }
 
         return allMoves;
@@ -141,17 +204,29 @@ public class GameBoard {
      * The letter suffix dictates the animal type, and its casing determines player ownership (UPPERCASE = Player 1, lowercase = Player 2).
      * </p>
      * </p>
-     * <strong>Default pattern</strong>: {@code "12L3R3LT2L3R2LTAT5LTaT2L3R2LT3L3R12L|G1E3m1n1C5d3W3p13P3W3D5c1N1M3e1g"}
+     *
+     * @param pattern a series of tokens that represents the layout of each tile and piece within the gameboard
      *
      * @since 1.7
+     * @see #validateBoardPattern(String)
+     * @see #validatePiecePattern(String)
      * @see #parseBoardPattern(String)
      * @see #parsePiecePattern(String)
      */
     public void initialize(String pattern) {
         try {
-            String parsedPattern = pattern.substring(0, pattern.indexOf('|'));
-            String boardPattern = (parsedPattern.matches("(\\d*[LRTAa])+")) ? parsedPattern : pattern.substring(pattern.indexOf('|') + 1);
-            String piecePattern = (parsedPattern.matches("(\\d*[MmCcWwDdPpNnGgEe])+")) ? parsedPattern : pattern.substring(pattern.indexOf('|') + 1);
+            if (pattern == null)
+                throw new IllegalArgumentException("Invalid pattern. The pattern cannot be null");
+
+            String cleanPattern = pattern.replaceAll("\\s", "");
+            String parsedPattern = cleanPattern.substring(0, cleanPattern.indexOf('|'));
+            String boardPattern = (parsedPattern.matches("(\\d*[LRTtAa])+")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
+            String piecePattern;
+
+            if (boardPattern.length() == cleanPattern.length() + 1)
+                piecePattern = "";
+            else
+                piecePattern = (parsedPattern.matches("(\\d*[MmCcWwDdPpNnGgEe])*")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
 
             validateBoardPattern(boardPattern);
             validatePiecePattern(piecePattern);
@@ -170,7 +245,7 @@ public class GameBoard {
      * Checks whether the given pattern dedicated for board tiles is valid. Its validity is based on the following conditions:
      * <ol>
      * <li>The pattern is not null</li>
-     * <li>Follows the regex tokens format: "(\d*[LRTAa])+" -> An optional digit followed by a required character</li>
+     * <li>Follows the regex tokens format: "(\d*[LRTtAa])+" -> An optional digit followed by a required character</li>
      * <li>The total size of the pattern must be the same as the dimensions of the gameBoard array</li>
      * <li>There must be at least 1 character that represents each player's den respectively</li>
      * </ol>
@@ -180,17 +255,19 @@ public class GameBoard {
      * an animal den tile is missing.
      *
      * @since 1.7
+     * @see BoardTile
+     * @see #parseTokens(String)
      */
     private void validateBoardPattern(String pattern) throws IllegalArgumentException {
         if (pattern == null)
             throw new IllegalArgumentException("Invalid board pattern. The pattern cannot be null");
 
-        if (!pattern.matches("(\\d*[LRTAa])+"))
-            throw new IllegalArgumentException("Invalid board pattern structure. The pattern must only consists of digits and a character [LRTAa]");
+        if (!pattern.matches("(\\d*[LRTtAa])+"))
+            throw new IllegalArgumentException("Invalid board pattern structure. The pattern must only consists of digits and a character [LRTtAa]");
 
         List<String> tokens = parseTokens(pattern);
         int totalTiles = 0;
-        int maxTiles = this.boardRows * this.boardColumns;
+        int maxTiles = ROWS * COLUMNS;
         int player1DenCount = 0;
         int player2DenCount = 0;
 
@@ -220,7 +297,7 @@ public class GameBoard {
      * Checks whether the given pattern dedicated for animal pieces is valid. Its validity is based on the following conditions:
      * <ol>
      * <li>The pattern is not null</li>
-     * <li>Follows the regex tokens format: "(\d*[MmCcWwDdPpNnGgEe])+" -> An optional digit followed by a required character</li>
+     * <li>Follows the regex tokens format: "(\d*[MmCcWwDdPpNnGgEe])*" -> An optional digit followed by a required character</li>
      * <li>The total size of the pattern must be at most the dimensions of the gameBoard array</li>
      * </ol>
      *
@@ -228,17 +305,19 @@ public class GameBoard {
      * @throws IllegalArgumentException if the given pattern is invalid
      *
      * @since 1.7
+     * @see AnimalPiece
+     * @see #parseTokens(String)
      */
     private void validatePiecePattern(String pattern) throws IllegalArgumentException {
         if (pattern == null)
             throw new IllegalArgumentException("Invalid board pattern. The pattern cannot be null");
 
-        if (!pattern.matches("(\\d*[MmCcWwDdPpNnGgEe])+"))
+        if (!pattern.matches("(\\d*[MmCcWwDdPpNnGgEe])*"))
             throw new IllegalArgumentException("Invalid piece pattern structure. The pattern must only consists of digits and a character [MmCcWwDdPpNnGgEe]");
 
         List<String> tokens = parseTokens(pattern);
         int totalCell = 0;
-        int maxCells = this.boardRows * this.boardColumns;
+        int maxCells = ROWS * COLUMNS;
 
         for (String token : tokens) {
             int number = (token.length() == 1) ? 1 : Integer.parseInt(token.substring(0, token.length() - 1));
@@ -264,7 +343,7 @@ public class GameBoard {
      * <ul>
      * <li>'L' = Land</li>
      * <li>'R' = River</li>
-     * <li>'T' = Trap</li>
+     * <li>'T|t' = Trap</li>
      * <li>'A|a' = Animal den</li>
      * </ul>
      * <strong>Example</strong>
@@ -277,6 +356,7 @@ public class GameBoard {
      * @since 1.7
      * @see BoardTile
      * @see BOARD_TILES
+     * @see #parseTokens(String)
      */
     private void parseBoardPattern(String pattern) {
         List<String> tokens = parseTokens(pattern);
@@ -287,21 +367,22 @@ public class GameBoard {
             int number = (token.length() == 1) ? 1 : Integer.parseInt(token.substring(0, token.length() - 1));
 
             for (int i = 0; i < number; i++) {
-                int row = boardIndex / this.boardColumns;
-                int col = boardIndex % this.boardColumns;
+                int row = boardIndex / COLUMNS;
+                int col = boardIndex % COLUMNS;
 
                 BoardTile tile = switch (tileChar) {
                     case 'L' -> new BoardTile(BOARD_TILES.LAND);
                     case 'R' -> new BoardTile(BOARD_TILES.RIVER);
-                    case 'T' -> new BoardTile(BOARD_TILES.TRAP);
+                    case 'T' -> new BoardTile(BOARD_TILES.TRAP, 1);
+                    case 't' -> new BoardTile(BOARD_TILES.TRAP, 2);
                     case 'A' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 1);
                     case 'a' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 2);
                     default -> {
-                        throw new IllegalArgumentException("Invalid tile character. Expected: [LRTAa], Actual: " + tileChar);
+                        throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
                     }
                 };
 
-                this.gameBoard[row][col] = new BoardCell(tile, row, col);
+                gameBoard[row][col] = new BoardCell(tile, row, col);
                 boardIndex++;
             }
         }
@@ -338,7 +419,7 @@ public class GameBoard {
      *
      * @since 1.7
      * @see AnimalPiece
-     * @see ANIMALS
+     * @see #parseTokens(String)
      */
     private void parsePiecePattern(String pattern) throws IllegalArgumentException {
         List<String> tokens = parseTokens(pattern);
@@ -350,8 +431,8 @@ public class GameBoard {
             int playerIndex = (Character.isUpperCase(tileChar)) ? 1 : 2;
 
             boardIndex += distance;
-            int row = boardIndex / this.boardColumns;
-            int col = boardIndex % this.boardColumns;
+            int row = boardIndex / COLUMNS;
+            int col = boardIndex % COLUMNS;
             AnimalPiece piece = switch (tileChar) {
                 case 'M','m' -> new Mouse(playerIndex);
                 case 'C','c' -> new Cat(playerIndex);
@@ -366,7 +447,7 @@ public class GameBoard {
                 }
             };
 
-            this.gameBoard[row][col].setPiece(piece);
+            gameBoard[row][col].setPiece(piece);
             boardIndex++;
         }
     }
@@ -375,7 +456,7 @@ public class GameBoard {
      * Splits a pattern into tokens where each token contains an optional number prefix and a mandatory letter suffix
      *
      * @param pattern the pattern to parse into tokens
-     * @throws IllegalArgumentException if the pattern does not contain the mandatory letter suffix
+     * @throws IllegalArgumentException if the pattern does not contain the mandatory letter suffix or its null
      * @return the list of parsed tokens
      *
      * @since 1.7
@@ -385,8 +466,14 @@ public class GameBoard {
         int start = 0;
         int end = 0;
 
+        if (pattern == null)
+            throw new IllegalArgumentException("Invalid pattern. The specified pattern must not be null");
+
+        if (pattern.isBlank())
+            return tokens;
+
         if (Character.isDigit(pattern.charAt(pattern.length() - 1))) {
-            throw new IllegalArgumentException("Invalid pattern: The end of the pattern must be a letter");
+            throw new IllegalArgumentException("Invalid pattern. The end of the pattern must be a letter");
         }
 
         while(end < pattern.length()) {
@@ -452,31 +539,31 @@ public class GameBoard {
      *
      * @since 1.7
      * @see AnimalPiece
-     * @see ANIMALS
      */
     private String toPiecePattern() {
-        int maxCapacity = this.boardRows * this.boardColumns;
+        int maxCapacity = ROWS * COLUMNS;
         StringBuilder pattern = new StringBuilder(maxCapacity);
         AnimalPiece piece;
         int distance = 0;
         char pieceChar;
 
-        for (BoardCell[] row : this.gameBoard) {
+        for (BoardCell[] row : gameBoard) {
             for (BoardCell col : row) {
                 piece = col.getPiece();
 
                 if (piece == null)
                     distance++;
                 else {
-                    pieceChar = switch (piece.getAnimal()) {
-                        case MOUSE -> 'M';
-                        case CAT -> 'C';
-                        case WOLF -> 'W';
-                        case DOG -> 'D';
-                        case LEOPARD -> 'P';
-                        case TIGER -> 'G';
-                        case LION -> 'N';
-                        case ELEPHANT -> 'E';
+                    pieceChar = switch (piece.getRank()) {
+                        case 1 -> 'M';
+                        case 2 -> 'C';
+                        case 3 -> 'W';
+                        case 4 -> 'D';
+                        case 5 -> 'P';
+                        case 6 -> 'G';
+                        case 7 -> 'N';
+                        case 8 -> 'E';
+                        default -> '?';
                     };
 
                     pieceChar = (piece.getPlayerIndex() == 1) ? pieceChar : Character.toLowerCase(pieceChar);
@@ -506,7 +593,7 @@ public class GameBoard {
      * <ul>
      * <li>'L' = Land</li>
      * <li>'R' = River</li>
-     * <li>'T' = Trap</li>
+     * <li>'T|t' = Trap</li>
      * <li>'A|a' = Animal den</li>
      * </ul>
      *
@@ -515,13 +602,13 @@ public class GameBoard {
      * @see BOARD_TILES
      */
     private String toBoardPattern() {
-        int maxCapacity = this.boardRows * this.boardColumns;
+        int maxCapacity = ROWS * COLUMNS;
         StringBuilder pattern = new StringBuilder(maxCapacity);
         char currentTile;
-        char previousTile = getTileChar(this.gameBoard[0][0].getTile());
+        char previousTile = getTileChar(gameBoard[0][0].getTile());
         int count = 0;
 
-        for (BoardCell[] row : this.gameBoard) {
+        for (BoardCell[] row : gameBoard) {
             for (BoardCell col : row) {
                 currentTile = getTileChar(col.getTile());
 
@@ -554,7 +641,7 @@ public class GameBoard {
      * <ul>
      * <li>'L' = Land</li>
      * <li>'R' = River</li>
-     * <li>'T' = Trap</li>
+     * <li>'T|t' = Trap</li>
      * <li>'A|a' = Animal den</li>
      * </ul>
      * </p>
@@ -563,13 +650,30 @@ public class GameBoard {
      * @return the character representation of the board tile
      *
      * @since 1.7
+     * @see BOARD_TILES
      */
     private char getTileChar(BoardTile tile) {
-        return switch (tile.getTYPE()) {
+        return switch (tile.getType()) {
             case LAND -> 'L';
             case RIVER -> 'R';
-            case TRAP -> 'T';
-            case ANIMAL_DEN -> (tile.getPLAYER_INDEX() == 1) ? 'A' : 'a';
+            case TRAP -> (tile.getPlayerIndex() == 1) ? 'T' : 't';
+            case ANIMAL_DEN -> (tile.getPlayerIndex() == 1) ? 'A' : 'a';
         };
+    }
+
+    public int getColumns() {
+        return COLUMNS;
+    }
+
+    public int getROWS() {
+        return ROWS;
+    }
+
+    public BoardCell[][] getGameBoard() {
+        return gameBoard;
+    }
+
+    public BoardCell getCell(int row, int column) {
+        return gameBoard[row][column];
     }
 }
