@@ -30,9 +30,7 @@ public class GetAllMovesTest {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getAllMoves(null, gameBoard.getGameBoard());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(null, gameBoard.getGameBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -42,9 +40,7 @@ public class GetAllMovesTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getAllMoves(cell, gameBoard.getGameBoard());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -54,9 +50,7 @@ public class GetAllMovesTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getAllMoves(cell, gameBoard.getGameBoard());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -66,9 +60,7 @@ public class GetAllMovesTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 2,2);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getAllMoves(cell, gameBoard.getGameBoard());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getAllMoves(cell, gameBoard.getGameBoard()));
     }
 
     private static List<TestBuilder<BoardCell, Integer>> provideForSurroundedByEmptyLandCell() {

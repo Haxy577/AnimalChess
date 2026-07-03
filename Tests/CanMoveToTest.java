@@ -30,18 +30,14 @@ public class CanMoveToTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForIllegalArgumentTests")
     public void sourceIsNull(TestBuilder<BoardCell, Exception> test) {
-        assertThrows(test.getExpected().getClass(), () -> {
-            test.getInput().getPiece().canMoveTo(null, null);
-        });
+        assertThrows(test.getExpected().getClass(), () -> test.getInput().getPiece().canMoveTo(null, null));
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForIllegalArgumentTests")
     public void sourceDoesNotContainPiece(TestBuilder<BoardCell, Exception> test) {
         BoardCell cell = new BoardCell(test.getInput().getTile(), 0 ,0);
-        assertThrows(test.getExpected().getClass(), () -> {
-            test.getInput().getPiece().canMoveTo(cell, null);
-        });
+        assertThrows(test.getExpected().getClass(), () -> test.getInput().getPiece().canMoveTo(cell, null));
     }
 
     private static List<TestBuilder<BoardCell, BoardCell>> provideForPathIsEmpty() {

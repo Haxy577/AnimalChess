@@ -34,8 +34,8 @@ public class TestBuilder<I, E> {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        Object inputObj = (Object) input;
-        Object expectedObj = (Object) expected;
+        Object inputObj =  input;
+        Object expectedObj = expected;
 
         if (input == null) {
             string.append("null");
@@ -44,7 +44,7 @@ public class TestBuilder<I, E> {
             string.append(Arrays.toString(array));
         }
         else {
-            string.append(input.toString());
+            string.append(input);
         }
 
         string.append(",");
@@ -56,7 +56,7 @@ public class TestBuilder<I, E> {
             string.append(Arrays.toString(array));
         }
         else {
-            string.append(expected.toString());
+            string.append(expected);
         }
 
         return string.toString();

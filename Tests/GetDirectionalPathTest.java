@@ -27,9 +27,7 @@ public class GetDirectionalPathTest {
         GameBoard gameBoard = new GameBoard(5, 5, "Aa23L|12E");
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getDirectionalPath(null, gameBoard.getGameBoard(), test.getInput());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getDirectionalPath(null, gameBoard.getGameBoard(), test.getInput()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -39,9 +37,7 @@ public class GetDirectionalPathTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -51,9 +47,7 @@ public class GetDirectionalPathTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 6,6);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput()));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -63,9 +57,7 @@ public class GetDirectionalPathTest {
         BoardCell cell = new BoardCell(new BoardTile(BOARD_TILES.LAND), 2,2);
         AnimalPiece piece = gameBoard.getCell(2,2).getPiece();
 
-        assertThrows(test.getExpected().getClass(), () -> {
-            piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput());
-        });
+        assertThrows(test.getExpected().getClass(), () -> piece.getDirectionalPath(cell, gameBoard.getGameBoard(), test.getInput()));
     }
 
     private static List<TestBuilder<DIRECTION, BoardCell[]>> provideForGettingAllDirectionalPaths() {

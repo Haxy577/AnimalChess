@@ -377,9 +377,7 @@ public class GameBoard {
                     case 't' -> new BoardTile(BOARD_TILES.TRAP, 2);
                     case 'A' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 1);
                     case 'a' -> new BoardTile(BOARD_TILES.ANIMAL_DEN, 2);
-                    default -> {
-                        throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
-                    }
+                    default -> throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
                 };
 
                 gameBoard[row][col] = new BoardCell(tile, row, col);
@@ -442,9 +440,7 @@ public class GameBoard {
                 case 'N','n' -> new Lion(playerIndex);
                 case 'G','g' -> new Tiger(playerIndex);
                 case 'E','e' -> new Elephant(playerIndex);
-                default -> {
-                    throw new IllegalArgumentException("Invalid piece character. Expected: [MmCcWwDdPpNnGgEe], Actual: " + tileChar);
-                }
+                default -> throw new IllegalArgumentException("Invalid piece character. Expected: [MmCcWwDdPpNnGgEe], Actual: " + tileChar);
             };
 
             gameBoard[row][col].setPiece(piece);

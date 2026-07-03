@@ -1,10 +1,7 @@
-package Display;
+package Board;
 
-import Board.BoardCell;
-import Board.BoardTile;
 import AnimalPieces.AnimalPiece;
 import Resources.BOARD_TILES;
-import Resources.ANIMALS;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
@@ -91,7 +88,7 @@ public class ConsoleDisplay {
         String contentText = "  . "; 
 
         if (tile != null) {
-            BOARD_TILES tileType = tile.getTYPE();
+            BOARD_TILES tileType = tile.getType();
             if (tileType == BOARD_TILES.RIVER) {
                 backgroundCode = BG_RIVER;
                 contentText = "  ~ ";
@@ -99,14 +96,14 @@ public class ConsoleDisplay {
                 backgroundCode = BG_TRAP;
                 contentText = "  x ";
             } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
-                backgroundCode = (tile.getPLAYER_INDEX() == 1) ? p1Color.bgCode : p2Color.bgCode;
+                backgroundCode = (tile.getPlayerIndex() == 1) ? p1Color.bgCode : p2Color.bgCode;
                 contentText = "  Ω "; // Number suffix removed
             }
         }
 
         if (piece != null) {
             String textStyle = (piece.getPlayerIndex() == 1) ? p1Color.textCode : p2Color.textCode;
-            String symbol = getAnimalSymbol(piece.getAnimal());
+            String symbol = getAnimalSymbol(piece.getRank());
             
             // Renders: [Terrain BG] + Space Space + [Black BG Token + Colored Letter] + [Terrain BG] + Space
             return backgroundCode + "  " + BG_TOKEN + textStyle + symbol + RESET + backgroundCode + " " + RESET;
@@ -115,19 +112,18 @@ public class ConsoleDisplay {
         return backgroundCode + contentText + RESET;
     }
 
-    private static String getAnimalSymbol(ANIMALS animal) {
-        if (animal == null) return "?";
-        
-        switch (animal) {
-            case MOUSE:    return "M";
-            case CAT:      return "C";
-            case WOLF:     return "W";
-            case DOG:      return "D";
-            case LEOPARD:  return "L";
-            case TIGER:    return "T";
-            case LION:     return "I"; 
-            case ELEPHANT: return "E";
-            default:       return "?";
-        }
+    private static String getAnimalSymbol(int rank) {
+
+        return switch (rank) {
+            case 1 -> "M";
+            case 2 -> "C";
+            case 3 -> "W";
+            case 4 -> "D";
+            case 5 -> "L";
+            case 6 -> "T";
+            case 7 -> "I";
+            case 8 -> "E";
+            default -> "?";
+        };
     }
 }

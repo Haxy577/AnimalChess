@@ -1,8 +1,6 @@
 import Board.ConsoleDisplay;
 import Board.GameBoard;
 
-import java.util.Arrays;
-
 /**
  * @author Richmond Jase Von M. Salvador
  * @version 1.11, 07/1/2026
