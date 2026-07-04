@@ -1,14 +1,17 @@
-package Board;
+package Display;
 
+import Board.BoardCell;
+import Board.BoardTile;
 import AnimalPieces.AnimalPiece;
-import Resources.Tiles;
+import Resources.BOARD_TILES;
+import Resources.ANIMALS;
 
 /**
  * Handles the terminal-based graphic rendering of the Animal Chess board.
- * Features dynamic player colors and high-contrast token bases for pieces.
+ * Features dynamic player colors, token bases, rank numbers, and letter coordinates.
  *
  * @author Zachary Tan
- * @version 3 7/03/2026
+ * @version 4 7/04/2026
  */
 public class ConsoleDisplay {
 
@@ -22,7 +25,7 @@ public class ConsoleDisplay {
     private static final String BG_TOKEN = "\u001B[40m";   // Black (Piece Base)
 
     /**
-     * Upgraded to Bright (High-Intensity) text colors for maximum contrast.
+     * Bright (High-Intensity) text colors for maximum contrast.
      */
     public enum PlayerColor {
         RED("\u001B[1;91m", "\u001B[41m"),
@@ -62,12 +65,15 @@ public class ConsoleDisplay {
 
         System.out.println("\n=== ANIMAL CHESS ===");
         
+        // Print Column Headers (A, B, C...)
         System.out.print("   ");
         for (int c = 0; c < cols; c++) {
-            System.out.print(HEADER_TEXT + "  " + c + " " + RESET);
+            char colLetter = (char) ('A' + c);
+            System.out.print(HEADER_TEXT + "  " + colLetter + " " + RESET);
         }
         System.out.println("\n   " + "----".repeat(cols));
 
+        // Print Grid Rows
         for (int r = 0; r < rows; r++) {
             System.out.print(HEADER_TEXT + r + " |" + RESET);
 
@@ -88,42 +94,47 @@ public class ConsoleDisplay {
         String contentText = "  . "; 
 
         if (tile != null) {
-            Tiles tileType = tile.getType();
-            if (tileType == Tiles.RIVER) {
+            BOARD_TILES tileType = tile.getTYPE();
+            if (tileType == BOARD_TILES.RIVER) {
                 backgroundCode = BG_RIVER;
                 contentText = "  ~ ";
-            } else if (tileType == Tiles.TRAP) {
+            } else if (tileType == BOARD_TILES.TRAP) {
                 backgroundCode = BG_TRAP;
                 contentText = "  x ";
-            } else if (tileType == Tiles.ANIMAL_DEN) {
-                backgroundCode = (tile.getPlayerIndex() == 1) ? p1Color.bgCode : p2Color.bgCode;
-                contentText = "  Ω "; // Number suffix removed
+            } else if (tileType == BOARD_TILES.ANIMAL_DEN) {
+                backgroundCode = (tile.getPLAYER_INDEX() == 1) ? p1Color.bgCode : p2Color.bgCode;
+                // Replaced 'Ω' with 'D' to prevent '??' encoding errors in Windows CMD
+                contentText = "  D "; 
             }
         }
 
         if (piece != null) {
             String textStyle = (piece.getPlayerIndex() == 1) ? p1Color.textCode : p2Color.textCode;
-            String symbol = getAnimalSymbol(piece.getRank());
+            String symbol = getAnimalRank(piece.getAnimal());
             
-            // Renders: [Terrain BG] + Space Space + [Black BG Token + Colored Letter] + [Terrain BG] + Space
+            // Renders: [Terrain BG] + Space Space + [Black BG Token + Colored Rank] + [Terrain BG] + Space
             return backgroundCode + "  " + BG_TOKEN + textStyle + symbol + RESET + backgroundCode + " " + RESET;
         }
 
         return backgroundCode + contentText + RESET;
     }
 
-    private static String getAnimalSymbol(int rank) {
-
-        return switch (rank) {
-            case 1 -> "M";
-            case 2 -> "C";
-            case 3 -> "W";
-            case 4 -> "D";
-            case 5 -> "L";
-            case 6 -> "T";
-            case 7 -> "I";
-            case 8 -> "E";
-            default -> "?";
-        };
+    /**
+     * Maps the ANIMALS enum to its corresponding rank number (1-8).
+     */
+    private static String getAnimalRank(ANIMALS animal) {
+        if (animal == null) return "?";
+        
+        switch (animal) {
+            case MOUSE:    return "1";
+            case CAT:      return "2";
+            case WOLF:     return "3";
+            case DOG:      return "4";
+            case LEOPARD:  return "5";
+            case TIGER:    return "6";
+            case LION:     return "7"; 
+            case ELEPHANT: return "8";
+            default:       return "?";
+        }
     }
 }
