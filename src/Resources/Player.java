@@ -1,30 +1,55 @@
 package Resources;
 
+import AnimalPieces.AnimalPiece;
+
 public class Player {
     private final String NAME;
-    private final String ANSI_COLOR;
-    private int playerIndex;
+    private final PlayerColor ANSI_COLOR;
+    private int index;
 
-    public Player(String name, String ansiColor) {
+    public Player(String name, PlayerColor ansiColor) {
         this.NAME = name;
         this.ANSI_COLOR = ansiColor;
-        playerIndex = 0;
+        index = 0;
     }
 
-    public Player(String name, String ansiColor, int playerIndex) {
+    public Player(String name, PlayerColor ansiColor, int index) {
         this(name, ansiColor);
-        this.playerIndex = playerIndex;
+        this.index = index;
+    }
+
+    @Override
+    public String toString() {
+        return "Player[name=" + NAME + ",color=" + ANSI_COLOR + ",index=" + index + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof Player player))
+            return false;
+
+        return NAME.equals(player.getName()) && ANSI_COLOR.equals(player.getAnsiColor()) && index == player.getIndex();
     }
 
     public String getName() {
         return NAME;
     }
 
-    public String getAnsiColor() {
+    public PlayerColor getAnsiColor() {
         return ANSI_COLOR;
     }
 
-    public int getPlayerIndex() {
-        return playerIndex;
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) throws IllegalArgumentException {
+        if (index < 1 || index > 2)
+            throw new IllegalArgumentException("The index can only be either 1 or 2");
+
+        this.index = index;
     }
 }

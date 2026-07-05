@@ -94,4 +94,9 @@ public class Mouse extends AnimalPiece {
 
         return targetPiece.getRank() <= movingPiece.getRank() || targetPiece instanceof Elephant;
     }
+
+    @Override
+    public String pieceName() {
+        return "Mouse";
+    }
 }

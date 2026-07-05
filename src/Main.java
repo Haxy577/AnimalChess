@@ -1,6 +1,8 @@
 import Board.ConsoleDisplay;
 import Board.GameBoard;
 
+import java.awt.*;
+
 /**
  * @author Richmond Jase Von M. Salvador
  * @version 1.11, 07/1/2026
@@ -8,8 +10,7 @@ import Board.GameBoard;
  */
 public class Main {
     public static void main(String[] args) {
-        final boolean isConsoleDisplay = true;
-        GameBoard gameBoard = new GameBoard();
-        ConsoleDisplay.printBoard(gameBoard.getBoard());
+        GameEngine engine = new GameEngine();
+        engine.console();
     }
 }

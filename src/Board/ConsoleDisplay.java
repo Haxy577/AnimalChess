@@ -1,6 +1,7 @@
 package Board;
 
 import AnimalPieces.AnimalPiece;
+import Resources.PlayerColor;
 import Resources.Tiles;
 
 /**
@@ -21,37 +22,24 @@ public class ConsoleDisplay {
     private static final String BG_TRAP = "\u001B[100m";   // Dark Grey
     private static final String BG_TOKEN = "\u001B[40m";   // Black (Piece Base)
 
-    /**
-     * Upgraded to Bright (High-Intensity) text colors for maximum contrast.
-     */
-    public enum PlayerColor {
-        RED("\u001B[1;91m", "\u001B[41m"),
-        YELLOW("\u001B[1;93m", "\u001B[43m"),
-        MAGENTA("\u001B[1;95m", "\u001B[45m"),
-        CYAN("\u001B[1;96m", "\u001B[46m"),
-        WHITE("\u001B[1;97m", "\u001B[47m");
+    private final PlayerColor p1Color;
+    private final PlayerColor p2Color;
 
-        public final String textCode;
-        public final String bgCode;
-
-        PlayerColor(String textCode, String bgCode) {
-            this.textCode = textCode;
-            this.bgCode = bgCode;
-        }
+    public ConsoleDisplay() {
+        p1Color = PlayerColor.RED;
+        p2Color = PlayerColor.MAGENTA;
     }
 
-    private static PlayerColor p1Color = PlayerColor.RED;
-    private static PlayerColor p2Color = PlayerColor.MAGENTA;
-
-    public static void setPlayerColors(PlayerColor p1, PlayerColor p2) {
+    public ConsoleDisplay(PlayerColor p1, PlayerColor p2) {
         if (p1 == p2) {
-            System.out.println("Warning: Both players selected " + p1.name() + "!");
+            System.err.println("Warning: Both players selected " + p1.name() + "!");
         }
+
         p1Color = p1;
         p2Color = p2;
     }
 
-    public static void printBoard(BoardCell[][] gameBoard) {
+    public void printBoard(BoardCell[][] gameBoard) {
         if (gameBoard == null || gameBoard.length == 0 || gameBoard[0].length == 0) {
             System.out.println("Cannot render an empty or uninitialized game board.");
             return;
@@ -80,7 +68,7 @@ public class ConsoleDisplay {
         System.out.println("   " + "----".repeat(cols) + "\n");
     }
 
-    private static String getFormattedCell(BoardCell cell) {
+    private String getFormattedCell(BoardCell cell) {
         BoardTile tile = cell.getTile();
         AnimalPiece piece = cell.getPiece();
         
@@ -112,7 +100,7 @@ public class ConsoleDisplay {
         return backgroundCode + contentText + RESET;
     }
 
-    private static String getAnimalSymbol(int rank) {
+    private String getAnimalSymbol(int rank) {
 
         return switch (rank) {
             case 1 -> "M";

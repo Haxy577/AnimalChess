@@ -62,6 +62,8 @@ public abstract class AnimalPiece {
         this.playerIndex = playerIndex;
     }
 
+    public abstract String pieceName();
+
     /**
      * Converts the fields of this class to a string
      *
@@ -84,6 +86,9 @@ public abstract class AnimalPiece {
      */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
         if (!(obj instanceof AnimalPiece piece))
             return false;
 

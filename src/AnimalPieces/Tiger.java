@@ -154,4 +154,9 @@ public class Tiger extends AnimalPiece{
 
         return targetPiece.getRank() <= movingPiece.getRank();
     }
+
+    @Override
+    public String pieceName() {
+        return "Tiger";
+    }
 }

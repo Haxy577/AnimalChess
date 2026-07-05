@@ -12,7 +12,7 @@ import java.util.*;
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/2/2026
+ * @version 1.13 7/4/2026
  * @since 1.1
  */
 public class GameBoard {
@@ -49,18 +49,7 @@ public class GameBoard {
      * @since 1.11
      * @see #initialize(String) 
      */
-    private static final String DEFAULT_PATTERN = "2LTaT5LT11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
-
-    /**
-     * Tracks all the possible moves a player can make in a single turn. The key consists
-     * of all the pieces the player controls, and the list consists of all the possible
-     * moves these pieces can do
-     *
-     * @since 1.1
-     * @see BoardCell
-     * @see #getAllPlayerMoves(int) 
-     */
-    Map<BoardCell, List<BoardCell>> allPlayerMoves;
+    private static final String DEFAULT_PATTERN = "2Ltat5Lt11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
 
     /**
      * Constructs the gameboard array with the specified row, columns, and the layout ot each tile and piece within
@@ -657,11 +646,19 @@ public class GameBoard {
         };
     }
 
+    public void movePiece(BoardCell source, BoardCell target) {
+        if (source == null || target == null)
+            throw new IllegalArgumentException("The specified parameters must be instantiated");
+
+        target.setPiece(source.getPiece());
+        source.setPiece(null);
+    }
+
     public int getColumns() {
         return COLUMNS;
     }
 
-    public int getROWS() {
+    public int getRows() {
         return ROWS;
     }
 

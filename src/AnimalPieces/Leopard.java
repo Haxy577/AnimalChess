@@ -29,4 +29,9 @@ public class Leopard extends AnimalPiece{
     public Leopard(int playerIndex) {
         super(5, playerIndex);
     }
+
+    @Override
+    public String pieceName() {
+        return "Leopard";
+    }
 }

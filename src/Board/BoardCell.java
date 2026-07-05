@@ -1,6 +1,7 @@
 package Board;
 
 import AnimalPieces.AnimalPiece;
+import Resources.Direction;
 
 /**
  * Represents a single cell/position within the gameBoard array
@@ -43,7 +44,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private final int ROW;
+    private int ROW;
 
     /**
      * Represents the cell's column position relative to the gameBoard array
@@ -51,7 +52,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private final int COL;
+    private int COL;
 
     /**
      * Initializes the immutable values/objects of a single cell in the game board.
@@ -124,6 +125,14 @@ public class BoardCell {
         this.piece = piece;
     }
 
+    public void setRow(int row) {
+        ROW = row;
+    }
+
+    public void setCol(int column) {
+        COL = column;
+    }
+
     /**
      * Returns the set board tile of this specific cell
      *
@@ -185,6 +194,9 @@ public class BoardCell {
      */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
         if (!(obj instanceof BoardCell target))
             return false;
 
@@ -195,5 +207,24 @@ public class BoardCell {
             return TILE.equals(target.getTile()) && ROW == target.getRow() && COL == target.getCol();
 
         return piece.equals(target.getPiece()) && TILE.equals(target.getTile()) && ROW == target.getRow() && COL == target.getCol();
+    }
+
+    public Direction getDirection(BoardCell other) {
+        if (other == null)
+            return null;
+
+        int row = other.getRow();
+        int col = other.getCol();
+
+        if (ROW == row && COL == col)
+            return null;
+
+        if (ROW != row && COL != col)
+            return null;
+
+        if (ROW != row)
+            return (ROW - row > 0) ? Direction.UP : Direction.DOWN;
+        else
+            return (COL - col > 0) ? Direction.LEFT : Direction.RIGHT;
     }
 }

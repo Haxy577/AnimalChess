@@ -29,4 +29,9 @@ public class Cat extends AnimalPiece{
     public Cat(int playerIndex) {
         super(2, playerIndex);
     }
+
+    @Override
+    public String pieceName() {
+        return "Cat";
+    }
 }
