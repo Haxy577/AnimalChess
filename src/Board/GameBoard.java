@@ -49,7 +49,7 @@ public class GameBoard {
      * @since 1.11
      * @see #initialize(String) 
      */
-    private static final String DEFAULT_PATTERN = "2Ltat5Lt11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
+    public static final String DEFAULT_PATTERN = "2Ltat5Lt11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
 
     /**
      * Constructs the gameboard array with the specified row, columns, and the layout ot each tile and piece within
@@ -125,6 +125,23 @@ public class GameBoard {
         return string.toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GameBoard board) {
+            if (board.getRows() != ROWS || board.getColumns() != COLUMNS)
+                return false;
+
+            for (int i = 0; i < ROWS; i++) {
+                for (int j = 0; j < COLUMNS; j++) {
+                    if (!BOARD[i][j].equals(board.getCell(i, j)))
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Gets all the available pieces the player has and stores the position of each piece
      * in a list
@@ -136,7 +153,7 @@ public class GameBoard {
      * @since 1.1
      * @see BoardCell
      */
-    private List<BoardCell> getAllPlayerPieces(int playerIndex) throws IllegalArgumentException {
+    public List<BoardCell> getAllPlayerPieces(int playerIndex) throws IllegalArgumentException {
         if (playerIndex < 1 || playerIndex > 2) throw new IllegalArgumentException("The player index can only be either 1 or 2");
 
         List<BoardCell> allPieces = new ArrayList<>();
@@ -195,6 +212,8 @@ public class GameBoard {
      * </p>
      *
      * @param pattern a series of tokens that represents the layout of each tile and piece within the gameboard
+     * @throws IllegalArgumentException if the pattern does not contain the '|' character, or the provided patterns for the board and pieces
+     * are invalid
      *
      * @since 1.7
      * @see #validateBoardPattern(String)
@@ -202,32 +221,30 @@ public class GameBoard {
      * @see #parseBoardPattern(String)
      * @see #parsePiecePattern(String)
      */
-    public void initialize(String pattern) {
-        try {
-            if (pattern == null)
-                throw new IllegalArgumentException("Invalid pattern. The pattern cannot be null");
+    public void initialize(String pattern) throws IllegalArgumentException {
 
-            String cleanPattern = pattern.replaceAll("\\s", "");
-            String parsedPattern = cleanPattern.substring(0, cleanPattern.indexOf('|'));
-            String boardPattern = (parsedPattern.matches("(\\d*[LRTtAa])+")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
-            String piecePattern;
+        if (pattern == null)
+            throw new IllegalArgumentException("Invalid pattern. The pattern cannot be null");
 
-            if (boardPattern.length() == cleanPattern.length() + 1)
-                piecePattern = "";
-            else
-                piecePattern = (parsedPattern.matches("(\\d*[MmCcWwDdPpNnGgEe])*")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
+        String cleanPattern = pattern.replaceAll("\\s", "");
 
-            validateBoardPattern(boardPattern);
-            validatePiecePattern(piecePattern);
+        if (!cleanPattern.contains("|"))
+            throw new IllegalArgumentException("Invalid pattern. There must be a divider character '|' separating the two different patterns");
 
-            parseBoardPattern(boardPattern);
-            parsePiecePattern(piecePattern);
+        String parsedPattern = cleanPattern.substring(0, cleanPattern.indexOf('|'));
+        String boardPattern = (parsedPattern.matches("(\\d*[LRTtAa])+")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
+        String piecePattern;
 
-        } catch (StringIndexOutOfBoundsException e) {
-            System.err.println("Invalid pattern. There must be a divider character '|' separating the two different patterns");
-        } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-        }
+        if (boardPattern.length() == cleanPattern.length() + 1)
+            piecePattern = "";
+        else
+            piecePattern = (parsedPattern.matches("(\\d*[MmCcWwDdPpNnGgEe])*")) ? parsedPattern : cleanPattern.substring(cleanPattern.indexOf('|') + 1);
+
+        validateBoardPattern(boardPattern);
+        validatePiecePattern(piecePattern);
+
+        parseBoardPattern(boardPattern);
+        parsePiecePattern(piecePattern);
     }
 
     /**
@@ -309,7 +326,7 @@ public class GameBoard {
         int maxCells = ROWS * COLUMNS;
 
         for (String token : tokens) {
-            int number = (token.length() == 1) ? 1 : Integer.parseInt(token.substring(0, token.length() - 1));
+            int number = (token.length() == 1) ? 1 : Integer.parseInt(token.substring(0, token.length() - 1)) + 1;
 
             totalCell += number;
         }

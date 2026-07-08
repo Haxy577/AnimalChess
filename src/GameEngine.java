@@ -17,12 +17,13 @@ public class GameEngine {
     public void console() {
         Scanner scanner = new Scanner(System.in);
 
+        initializeBoard(scanner);
+
         player1 = initializePlayer(scanner, player2);
         player2 = initializePlayer(scanner, player1);
 
         setPlayerIndexes();
 
-        board = new GameBoard();
         ConsoleDisplay display = new ConsoleDisplay(player1.getAnsiColor(), player2.getAnsiColor());
         int currentPlayerIndex = 1;
 
@@ -53,6 +54,30 @@ public class GameEngine {
 
             currentPlayerIndex = (currentPlayerIndex == 1) ? 2 : 1;
         }
+    }
+
+    public void initializeBoard(Scanner scanner) {
+        GameBoard gameBoard = new GameBoard();
+        String input;
+
+        System.out.print("Enter the board pattern (hit enter for the normal layout): ");
+
+        while (true) {
+            input = scanner.nextLine();
+
+            if (input.isBlank()) {
+                input = GameBoard.DEFAULT_PATTERN;
+                break;
+            }
+
+            try {
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        board = new GameBoard(input);
     }
 
     public void setPlayerIndexes() {
@@ -139,6 +164,9 @@ public class GameEngine {
             }
 
             while (true) {
+                if (movingCell == null)
+                    break;
+
                 Collection<BoardCell> pieceMoves = moves.get(movingCell);
 
                 System.out.println("Available moves for " + movingCell.getPiece().pieceName() + "(" + toAlgebraicNotation(movingCell) + ")");

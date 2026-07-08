@@ -73,7 +73,7 @@ public abstract class AnimalPiece {
      */
     @Override
     public String toString() {
-        return "Piece[rank=" + RANK + ",player=" + playerIndex + "]";
+        return this.pieceName() + "[rank=" + RANK + ",player=" + playerIndex + "]";
     }
 
     /**
