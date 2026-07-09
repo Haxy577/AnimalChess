@@ -1,3 +1,5 @@
+import AnimalPieces.*;
+import AnimalPieces.AnimalPiece.*;
 import Board.BoardCell;
 import Board.ConsoleDisplay;
 import Board.GameBoard;
@@ -28,17 +30,15 @@ public class GameEngine {
 
         initializeBoard(scanner);
 
-
-// Setup and configure player 1 and player 2 profiles
+        // Setup and configure player 1 and player 2 profiles
         player1 = initializePlayer(scanner, player2);
         player2 = initializePlayer(scanner, player1);
 
-// Randomly assign player indexes to decide turn orders
+        // Randomly assign player indexes to decide turn orders
         setPlayerIndexes();
 
 
-// Initialize the game arena and the UI
-        board = new GameBoard();
+        // Initialize the game arena and the UI
         ConsoleDisplay display = new ConsoleDisplay(player1.getAnsiColor(), player2.getAnsiColor());
         int currentPlayerIndex = 1;
 
@@ -79,27 +79,56 @@ public class GameEngine {
     }
 
     public void initializeBoard(Scanner scanner) {
-        GameBoard gameBoard = new GameBoard();
         String input;
 
-        System.out.print("Enter the board pattern (hit enter for the normal layout): ");
+        System.out.println("[0/Enter] Start the game");
+        System.out.println("[1] Enter custom board");
 
-        while (true) {
-            input = scanner.nextLine();
+        do {
+            System.out.print("Enter choice: ");
+            input = scanner.nextLine().replaceAll("\\s", "");
 
-            if (input.isBlank()) {
-                input = GameBoard.DEFAULT_PATTERN;
-                break;
+            if (input.isBlank() || input.equals("0") || input.equals("\n")) {
+                board = new GameBoard();
+                return;
             }
 
-            try {
+        } while (!input.equals("1"));
 
+        while (true) {
+            try {
+                int row = getIntInput(scanner, "Enter the # of rows: ", 1, Integer.MAX_VALUE);
+                int col = getIntInput(scanner, "Enter the # of columns: ", 1, Integer.MAX_VALUE);
+                System.out.print("Enter the pattern: ");
+                input =  scanner.nextLine();
+                board = new GameBoard(row, col, input);
+                break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
+    }
 
-        board = new GameBoard(input);
+    public int getIntInput(Scanner scanner, String prompt, int origin, int bound) {
+        String input;
+        int num;
+
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine().replaceAll("\\s", "");
+
+            if (!input.matches("^\\d+$")) {
+                System.out.println("Invalid Input. Please enter a number from " + origin + " to " + (bound - 1));
+                continue;
+            }
+
+            num = Integer.parseInt(input);
+
+            if (num >= origin && num < bound)
+                return num;
+
+            System.out.println("Invalid Input. Please enter a number from " + origin + " to " + (bound - 1));
+        } while (true);
     }
 
 
@@ -110,17 +139,56 @@ public class GameEngine {
 
     public void setPlayerIndexes() {
         Random random = new Random();
+        List<AnimalPiece> pieces = new ArrayList<>(List.of(new Mouse(1), new Cat(1), new Wolf(1), new Dog(1),
+                new Leopard(1), new Tiger(1), new Lion(1), new Elephant(1)));
         int p1,p2;
+
+        shuffle(pieces);
+
+        System.out.println(player1.getName() + "  vs  " + player2.getName());
 
         // Keep rolling values until distinct values between 1 and 8 are chosen
         do {
-            p1 = random.nextInt(1,9);
-            p2 = random.nextInt(1,9);
+            p1 = random.nextInt(0,8);
+            p2 = random.nextInt(0,8);
+            System.out.println(pieces.get(p1) + "  vs  " + pieces.get(p2));
         } while (p1 == p2);
 
         // Assign player index based on whoever rolled higher
-        player1.setIndex((p1 > p2) ? 1 : 2);
-        player2.setIndex((p2 > p1) ? 1 : 2);
+        if (pieces.get(p1).getRank() > pieces.get(p2).getRank()) {
+            player1.setIndex(1);
+            player2.setIndex(2);
+        }
+        else {
+            player1.setIndex(2);
+            player2.setIndex(1);
+            player2.swap(player1);
+        }
+
+        System.out.println("1st move: " + player1.getName());
+    }
+
+    /**
+     * Implements the Fisher-Yates algorithm to shuffle the elements of the specified list
+     *
+     * @param list the list to be shuffled
+     */
+    private void shuffle(List<AnimalPiece> list) {
+        if (list == null || list.isEmpty())
+            return;
+
+        Random random = new Random();
+        int last = list.size() - 1;
+
+        while (last > 0) {
+            int rand = random.nextInt(0, last + 1);
+
+            AnimalPiece temp = list.get(last);
+            list.set(last, list.get(rand));
+            list.set(rand, temp);
+
+            last--;
+        }
     }
 
     /**
@@ -155,23 +223,7 @@ public class GameEngine {
             System.out.println("[" + i + "] " + colors[i]);
         }
 
-        do {
-            System.out.print("Please enter the color for your pieces: ");
-            String input = scanner.nextLine();
-
-            // Validate that the input string is purely numerical digits
-            if (!input.matches("^\\d+$"))
-                continue;
-
-            int index = Integer.parseInt(input);
-
-            // Validate index falls nicely within standard array boundaries
-            if (index >= 0 && index < colors.length) {
-                return colors[index];
-            }
-
-            System.out.println("Invalid input. Please only enter a number between [0," + (colors.length - 1) + "]");
-        } while (true);
+        return colors[getIntInput(scanner, "Enter the color you want to use: ",  0, colors.length)];
     }
 /**
      * Handles console interactions to select a starting cell and a valid targeted destination tile.

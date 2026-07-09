@@ -1,10 +1,8 @@
 package Resources;
 
-import AnimalPieces.AnimalPiece;
-
 public class Player {
-    private final String NAME;
-    private final PlayerColor ANSI_COLOR;
+    private String NAME;
+    private PlayerColor ANSI_COLOR;
     private int index;
 
     public Player(String name, PlayerColor ansiColor) {
@@ -15,6 +13,20 @@ public class Player {
 
     public Player(String name, PlayerColor ansiColor, int index) {
         this(name, ansiColor);
+        this.index = index;
+    }
+
+    public void swap(Player player) {
+        String name = player.getName();
+        PlayerColor color = player.getAnsiColor();
+        int index = player.getIndex();
+
+        player.setName(NAME);
+        player.setAnsiColor(ANSI_COLOR);
+        player.setIndex(this.index);
+
+        NAME = name;
+        ANSI_COLOR = color;
         this.index = index;
     }
 
@@ -51,5 +63,13 @@ public class Player {
             throw new IllegalArgumentException("The index can only be either 1 or 2");
 
         this.index = index;
+    }
+
+    public void setName(String name) {
+        NAME = name;
+    }
+
+    public void setAnsiColor(PlayerColor color) {
+        ANSI_COLOR = color;
     }
 }
