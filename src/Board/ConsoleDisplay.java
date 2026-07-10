@@ -105,7 +105,7 @@ public class ConsoleDisplay {
         Scanner scanner = new Scanner(System.in);
         String input = "";
 
-        System.out.println("______________________________________________________________");
+        System.out.println("+-------------------------------------------------------------+"); 
         System.out.println("|                                                             |");
         System.out.println("|     /\\_/\\                                     <:3 )~~       |");
         System.out.println("|    ( o o )                                                  |");
@@ -114,7 +114,7 @@ public class ConsoleDisplay {
         System.out.println("|                                                             |");
         System.out.println("|             ENTER: \"Start\" to begin the game                |");
         System.out.println("|                                                             |");
-        System.out.println("______________________________________________________________");
+        System.out.println("+-------------------------------------------------------------+"); 
 
         // Loop until the player types "Start" (case-insensitive)
         while (!input.equalsIgnoreCase("Start")) {
