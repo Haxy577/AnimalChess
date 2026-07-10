@@ -4,15 +4,17 @@ package AnimalPieces;
  * Represents the "Cat" piece in the game Animal Chess.
  * <p>
  * This piece has the rank of 2.
- * It also has an immutable playerIndex field which represents which player
- * has control over this piece.
+ * It also has an immutable playerIndex field which represents which player has control over this piece.
+ * </p>
+ * <p>
+ * This piece has no special behaviors.
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/4/2026
+ * @version 1.20 7/9/2026
  * @since 1.1
  */
 public class Cat extends AnimalPiece{
@@ -30,6 +32,13 @@ public class Cat extends AnimalPiece{
         super(2, playerIndex);
     }
 
+    /**
+     * Returns the string representation of this piece
+     *
+     * @return a string with the value of "Cat"
+     *
+     * @since 1.20
+     */
     @Override
     public String pieceName() {
         return "Cat";

@@ -13,16 +13,28 @@ import java.util.ArrayList;
 /**
  * Represents an individual animal game piece on the board.
  * <p>
- * Each piece has an immutable {@link #RANK} which determines numerical rank of the piece,
+ * Each piece has an immutable {@link #RANK} which determines numerical rank of the piece and
  * an immutable {@link #playerIndex} which determines the index of the player controlling the piece,
- * and a mutable {@link Color} property that describes the color of the piece to be displayed.
+ * </p>
+ * <p>
+ * By default, animal pieces conform to the following set of movement and capture rules, though
+ * specific subclasses may override these behaviours:
+ * <ol>
+ * <li>Move exactly one space horizontally or vertically per turn</li>
+ * <li>Cannot enter a river/water tile</li>
+ * <li>Cannot enter their own player's animal den</li>
+ * <li>Can freely move into an empty destination cell</li>
+ * <li>Cannot capture a friendly piece that is controlled by the same player</li>
+ * <li>Can freely occupy trap tiles that are owned by the same player</li>
+ * <li>Cannot capture an opposing piece that possesses a higher numerical rank</li>
+ * </ol>
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
- * @see Color
+ * @see #isMoveValid(BoardCell, BoardCell)
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 6/17/2026
+ * @version 1.20 7/9/2026
  * @since 1.0
  */
 public abstract class AnimalPiece {
@@ -62,6 +74,13 @@ public abstract class AnimalPiece {
         this.playerIndex = playerIndex;
     }
 
+    /**
+     * A method that returns the name of the piece
+     *
+     * @return the string representation of the piece
+     *
+     * @since 1.20
+     */
     public abstract String pieceName();
 
     /**

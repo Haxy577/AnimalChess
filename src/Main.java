@@ -1,6 +1,3 @@
-import Board.ConsoleDisplay;
-import Board.GameBoard;
-
 import java.awt.*;
 
 /**

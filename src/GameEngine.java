@@ -3,6 +3,7 @@ import AnimalPieces.AnimalPiece.*;
 import Board.BoardCell;
 import Board.ConsoleDisplay;
 import Board.GameBoard;
+import Resources.Ansi;
 import Resources.Player;
 import Resources.PlayerColor;
 import Resources.Tiles;
@@ -55,7 +56,7 @@ public class GameEngine {
             }
 
             // Render current state of the board to the terminal
-            display.printBoard(board.getBoard());
+            display.printBoard(board.getBoard(), currentPlayerIndex);
 
             // Get valid move selections from the user
             List<BoardCell> move = getMove(moves, scanner);
@@ -67,7 +68,7 @@ public class GameEngine {
 
             // Win Condition 2: If a piece successfully infiltrates the ANIMAL_DEN tile
             if (target.getTile().getType() == Tiles.ANIMAL_DEN) {
-                display.printBoard(board.getBoard());
+                display.printBoard(board.getBoard(), currentPlayerIndex);
                 System.out.println("Winner: " + ((currentPlayerIndex == 1) ? player1.getName() : player2.getName()));
                 scanner.close();
                 break;
@@ -104,7 +105,7 @@ public class GameEngine {
                 board = new GameBoard(row, col, input);
                 break;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println(Ansi.RED + e.getMessage() + Ansi.RESET);
             }
         }
     }
@@ -127,7 +128,7 @@ public class GameEngine {
             if (num >= origin && num < bound)
                 return num;
 
-            System.out.println("Invalid Input. Please enter a number from " + origin + " to " + (bound - 1));
+            System.out.println(Ansi.RED + "Invalid Input. Please enter a number from " + origin + " to " + (bound - 1) + Ansi.RESET);
         } while (true);
     }
 
@@ -242,7 +243,7 @@ public class GameEngine {
             System.out.print("Available moves: ");
 
             for (BoardCell piece : pieces) {
-                System.out.print(toAlgebraicNotation(piece) + " ");
+                System.out.print(toAlgebraicNotation(piece) + "(" + piece.getPiece().pieceName() + ")  ");
             }
 
             System.out.println();
@@ -261,7 +262,7 @@ public class GameEngine {
                 if (moves.containsKey(movingCell))
                     break;
 
-                System.out.println("Invalid input. Does not match any of the provided board cells");
+                System.out.println(Ansi.RED + "Invalid input. Does not match any of the provided board cells" + Ansi.RESET);
             }
 
             // Inner Loop Phase 2: Selecting a target destination for the chosen piece
@@ -293,7 +294,7 @@ public class GameEngine {
                 if (targetCell != null && pieceMoves.contains(targetCell))
                     return List.of(movingCell, targetCell);
 
-                System.out.println("Invalid input. Does not match any of the provided board cells");
+                System.out.println(Ansi.RED + "Invalid input. Does not match any of the provided board cells" + Ansi.RESET);
             }
         }
     }

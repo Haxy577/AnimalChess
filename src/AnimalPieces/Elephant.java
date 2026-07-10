@@ -17,7 +17,7 @@ import Resources.Tiles;
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.8 7/4/2026
+ * @version 1.20 7/9/2026
  * @since 1.1
  */
 public class Elephant extends AnimalPiece{
@@ -93,6 +93,13 @@ public class Elephant extends AnimalPiece{
         return !(targetPiece instanceof Mouse) && targetPiece.getRank() <= movingPiece.getRank();
     }
 
+    /**
+     * Returns the string representation of this piece
+     *
+     * @return a string with the value of "Elephant"
+     *
+     * @since 1.20
+     */
     @Override
     public String pieceName() {
         return "Elephant";

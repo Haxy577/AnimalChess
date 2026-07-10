@@ -12,7 +12,7 @@ package AnimalPieces;
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/4/2026
+ * @version 1.20 7/9/2026
  * @since 1.1
  */
 public class Leopard extends AnimalPiece{
@@ -30,6 +30,13 @@ public class Leopard extends AnimalPiece{
         super(5, playerIndex);
     }
 
+    /**
+     * Returns the string representation of this piece
+     *
+     * @return a string with the value of "Leopard"
+     *
+     * @since 1.20
+     */
     @Override
     public String pieceName() {
         return "Leopard";

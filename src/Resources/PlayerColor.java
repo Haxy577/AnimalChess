@@ -4,17 +4,27 @@ package Resources;
  * Upgraded to Bright (High-Intensity) text colors for maximum contrast.
  */
 public enum PlayerColor {
-    RED("\u001B[1;91m", "\u001B[41m"),
-    YELLOW("\u001B[1;93m", "\u001B[43m"),
-    MAGENTA("\u001B[1;95m", "\u001B[45m"),
-    CYAN("\u001B[1;96m", "\u001B[46m"),
-    WHITE("\u001B[1;97m", "\u001B[47m");
+    RED(Ansi.RED, Ansi.BG_RED),
+    GREEN(Ansi.GREEN, Ansi.BG_GREEN),
+    YELLOW(Ansi.YELLOW, Ansi.BG_YELLOW),
+    BLUE(Ansi.BLUE, Ansi.BG_BLUE),
+    MAGENTA(Ansi.MAGENTA, Ansi.MAGENTA),
+    CYAN(Ansi.CYAN, Ansi.BG_CYAN),
+    WHITE(Ansi.WHITE, Ansi.BG_WHITE);
 
-    public final String textCode;
-    public final String bgCode;
+    private final String textCode;
+    private final String bgCode;
 
     PlayerColor(String textCode, String bgCode) {
         this.textCode = textCode;
         this.bgCode = bgCode;
+    }
+
+    public String getTextCode() {
+        return textCode;
+    }
+
+    public String getBgCode() {
+        return bgCode;
     }
 }
