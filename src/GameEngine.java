@@ -21,6 +21,8 @@ public class GameEngine {
 
         initializeBoard(scanner);
 
+        ConsoleDisplay.displayMenu();
+
         // Setup and configure player 1 and player 2 profiles
         player1 = initializePlayer(scanner, player2);
         player2 = initializePlayer(scanner, player1);
@@ -222,7 +224,7 @@ public class GameEngine {
             System.out.println("[" + i + "] " + colors.get(i));
         }
 
-        player2.setAnsiColor(colors.get(getIntInput(scanner, ("Enter the color " + player1.getName() + " want to use: "),  0, colors.size())));
+        player2.setAnsiColor(colors.get(getIntInput(scanner, ("Enter the color " + player2.getName() + " want to use: "),  0, colors.size())));
     }
     /**
      * Handles console interactions to select a starting cell and a valid targeted destination tile.
