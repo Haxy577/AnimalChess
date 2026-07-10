@@ -1,12 +1,3 @@
-package AnimalPieces;
-
-import Board.BoardCell;
-import Board.BoardTile;
-import Board.GameBoard;
-import Resources.Tiles;
-import Resources.Direction;
-
-import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 

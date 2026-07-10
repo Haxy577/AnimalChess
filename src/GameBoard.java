@@ -1,8 +1,3 @@
-package Board;
-
-import AnimalPieces.*;
-import Resources.Tiles;
-
 import java.util.*;
 
 /**

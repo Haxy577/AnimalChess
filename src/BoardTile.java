@@ -1,7 +1,3 @@
-package Board;
-
-import Resources.Tiles;
-
 /**
  * Represents the type of board tile a specific board cell has and the index of the player
  * that has ownership of this specific tile.

@@ -1,8 +1,3 @@
-package Board;
-
-import AnimalPieces.AnimalPiece;
-import Resources.Direction;
-
 /**
  * Represents a single cell/position within the gameBoard array
  * <p>
@@ -44,7 +39,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private int ROW;
+    private final int ROW;
 
     /**
      * Represents the cell's column position relative to the gameBoard array
@@ -52,7 +47,7 @@ public class BoardCell {
      * @see GameBoard
      * @since 1.2
      */
-    private int COL;
+    private final int COL;
 
     /**
      * Initializes the immutable values/objects of a single cell in the game board.
@@ -123,14 +118,6 @@ public class BoardCell {
      */
     public void setPiece(AnimalPiece piece) {
         this.piece = piece;
-    }
-
-    public void setRow(int row) {
-        ROW = row;
-    }
-
-    public void setCol(int column) {
-        COL = column;
     }
 
     /**

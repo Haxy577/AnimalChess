@@ -1,10 +1,3 @@
-import AnimalPieces.AnimalPiece;
-import Board.BoardCell;
-import Board.BoardTile;
-import Board.GameBoard;
-import Resources.Tiles;
-import Resources.Direction;
-import Resources.TestBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.*;

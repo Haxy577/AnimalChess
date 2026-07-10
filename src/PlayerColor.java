@@ -1,16 +1,14 @@
-package Resources;
-
 /**
  * Upgraded to Bright (High-Intensity) text colors for maximum contrast.
  */
 public enum PlayerColor {
-    RED(Ansi.RED, Ansi.BG_RED),
-    GREEN(Ansi.GREEN, Ansi.BG_GREEN),
-    YELLOW(Ansi.YELLOW, Ansi.BG_YELLOW),
-    BLUE(Ansi.BLUE, Ansi.BG_BLUE),
-    MAGENTA(Ansi.MAGENTA, Ansi.MAGENTA),
-    CYAN(Ansi.CYAN, Ansi.BG_CYAN),
-    WHITE(Ansi.WHITE, Ansi.BG_WHITE);
+    RED(Ansi.BRIGHT_RED, Ansi.BG_RED),
+    GREEN(Ansi.BRIGHT_GREEN, Ansi.BG_GREEN),
+    YELLOW(Ansi.BRIGHT_YELLOW, Ansi.BG_YELLOW),
+    BLUE(Ansi.BRIGHT_BLUE, Ansi.BG_BLUE),
+    MAGENTA(Ansi.BRIGHT_MAGENTA, Ansi.MAGENTA),
+    CYAN(Ansi.BRIGHT_CYAN, Ansi.BG_CYAN),
+    WHITE(Ansi.BRIGHT_WHITE, Ansi.BG_WHITE);
 
     private final String textCode;
     private final String bgCode;

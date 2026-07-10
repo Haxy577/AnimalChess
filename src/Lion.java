@@ -1,11 +1,3 @@
-package AnimalPieces;
-
-import Board.BoardCell;
-import Board.BoardTile;
-import Board.GameBoard;
-import Resources.Tiles;
-import Resources.Direction;
-
 /**
  * Represents the "Lion" piece in the game Animal Chess.
  * <p>

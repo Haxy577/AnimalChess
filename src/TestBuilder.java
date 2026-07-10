@@ -1,9 +1,3 @@
-package Resources;
-
-import AnimalPieces.*;
-import Board.BoardCell;
-import Board.BoardTile;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

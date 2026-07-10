@@ -1,18 +1,19 @@
-package Resources;
-
 public class Player {
-    private String NAME;
-    private PlayerColor ANSI_COLOR;
+    private String name;
+    private PlayerColor color;
     private int index;
 
+    public Player(String name) {
+        this(name, PlayerColor.RED);
+    }
+
     public Player(String name, PlayerColor ansiColor) {
-        this.NAME = name;
-        this.ANSI_COLOR = ansiColor;
-        index = 0;
+        this(name, ansiColor, 0);
     }
 
     public Player(String name, PlayerColor ansiColor, int index) {
-        this(name, ansiColor);
+        this.name = name;
+        color = ansiColor;
         this.index = index;
     }
 
@@ -21,18 +22,18 @@ public class Player {
         PlayerColor color = player.getAnsiColor();
         int index = player.getIndex();
 
-        player.setName(NAME);
-        player.setAnsiColor(ANSI_COLOR);
+        player.setName(this.name);
+        player.setAnsiColor(this.color);
         player.setIndex(this.index);
 
-        NAME = name;
-        ANSI_COLOR = color;
+        this.name = name;
+        this.color = color;
         this.index = index;
     }
 
     @Override
     public String toString() {
-        return "Player[name=" + NAME + ",color=" + ANSI_COLOR + ",index=" + index + "]";
+        return "Player[name=" + name + ",color=" + color + ",index=" + index + "]";
     }
 
     @Override
@@ -43,15 +44,15 @@ public class Player {
         if (!(obj instanceof Player player))
             return false;
 
-        return NAME.equals(player.getName()) && ANSI_COLOR.equals(player.getAnsiColor()) && index == player.getIndex();
+        return name.equals(player.getName()) && color.equals(player.getAnsiColor()) && index == player.getIndex();
     }
 
     public String getName() {
-        return NAME;
+        return name;
     }
 
     public PlayerColor getAnsiColor() {
-        return ANSI_COLOR;
+        return color;
     }
 
     public int getIndex() {
@@ -66,10 +67,10 @@ public class Player {
     }
 
     public void setName(String name) {
-        NAME = name;
+        this.name = name;
     }
 
     public void setAnsiColor(PlayerColor color) {
-        ANSI_COLOR = color;
+        this.color = color;
     }
 }

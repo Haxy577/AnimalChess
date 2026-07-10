@@ -1,6 +1,3 @@
-import AnimalPieces.*;
-import Board.GameBoard;
-import Resources.TestBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -75,13 +72,13 @@ public class InitializeBoardTest {
         return List.of(
                 new TestBuilder<>("Mmmm|Aa2L", "Aa2L|Mmmm"),
                 new TestBuilder<>("ppe|2a2A", "2a2A|ppe"),
-                new TestBuilder<>("|RaAt", "RaAt|wce"),
+                new TestBuilder<>("|RaAt", "RaAt|"),
                 new TestBuilder<>("wWcC|LRAa", "LRAa|wWcC")
         );
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource("provideForBoardPatternFirst")
+    @MethodSource("provideForPiecePatternFirst")
     public void piecePatternFirst(TestBuilder<String, String> test) {
         assertEquals(new GameBoard(2,2, test.getInput()).toPattern(), test.getExpected());
     }

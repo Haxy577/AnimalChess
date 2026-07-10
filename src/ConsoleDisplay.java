@@ -1,10 +1,3 @@
-package Board;
-
-import AnimalPieces.AnimalPiece;
-import Resources.Ansi;
-import Resources.PlayerColor;
-import Resources.Tiles;
-
 import java.util.Scanner;
 
 /**
@@ -73,7 +66,7 @@ public class ConsoleDisplay {
             contentText = "  . ";
         }
         else if (tileType == Tiles.RIVER) {
-            backgroundCode = Ansi.BG_BLUE;;
+            backgroundCode = Ansi.BG_BLUE;
             contentText = "  ~ ";
         } else if (tileType == Tiles.TRAP) {
             backgroundCode = Ansi.BRIGHT_BG_BLACK;

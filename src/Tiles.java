@@ -1,5 +1,3 @@
-package Resources;
-
 /**
  * Represents all the possible tile/square in the board in the game "Animal Chess"
  *

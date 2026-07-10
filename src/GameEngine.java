@@ -1,13 +1,3 @@
-import AnimalPieces.*;
-import AnimalPieces.AnimalPiece.*;
-import Board.BoardCell;
-import Board.ConsoleDisplay;
-import Board.GameBoard;
-import Resources.Ansi;
-import Resources.Player;
-import Resources.PlayerColor;
-import Resources.Tiles;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -38,17 +28,18 @@ public class GameEngine {
         // Randomly assign player indexes to decide turn orders
         setPlayerIndexes();
 
+        setPlayerColors(scanner);
 
         // Initialize the game arena and the UI
         ConsoleDisplay display = new ConsoleDisplay(player1.getAnsiColor(), player2.getAnsiColor());
         int currentPlayerIndex = 1;
 
-// Main gameplay loop
+        // Main gameplay loop
         while (true) {
             // Retrieve all valid moves for the active players
             Map<BoardCell, List<BoardCell>> moves = board.getAllPlayerMoves(currentPlayerIndex);
 
-// Win Condition 1: If a player has no possible moves left, they lose
+        // Win Condition 1: If a player has no possible moves left, they lose
             if (moves.isEmpty()) {
                 System.out.print("Winner: " + ((currentPlayerIndex == 1) ? player2.getName() : player1.getName()));
                 scanner.close();
@@ -133,7 +124,7 @@ public class GameEngine {
     }
 
 
-/**
+    /**
      * Generates a random seed value to non-deterministically assign individual
      * player indexes (1 or 2). Ensure uniqueness by using a comparative loop.
      */
@@ -200,33 +191,40 @@ public class GameEngine {
         while (true) {
             System.out.print("Enter your username: ");
             String username = scanner.nextLine();
-            PlayerColor color = chooseColor(scanner);
-            Player player = new Player(username, color);
+            Player player = new Player(username);
 
             // Ensure player profiles do not clash with each other
             if (!player.equals(otherPlayer))
                 return player;
 
-            System.out.println("Matching player data. Please choose another username and/or color");
+            System.out.println(Ansi.RED + "Matching player data. Please choose another username" + Ansi.RESET);
         }
     }
 
-/**
+    /**
      * Renders an interactive choice menu of values matching the PlayerColor enum definition
      * and processes validated numerical inputs to select a profile color.
      */
 
-    public PlayerColor chooseColor(Scanner scanner) {
-        PlayerColor[] colors = PlayerColor.values();
+    public void setPlayerColors(Scanner scanner) {
+        ArrayList<PlayerColor> colors = new ArrayList<>(List.of(PlayerColor.values()));
 
-// Print available colors mapped to their numerical index position
-        for (int i = 0; i < colors.length; i++) {
-            System.out.println("[" + i + "] " + colors[i]);
+        // Print available colors mapped to their numerical index position
+        for (int i = 0; i < colors.size(); i++) {
+            System.out.println("[" + i + "] " + colors.get(i));
         }
 
-        return colors[getIntInput(scanner, "Enter the color you want to use: ",  0, colors.length)];
+        int input = getIntInput(scanner, ("Enter the color " + player1.getName() + " want to use: "),  0, colors.size());
+        player1.setAnsiColor(colors.get(input));
+        colors.remove(input);
+
+        for (int i = 0; i < colors.size(); i++) {
+            System.out.println("[" + i + "] " + colors.get(i));
+        }
+
+        player2.setAnsiColor(colors.get(getIntInput(scanner, ("Enter the color " + player1.getName() + " want to use: "),  0, colors.size())));
     }
-/**
+    /**
      * Handles console interactions to select a starting cell and a valid targeted destination tile.
      * Includes step-back capabilities allowing users to clear target selections and switch pieces.
      */

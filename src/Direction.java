@@ -1,5 +1,3 @@
-package Resources;
-
 /**
  * Represents the possible directions a piece can move in the game "Animal Chess"
  *
