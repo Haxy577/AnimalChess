@@ -5,12 +5,18 @@
  * It also has an immutable playerIndex field which represents which player
  * has control over this piece.
  * </p>
+ * <p>
+ * This piece has the following special behaviours:
+ * <ol>
+ * <li>Cannot capture an enemy mouse piece</li>
+ * </ol>
+ * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.20 7/9/2026
+ * @version 1.26 7/11/2026
  * @since 1.1
  */
 public class Elephant extends AnimalPiece{

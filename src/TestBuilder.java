@@ -13,18 +13,33 @@ import java.util.List;
  * @param <E> the data type of the expected output for the test case
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/2/2026
+ * @version 1.26 7/11/2026
  * @since 1.11
  */
 public class TestBuilder<I, E> {
     private final I INPUT;
     private final E EXPECTED;
 
+    /**
+     * Constructs a test case with the specified input and expected output of the test
+     *
+     * @param input the input of the test case
+     * @param expected the expected output of the test case
+     *
+     * @since 1.11
+     */
     public TestBuilder(I input, E expected) {
         this.INPUT = input;
         this.EXPECTED = expected;
     }
 
+    /**
+     * Converts the fields of this class to a string
+     *
+     * @return the string representation of this object
+     *
+     * @since 1.11
+     */
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
@@ -56,6 +71,14 @@ public class TestBuilder<I, E> {
         return string.toString();
     }
 
+    /**
+     * Provides a list that contains every animal piece of each respective player
+     *
+     * @return the list of all possible animal piece that can be created
+     *
+     * @since 1.26
+     * @see AnimalPiece
+     */
     public static List<AnimalPiece> provideAllPieces() {
         return List.of(
                 new Mouse(1), new Mouse(2),
@@ -69,6 +92,17 @@ public class TestBuilder<I, E> {
         );
     }
 
+    /**
+     * Provides a list of test cases for testing the method of isValidMove
+     *
+     * @param defaultExpected the default value of the expected output of each test case.
+     * @param excluded a list of animal piece which is expected to have the opposite value of the default
+     * @return the list of test cases to test the method
+     *
+     * @since 1.26
+     * @see AnimalPiece
+     * @see AnimalPiece#isMoveValid(BoardCell, BoardCell)
+     */
     public static List<TestBuilder<AnimalPiece, Boolean>> provideIsMoveValidTests(Boolean defaultExpected, List<AnimalPiece> excluded) {
         List<TestBuilder<AnimalPiece, Boolean>> tests = new ArrayList<>();
 
@@ -82,6 +116,18 @@ public class TestBuilder<I, E> {
         return tests;
     }
 
+    /**
+     * Provides a list of test cases for testing the method of getAllMoves
+     *
+     * @param defaultExpected the default value of the expected amount of moves per piece
+     * @param excluded a list of animal pieces that have a different expected output from the default
+     * @param excludedExpected the expected value for the pieces that were excluded
+     * @return a list of test cases for the method
+     *
+     * @since 1.26
+     * @see AnimalPiece
+     * @see AnimalPiece#getAllMoves(BoardCell, BoardCell[][])
+     */
     public static List<TestBuilder<BoardCell, Integer>> provideGetAllMovesTests(Integer defaultExpected, List<AnimalPiece> excluded, Integer excludedExpected) {
         List<TestBuilder<BoardCell, Integer>> tests = new ArrayList<>();
         BoardTile land = new BoardTile(Tiles.LAND);
@@ -98,10 +144,24 @@ public class TestBuilder<I, E> {
         return tests;
     }
 
+    /**
+     * Returns the set input of this test case
+     *
+     * @return input of the test
+     *
+     * @since 1.11
+     */
     public I getInput() {
         return INPUT;
     }
 
+    /**
+     * Returns the set expected output of this test case
+     *
+     * @return the expected output of this test
+     *
+     * @since 1.11
+     */
     public E getExpected() {
         return EXPECTED;
     }

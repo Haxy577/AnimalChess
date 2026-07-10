@@ -7,7 +7,7 @@ import java.util.*;
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.13 7/4/2026
+ * @version 1.26 7/11/2026
  * @since 1.1
  */
 public class GameBoard {
@@ -39,7 +39,7 @@ public class GameBoard {
 
     /**
      * Represents a gameboard pattern that has 9 rows, 7 columns, and the default layout of the game Animal Chess
-     * in a vertical form
+     * in a vertical form where the first player is at the bottom while the second player is at the top
      *
      * @since 1.11
      * @see #initialize(String) 
@@ -120,6 +120,14 @@ public class GameBoard {
         return string.toString();
     }
 
+    /**
+     * Compares the current object with the specified object
+     *
+     * @param obj   the reference object with which to compare.
+     * @return {@code true} if both objects have identical field values, {@code false} otherwise
+     *
+     * @since 1.11
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GameBoard board) {
@@ -658,7 +666,18 @@ public class GameBoard {
         };
     }
 
-    public void movePiece(BoardCell source, BoardCell target) {
+    /**
+     * Takes the piece within the specified source and sets the specified target with the taken piece, sets the piece within
+     * the specified source to null afterward
+     *
+     * @param source the cell where the piece would be taken from
+     * @param target the cell where the taken piece would be set at
+     * @throws IllegalArgumentException if the specified current and/or target cell is not instantiated
+     *
+     * @since 1.26
+     * @see BoardCell
+     */
+    public void movePiece(BoardCell source, BoardCell target) throws IllegalArgumentException {
         if (source == null || target == null)
             throw new IllegalArgumentException("The specified parameters must be instantiated");
 
@@ -666,19 +685,55 @@ public class GameBoard {
         source.setPiece(null);
     }
 
+    /**
+     * A getter for the column field which represents the length of each row within the board
+     *
+     * @return the length of each row array
+     *
+     * @since 1.26
+     */
     public int getColumns() {
         return COLUMNS;
     }
 
+    /**
+     * A getter for the row field which represents the amount of row the board field contains
+     *
+     * @return the amount of rows within the 2d array
+     *
+     * @since 1.26
+     */
     public int getRows() {
         return ROWS;
     }
 
+    /**
+     * A getter for the board field which represents the current playing field of the game
+     *
+     * @return a 2d array of BoardCells that represents the board
+     *
+     * @since 1.26
+     * @see BoardCell
+     */
     public BoardCell[][] getBoard() {
         return BOARD;
     }
 
-    public BoardCell getCell(int row, int column) {
+    /**
+     * A getter method that returns a specific BoardCell from the 2d array of BoardCells
+     *
+     * @param row the index of the desired cell within the 2d array
+     * @param column the index of the desired cell within the row
+     * @throws IllegalArgumentException if the specified position is outside the bounds of the initialized 2d array
+     * @return the BoardCell at the specified location within the board
+     *
+     * @since 1.26
+     * @see BoardCell
+     */
+    public BoardCell getCell(int row, int column) throws IllegalArgumentException {
+        if (row < 0 || row >= ROWS || column < 0 || column >= COLUMNS)
+            throw new IllegalArgumentException("The specified position exists outside the initialized board");
+
         return BOARD[row][column];
     }
 }

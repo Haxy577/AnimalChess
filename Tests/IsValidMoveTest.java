@@ -4,6 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+/**
+ * Junit testing for the method of isValidMove
+ *
+ * @see AnimalPiece#isMoveValid(BoardCell, BoardCell)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class IsValidMoveTest {
 
     private static List<TestBuilder<AnimalPiece, Boolean>> provideForNullTests() {

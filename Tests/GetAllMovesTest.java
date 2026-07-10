@@ -5,6 +5,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Junit testing for the method of getAllMoves
+ *
+ * @see AnimalPiece#getAllMoves(BoardCell, BoardCell[][])
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class GetAllMovesTest {
     private static List<TestBuilder<BoardCell, Exception>> provideIllegalArguments() {
         BoardTile tile = new BoardTile(Tiles.LAND);

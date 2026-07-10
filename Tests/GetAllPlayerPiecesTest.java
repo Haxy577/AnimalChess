@@ -5,6 +5,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Junit testing for the method of getAllPlayerPieces
+ *
+ * @see GameBoard#getAllPlayerPieces(int)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class GetAllPlayerPiecesTest {
     private static List<TestBuilder<Integer, Exception>> provideForIndexIsNotOneOrTwo() {
         return List.of(

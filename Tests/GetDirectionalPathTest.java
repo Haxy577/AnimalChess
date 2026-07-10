@@ -4,6 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+/**
+ * Junit testing for the method of getDirectionalPath
+ *
+ * @see AnimalPiece#getDirectionalPath(BoardCell, BoardCell[][], Direction)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class GetDirectionalPathTest {
     private static List<TestBuilder<Direction, Exception>> provideIllegalArguments() {
         return List.of(

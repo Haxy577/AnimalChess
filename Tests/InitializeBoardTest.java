@@ -5,6 +5,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Junit testing for the method of initialize
+ *
+ * @see GameBoard#initialize(String)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class InitializeBoardTest {
     private static List<TestBuilder<String, Exception>> provideForParameterIsNull() {
         return List.of(

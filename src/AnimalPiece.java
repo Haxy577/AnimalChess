@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @see #isMoveValid(BoardCell, BoardCell)
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.20 7/9/2026
+ * @version 1.26 7/11/2026
  * @since 1.0
  */
 public abstract class AnimalPiece {
@@ -47,7 +47,7 @@ public abstract class AnimalPiece {
     private final int playerIndex;
 
     /**
-     * Creates a new animal piece with a specified animal rank
+     * Constructs an animal piece with a specified animal rank
      * and the player controlling this animal piece
      *
      * @param RANK the rank of the animal piece
@@ -121,7 +121,7 @@ public abstract class AnimalPiece {
      * @see Direction
      * @see #canMoveTo(BoardCell, BoardCell[])
      */
-    public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) {
+    public List<BoardCell> getAllMoves(BoardCell source, BoardCell[][] gameBoard) throws IllegalArgumentException {
         if (source == null || gameBoard == null)
             throw new IllegalArgumentException("Invalid source and/or gameboard. These parameters cannot be null");
         if (source.getRow() < 0 || source.getRow() >= gameBoard.length || source.getCol() < 0 || source.getCol() >= gameBoard[0].length)

@@ -6,6 +6,15 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Junit testing for the method of getAllPlayerMoves
+ *
+ * @see GameBoard#getAllPlayerMoves(int)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class GetAllPlayerMovesTest {
     private static List<TestBuilder<Integer, Exception>> provideForIndexIsNotOneOrTwo() {
         return List.of(

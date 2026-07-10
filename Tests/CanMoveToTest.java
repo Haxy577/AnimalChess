@@ -6,6 +6,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Junit testing for the method of canMoveTo
+ *
+ * @see AnimalPiece#canMoveTo(BoardCell, BoardCell[])
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class CanMoveToTest {
     private static List<TestBuilder<BoardCell, Exception>> provideForIllegalArgumentTests() {
         List<TestBuilder<BoardCell, Exception>> tests = new ArrayList<>();

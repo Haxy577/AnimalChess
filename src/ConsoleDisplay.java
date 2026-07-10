@@ -5,18 +5,51 @@ import java.util.Scanner;
  * Features dynamic player colors, token bases, rank numbers, and letter coordinates.
  *
  * @author Zachary Tan
- * @version 4 7/04/2026
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
  */
 public class ConsoleDisplay {
+    /**
+     * The player color of the player with the index of 1. This field cannot be changed once set.
+     *
+     * @since 1.26
+     * @see PlayerColor
+     */
     private final PlayerColor p1Color;
+
+    /**
+     * The player color of the player with the index of 2. This field cannot be changed once set.
+     *
+     * @since 1.26
+     * @see PlayerColor
+     */
     private final PlayerColor p2Color;
 
-
+    /**
+     * Constructs the object with the specified colors for each player
+     *
+     * @param p1 the color for the player with the index of 1
+     * @param p2 the color for the player with the index of 2
+     *
+     * @since 1.26
+     * @see PlayerColor
+     */
     public ConsoleDisplay(PlayerColor p1, PlayerColor p2) {
         p1Color = p1;
         p2Color = p2;
     }
 
+    /**
+     * Displays the current state of the board within the terminal based on the specified gameBoard and which
+     * player index currently has the turn
+     *
+     * @param gameBoard the 2d array of BoardCells that represents the playing board
+     * @param currentTurn the player index of the player that currently is having their turn
+     *
+     * @since 1.26
+     * @see GameEngine
+     * @see BoardCell
+     */
     public void printBoard(BoardCell[][] gameBoard, int currentTurn) {
         if (gameBoard == null || gameBoard.length == 0 || gameBoard[0].length == 0) {
             System.out.println("Cannot render an empty or uninitialized game board.");
@@ -49,6 +82,17 @@ public class ConsoleDisplay {
         System.out.println("   " + "----".repeat(cols) + "\n");
     }
 
+    /**
+     * Returns a formatted string that is representative of the specified cell.
+     *
+     * @param cell the cell to be formatted
+     * @param currentTurn the index of the current player that has their turn currently
+     * @return the formatted cell based on the data within the cell
+     *
+     * @since 1.26
+     * @see BoardCell
+     * @see Ansi
+     */
     private String getFormattedCell(BoardCell cell, int currentTurn) {
         if (cell == null || cell.getTile() == null)
             return null;
@@ -93,6 +137,8 @@ public class ConsoleDisplay {
 
     /**
      * Displays the ASCII art menu and loops until the user enters "Start".
+     *
+     * @since 1.26
      */
     public static void displayMenu() {
         Scanner scanner = new Scanner(System.in);

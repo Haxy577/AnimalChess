@@ -5,6 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Junit testing for the method of parseAlgebraicNotation
+ *
+ * @see GameEngine#parseAlgebraicNotation(String)
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 1.26 7/11/2026
+ * @since 1.26
+ */
 public class ParseAlgebraicNotationTest {
     private static List<TestBuilder<String, Point>> provideForInvalidAlgebraicNotations() {
         return List.of(

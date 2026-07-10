@@ -12,7 +12,7 @@
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.20 7/9/2026
+ * @version 1.26 7/11/2026
  * @since 1.1
  */
 public class Cat extends AnimalPiece{

@@ -12,7 +12,7 @@
  * @see AnimalPiece
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/3/2026
+ * @version 1.26 7/11/2026
  * @since 1.1
  */
 public class BoardCell {
@@ -50,7 +50,7 @@ public class BoardCell {
     private final int COL;
 
     /**
-     * Initializes the immutable values/objects of a single cell in the game board.
+     * Constructs a cell with the specified BoardTile, its position relative to the gameBoard, and sets the piece to null
      *
      * @param tile represents what kind of board tile this specific cell is
      * @param row represents its row position relative to the gameBoard array
@@ -75,7 +75,7 @@ public class BoardCell {
     }
 
     /**
-     * Initializes the objects that represents a single cell/position in the gameBoard array
+     * Constructs a cell with the specified AnimalPiece, BoardTile, and its position relative to the gameBoard
      *
      * @param piece represents the current animal piece this specific cell contains
      * @param tile represents what kind of board tile this specific cell is
@@ -196,6 +196,17 @@ public class BoardCell {
         return piece.equals(target.getPiece()) && TILE.equals(target.getTile()) && ROW == target.getRow() && COL == target.getCol();
     }
 
+    /**
+     * Compares the current object with the specified other BoardCell and determines the relative cardinal direction to the other
+     * cell with this current cell serving as the reference.
+     *
+     * @param other the other BoardCell to be compared to
+     * @return {@code null} if the position of the current and other objects are either the same, or both of its row and column values
+     * are both different. Otherwise, this returns the direction that points to the other BoardCell
+     *
+     * @since 1.26
+     * @see Direction
+     */
     public Direction getDirection(BoardCell other) {
         if (other == null)
             return null;
