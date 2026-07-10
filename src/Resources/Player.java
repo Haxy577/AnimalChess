@@ -1,30 +1,47 @@
 package Resources;
 
+/**
+ * Represents a player in the game, tracking their username, terminal text color (ANSI),
+ * and turn order index (1 or 2).
+ */
+
 public class Player {
     private String NAME;
     private PlayerColor ANSI_COLOR;
     private int index;
 
+    /**
+     * Constructs a player profile with a username and assigned terminal color.
+     * The player index defaults to 0 until formally assigned by the game engine.
+     */
+    
     public Player(String name, PlayerColor ansiColor) {
         this.NAME = name;
         this.ANSI_COLOR = ansiColor;
         index = 0;
     }
 
+    /**
+     * Constructs a player profile with a username, terminal color, and a specific index.
+    */
+    
     public Player(String name, PlayerColor ansiColor, int index) {
         this(name, ansiColor);
         this.index = index;
     }
 
     public void swap(Player player) {
+        // Step 1: Temporarily cache the target player's current values
         String name = player.getName();
         PlayerColor color = player.getAnsiColor();
         int index = player.getIndex();
 
+        // Step 2: Push this instance's values onto the target player object
         player.setName(NAME);
         player.setAnsiColor(ANSI_COLOR);
         player.setIndex(this.index);
 
+        // Step 3: Pull the target player's original values onto this instance
         NAME = name;
         ANSI_COLOR = color;
         this.index = index;
@@ -58,6 +75,12 @@ public class Player {
         return index;
     }
 
+    /**
+     * Updates the player's turn priority index.
+     * * @param index Must be 1 or 2.
+     * @throws IllegalArgumentException If an index outside the valid range [1, 2] is supplied.
+     */
+    
     public void setIndex(int index) throws IllegalArgumentException {
         if (index < 1 || index > 2)
             throw new IllegalArgumentException("The index can only be either 1 or 2");
