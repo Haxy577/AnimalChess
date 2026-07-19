@@ -7,7 +7,7 @@ import java.util.*;
  * @see BoardCell
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.1 7/19/2026
  * @since 1.1
  */
 public class GameBoard {
@@ -38,13 +38,13 @@ public class GameBoard {
     private final BoardCell[][] BOARD;
 
     /**
-     * Represents a gameboard pattern that has 9 rows, 7 columns, and the default layout of the game Animal Chess
-     * in a vertical form where the first player is at the bottom while the second player is at the top
+     * Represents a gameboard pattern that has 7 rows, 9 columns, and the default layout of the game Animal Chess
+     * in a horizontal orientation where the first player is at the left while the second player is at the right
      *
      * @since 1.11
      * @see #initialize(String) 
      */
-    public static final String DEFAULT_PATTERN = "2Ltat5Lt11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N";
+    public static final String DEFAULT_PATTERN = "12L3R3LT2L3R2LtAT5LtaT2L3R2Lt3L3R12L|G1E3m1n1C5d3W3p13P3w3D5c1N1M3e1g";
 
     /**
      * Constructs the gameboard array with the specified row, columns, and the layout ot each tile and piece within
@@ -66,15 +66,15 @@ public class GameBoard {
     }
 
     /**
-     * Constructs a gameboard that has 9 rows and 7 columns with a default layout of the game Animal Chess represented
-     * in a vertical orientation
+     * Constructs a gameboard that has 7 rows and 9 columns with a default layout of the game Animal Chess represented
+     * in a horizontal orientation
      *
      * @since 1.1
      * @see BoardCell
      * @see #DEFAULT_PATTERN
      */
     public GameBoard() {
-        this(9, 7, DEFAULT_PATTERN);
+        this(7, 9, DEFAULT_PATTERN);
     }
 
     /**

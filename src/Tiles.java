@@ -1,14 +1,39 @@
+import java.awt.*;
+
 /**
- * Represents all the possible tile/square in the board in the game "Animal Chess"
+ * Represents all the possible tile/square in the board in the game "Animal Chess" and its corresponding
+ * color to be displayed
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.1 7/19/2026
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
 public enum Tiles {
 
-    LAND, RIVER, TRAP, ANIMAL_DEN;
+    LAND(Color.GREEN),
+    RIVER(Color.CYAN),
+    TRAP(Color.RED),
+    ANIMAL_DEN(Color.ORANGE);
+
+    /**
+     * The assigned color to the specific type of tile
+     *
+     * @since 2.1
+     * @see Color
+     */
+    public final Color COLOR;
+
+    /**
+     * Constructs each enum value with its color value
+     * @param tileColor the color of the tile
+     *
+     * @since 2.1
+     * @see Color
+     */
+    Tiles(Color tileColor) {
+        COLOR = tileColor;
+    }
 
     /**
      * Checks if the current object has the Tiles value of either LAND, TRAP, or an ANIMAL_DEN

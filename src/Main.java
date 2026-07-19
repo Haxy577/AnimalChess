@@ -9,7 +9,11 @@ import java.awt.*;
  */
 public class Main {
     public static void main(String[] args) {
-        final int scale;
-        new Display(Toolkit.getDefaultToolkit().getScreenSize());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Player p1 = new Player("Player 1");
+        Player p2 = new Player("Player 2");
+        GameBoard board = new GameBoard();
+        //GameBoard board = new GameBoard();
+        new Display(screenSize, board, p1, p2);
     }
 }
