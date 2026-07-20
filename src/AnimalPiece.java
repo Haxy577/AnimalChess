@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * Represents an individual animal game piece on the board.
  * <p>
  * Each piece has an immutable {@link #RANK} which determines numerical rank of the piece and
- * an immutable {@link #playerIndex} which determines the index of the player controlling the piece,
+ * an immutable {@link #PLAYER} which determines the Player instance that is controlling the piece,
  * </p>
  * <p>
  * By default, animal pieces conform to the following set of movement and capture rules, though
@@ -22,10 +22,11 @@ import java.util.ArrayList;
  * </p>
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
+ * @see Player
  * @see #isMoveValid(BoardCell, BoardCell)
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.0
  */
 public abstract class AnimalPiece {
@@ -38,31 +39,31 @@ public abstract class AnimalPiece {
     private final int RANK;
 
     /**
-     * The index of the player controlling this animal piece.
-     * The index must be a value greater than or equal to 1.
-     * This field cannot be changed once set.
+     * The player that has ownership/control of this piece. This field cannot
+     * be set once set.
      *
-     * @since 1.0
+     * @since 2.2
      */
-    private final int playerIndex;
+    private final Player PLAYER;
 
     /**
      * Constructs an animal piece with a specified animal rank
      * and the player controlling this animal piece
      *
-     * @param RANK the rank of the animal piece
-     * @param playerIndex the index of the player controlling this animal piece
+     * @param rank the rank of the animal piece
+     * @param player the player object that has control of this piece
      * @throws IllegalArgumentException if there is no provided {@link #RANK},
-     * or the {@link #playerIndex} is a value that is neither 1 nor 2
+     * or the {@link #PLAYER} is a null
      *
-     * @since 1.0
+     * @since 2.2
+     * @see Player
      */
-    protected AnimalPiece(int RANK, int playerIndex) throws IllegalArgumentException {
-        if (playerIndex < 1 || playerIndex > 2)
-            throw new IllegalArgumentException("The player index must be either 1 or 2");
+    protected AnimalPiece(int rank, Player player) throws IllegalArgumentException {
+        if (player == null)
+            throw new IllegalArgumentException("The specified player argument cannot be null");
 
-        this.RANK = RANK;
-        this.playerIndex = playerIndex;
+        RANK = rank;
+        PLAYER = player;
     }
 
     /**
@@ -77,22 +78,24 @@ public abstract class AnimalPiece {
     /**
      * Converts the fields of this class to a string
      *
-     * @return the type of animal this piece is, its rank, and the player controlling this piece
+     * @return the rank of this piece and the details of the player that has control of this piece
      *
-     * @since 1.5
+     * @since 2.2
+     * @see Player
      */
     @Override
     public String toString() {
-        return this.pieceName() + "[rank=" + RANK + ",player=" + playerIndex + "]";
+        return this.pieceName() + "[rank=" + RANK + ",player=" + PLAYER + "]";
     }
 
     /**
-     * Compares the specified object with the current object based on its animal type and the player index it has
+     * Compares the specified object with the current object based on its numeric rank and the player object it contains
      *
      * @param obj   the reference object with which to compare.
-     * @return true if the type and player index are the same, false otherwise
+     * @return true if the rank and player object are the same, false otherwise
      *
-     * @since 1.11
+     * @since 2.2
+     * @see Player#equals(Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -102,7 +105,7 @@ public abstract class AnimalPiece {
         if (!(obj instanceof AnimalPiece piece))
             return false;
 
-        return RANK == piece.getRank() && playerIndex == piece.getPlayerIndex();
+        return RANK == piece.getRank() && PLAYER.equals(piece.getPlayer());
     }
 
     /**
@@ -251,26 +254,25 @@ public abstract class AnimalPiece {
         AnimalPiece movingPiece = source.getPiece();
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile targetTile = destination.getTile();
-        int distance = Math.abs(source.getCol() - destination.getCol()) +
-                Math.abs(source.getRow() - destination.getRow());
+        Player movingPlayer = movingPiece.getPlayer();
+        int distance = Math.abs(source.getCol() - destination.getCol()) + Math.abs(source.getRow() - destination.getRow());
 
         if (distance != 1)
             return false;
 
-        if (targetTile.getType() == Tiles.RIVER)
+        if (targetTile.getType().isWaterBased())
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
-                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)
             return true;
 
-        if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetPiece.getPlayer().equals(movingPlayer))
             return false;
 
-        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayer().equals(movingPiece.getPlayer()))
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();
@@ -288,13 +290,14 @@ public abstract class AnimalPiece {
     }
 
     /**
-     * Returns the index of the player that has control of this animal piece
+     * Returns the Player object that has control of this animal piece
      *
-     * @return the index of the controlling player
+     * @return the player instance that has control of this piece
      *
-     * @since 1.0
+     * @since 2.2
+     * @see Player
      */
-    public int getPlayerIndex() {
-        return playerIndex;
+    public Player getPlayer() {
+        return PLAYER;
     }
 }

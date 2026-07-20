@@ -1,6 +1,7 @@
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.26
  */
 public class CanMoveToTest {
+    private static final Player p1 = new Player("P1", Color.RED);
+    private static final Player p2 = new Player("P2", Color.BLUE);
+
     private static List<TestBuilder<BoardCell, Exception>> provideForIllegalArgumentTests() {
         List<TestBuilder<BoardCell, Exception>> tests = new ArrayList<>();
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1) {
+            if (piece.getPlayer().equals(p1)) {
                 tests.add(new TestBuilder<>(new BoardCell(piece, new BoardTile(Tiles.LAND), 0, 0), new IllegalArgumentException()));
             }
         }
@@ -46,7 +50,7 @@ public class CanMoveToTest {
         BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1) {
+            if (piece.getPlayer().equals(p1)) {
                 tests.add(new TestBuilder<>(new BoardCell(piece, land, 0, 0), null));
             }
         }
@@ -77,7 +81,7 @@ public class CanMoveToTest {
         BoardCell expected = new BoardCell(land, 0, 1);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1)
+            if (piece.getPlayer().equals(p1))
                 tests.add(new TestBuilder<>(new BoardCell(piece, land, 0, 0), expected));
         }
 
@@ -101,7 +105,7 @@ public class CanMoveToTest {
         BoardTile river = new BoardTile(Tiles.RIVER);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() != 1) {
+            if (!piece.getPlayer().equals(p1)) {
                 continue;
             }
 
@@ -136,7 +140,7 @@ public class CanMoveToTest {
         BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1) {
+            if (piece.getPlayer().equals(p1)) {
                 tests.add(new TestBuilder<>(new BoardCell(piece, land, 0, 0), null));
             }
         }
@@ -149,7 +153,7 @@ public class CanMoveToTest {
     public void adjacentToRiverTileWithAPiece(TestBuilder<BoardCell, BoardCell> test) {
         BoardTile land = new BoardTile(Tiles.LAND);
         BoardTile river = new BoardTile(Tiles.RIVER);
-        BoardCell[] path = {new BoardCell(new Mouse(2), river, 0, 1), new BoardCell(river, 0, 2), new BoardCell(land, 0, 3)};
+        BoardCell[] path = {new BoardCell(new Mouse(p2), river, 0, 1), new BoardCell(river, 0, 2), new BoardCell(land, 0, 3)};
         BoardCell source = test.getInput();
 
         assertEquals(test.getExpected(), source.getPiece().canMoveTo(source, path));
@@ -161,7 +165,7 @@ public class CanMoveToTest {
         BoardTile river = new BoardTile(Tiles.RIVER);
 
         for (AnimalPiece piece : TestBuilder.provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1) {
+            if (piece.getPlayer().equals(p1)) {
                 BoardCell expected = (piece instanceof Mouse) ? new BoardCell(river, 0, 1) : null;
 
                 tests.add(new TestBuilder<>(new BoardCell(piece, land, 0, 0), expected));

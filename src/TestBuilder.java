@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,9 @@ import java.util.List;
 public class TestBuilder<I, E> {
     private final I INPUT;
     private final E EXPECTED;
+
+    private static final Player p1 = new Player("P1", Color.RED);
+    private static final Player p2 = new Player("P2", Color.BLUE);
 
     /**
      * Constructs a test case with the specified input and expected output of the test
@@ -81,14 +85,14 @@ public class TestBuilder<I, E> {
      */
     public static List<AnimalPiece> provideAllPieces() {
         return List.of(
-                new Mouse(1), new Mouse(2),
-                new Cat(1), new Cat(2),
-                new Wolf(1), new Wolf(2),
-                new Dog(1), new Dog(2),
-                new Leopard(1), new Leopard(2),
-                new Tiger(1), new Tiger(2),
-                new Lion(1), new Lion(2),
-                new Elephant(1), new Elephant(2)
+                new Mouse(p1), new Mouse(p2),
+                new Cat(p1), new Cat(p2),
+                new Wolf(p1), new Wolf(p2),
+                new Dog(p1), new Dog(p2),
+                new Leopard(p1), new Leopard(p2),
+                new Tiger(p1), new Tiger(p2),
+                new Lion(p1), new Lion(p2),
+                new Elephant(p1), new Elephant(p2)
         );
     }
 
@@ -133,7 +137,7 @@ public class TestBuilder<I, E> {
         BoardTile land = new BoardTile(Tiles.LAND);
 
         for (AnimalPiece piece : provideAllPieces()) {
-            if (piece.getPlayerIndex() == 1) {
+            if (piece.getPlayer().equals(p1)) {
                 boolean isExcluded = excluded.contains(piece);
                 int expectedOutcome = (isExcluded) ? excludedExpected : defaultExpected;
 

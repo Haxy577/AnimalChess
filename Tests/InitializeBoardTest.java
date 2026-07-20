@@ -1,6 +1,7 @@
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.awt.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.26
  */
 public class InitializeBoardTest {
+    private static final Player p1 = new Player("P1", Color.RED);
+    private static final Player p2 = new Player("P2", Color.BLUE);
+
     private static List<TestBuilder<String, Exception>> provideForParameterIsNull() {
         return List.of(
                 new TestBuilder<>(null, new IllegalArgumentException())
@@ -24,7 +28,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForParameterIsNull")
     public void parameterIsNull(TestBuilder<String, Exception> test) {
-        GameBoard gameBoard = new GameBoard();
+        GameBoard gameBoard = new GameBoard(p1,p2);
 
         Exception e = assertThrows(test.getExpected().getClass(), () -> gameBoard.initialize(test.getInput()));
         assertEquals("Invalid pattern. The pattern cannot be null", e.getMessage());
@@ -40,7 +44,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForPatternIsEmpty")
     public void patternIsEmpty(TestBuilder<String, Exception> test) {
-        GameBoard gameBoard = new GameBoard();
+        GameBoard gameBoard = new GameBoard(p1,p2);
 
         Exception e = assertThrows(test.getExpected().getClass(), () -> gameBoard.initialize(test.getInput()));
         assertEquals("Invalid pattern. There must be a divider character '|' separating the two different patterns", e.getMessage());
@@ -56,7 +60,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForOnlyContainsSeparatorChar")
     public void onlyContainsSeparatorChar(TestBuilder<String, Exception> test) {
-        GameBoard gameBoard = new GameBoard();
+        GameBoard gameBoard = new GameBoard(p1,p2);
 
         Exception e = assertThrows(test.getExpected().getClass(), () -> gameBoard.initialize(test.getInput()));
         assertEquals("Invalid board pattern structure. The pattern must only consists of digits and a character [LRTtAa]", e.getMessage());
@@ -74,7 +78,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForBoardPatternFirst")
     public void boardPatternFirst(TestBuilder<String, String> test) {
-        assertEquals(new GameBoard(2,2, test.getInput()).toPattern(), test.getExpected());
+        assertEquals(new GameBoard(2,2, test.getInput(), p1,p2).toPattern(), test.getExpected());
     }
 
     private static List<TestBuilder<String, String>> provideForPiecePatternFirst() {
@@ -89,7 +93,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForPiecePatternFirst")
     public void piecePatternFirst(TestBuilder<String, String> test) {
-        assertEquals(new GameBoard(2,2, test.getInput()).toPattern(), test.getExpected());
+        assertEquals(new GameBoard(2,2, test.getInput(), p1,p2).toPattern(), test.getExpected());
     }
 
     private static List<TestBuilder<String, Exception>> provideForOnlyPiecePattern() {
@@ -104,7 +108,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForOnlyPiecePattern")
     public void onlyPiecePattern(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertEquals("Invalid board pattern structure. The pattern must only consists of digits and a character [LRTtAa]", e.getMessage());
     }
 
@@ -120,7 +124,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForOnlyBoardPattern")
     public void onlyBoardPattern(TestBuilder<String, String> test) {
-        assertEquals(new GameBoard(2,2, test.getInput()).toPattern(), test.getExpected());
+        assertEquals(new GameBoard(2,2, test.getInput(), p1,p2).toPattern(), test.getExpected());
     }
 
     private static List<TestBuilder<String, Exception>> provideForInvalidBoardCharacters() {
@@ -135,7 +139,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForInvalidBoardCharacters")
     public void invalidBoardCharacters(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertEquals("Invalid board pattern structure. The pattern must only consists of digits and a character [LRTtAa]", e.getMessage());
     }
 
@@ -151,7 +155,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForInvalidPieceCharacters")
     public void invalidPieceCharacters(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertEquals("Invalid piece pattern structure. The pattern must only consists of digits and a character [MmCcWwDdPpNnGgEe]", e.getMessage());
     }
 
@@ -171,7 +175,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForBoardPatternSizeNotEqualToBoard")
     public void boardPatternSizeNotEqualToBoard(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertTrue(e.getMessage().contains("Invalid board pattern. The pattern size does not equal the board size."));
     }
 
@@ -191,7 +195,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForPiecePatternSizeNotEqualToBoard")
     public void piecePatternSizeNotEqualToBoard(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertTrue(e.getMessage().contains("Invalid piece pattern. The pattern size exceeds the board size."));
     }
 
@@ -207,7 +211,7 @@ public class InitializeBoardTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideForOnlyOnePlayerDen")
     public void onlyOnePlayerDen(TestBuilder<String, Exception> test) {
-        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput()));
+        Exception e = assertThrows(test.getExpected().getClass(), () -> new GameBoard(2,2, test.getInput(), p1,p2));
         assertTrue(e.getMessage().contains("Invalid board pattern. There must be at least 1 animal den tile for player"));
     }
 }

@@ -37,6 +37,9 @@ public class GameBoard {
      */
     private final BoardCell[][] BOARD;
 
+    private final Player PLAYER1;
+    private final Player PLAYER2;
+
     /**
      * Represents a gameboard pattern that has 7 rows, 9 columns, and the default layout of the game Animal Chess
      * in a horizontal orientation where the first player is at the left while the second player is at the right
@@ -53,15 +56,23 @@ public class GameBoard {
      * @param row the amount of rows the board will have
      * @param column the amount of columns every row would have
      * @param pattern the layout of tiles and pieces
+     * @throws IllegalArgumentException if the row and/or column is less than 1 and/or the specified player object(s) is/are null
      *
      * @since 1.11
      * @see BoardCell
      * @see #initialize(String)
      */
-    public GameBoard(int row, int column, String pattern) {
+    public GameBoard(int row, int column, String pattern, Player p1, Player p2) {
+        if (row < 1 || column < 1)
+            throw new IllegalArgumentException("The specified row and/or column cannot be less than 1");
+        if (p1 == null || p2 == null)
+            throw new IllegalArgumentException("The specified player(s) cannot be null");
+
         ROWS = row;
         COLUMNS = column;
         BOARD = new BoardCell[row][column];
+        PLAYER1 = p1;
+        PLAYER2 = p2;
         initialize(pattern);
     }
 
@@ -73,20 +84,20 @@ public class GameBoard {
      * @see BoardCell
      * @see #DEFAULT_PATTERN
      */
-    public GameBoard() {
-        this(7, 9, DEFAULT_PATTERN);
+    public GameBoard(Player p1, Player p2) {
+        this(7, 9, DEFAULT_PATTERN, p1, p2);
     }
 
     /**
-     * Constructs a gameboard that has 9 rows and 7 columns with a custom board layout based on the pattern
+     * Constructs a gameboard that has 7 rows and 9 columns with a custom board layout based on the pattern
      *
      * @param pattern the board tile and piece layout of the gameboard
      *
      * @since 1.7
      * @see #initialize(String)
      */
-    public GameBoard(String pattern) {
-        this(9, 7, pattern);
+    public GameBoard(String pattern, Player p1, Player p2) {
+        this(7, 9, pattern, p1, p2);
     }
 
     /**
@@ -149,15 +160,15 @@ public class GameBoard {
      * Gets all the available pieces the player has and stores the position of each piece
      * in a list
      *
-     * @param playerIndex the player index of the player that currently has the turn
-     * @throws IllegalArgumentException if the specified player index is not 1 or 2
-     * @return all the available pieces of a player
+     * @param player the player object to search for
+     * @throws IllegalArgumentException if the specified player is null
+     * @return all the available pieces of the specified player
      *
      * @since 1.1
      * @see BoardCell
      */
-    public List<BoardCell> getAllPlayerPieces(int playerIndex) throws IllegalArgumentException {
-        if (playerIndex < 1 || playerIndex > 2) throw new IllegalArgumentException("The player index can only be either 1 or 2");
+    public List<BoardCell> getAllPlayerPieces(Player player) throws IllegalArgumentException {
+        if (player == null) throw new IllegalArgumentException("The specified player cannot be null");
 
         List<BoardCell> allPieces = new ArrayList<>();
 
@@ -166,7 +177,7 @@ public class GameBoard {
                 if (column.getPiece() == null)
                     continue;
 
-                if (column.getPiece().getPlayerIndex() == playerIndex)
+                if (player.equals(column.getPiece().getPlayer()))
                     allPieces.add(column);
             }
         }
@@ -177,18 +188,18 @@ public class GameBoard {
     /**
      * Gets all the available moves of a player within a single turn
      *
-     * @param playerIndex the player index of the player that currently has the turn
-     * @throws IllegalArgumentException if the specified player index is not 1 or 2
+     * @param player the player index of the player that currently has the turn
+     * @throws IllegalArgumentException if the specified player is null
      * @return a map that contains each piece as the key and the available moves of each piece
      * as the values
      *
      * @since 1.1
      */
-    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(int playerIndex) throws IllegalArgumentException {
-        if (playerIndex < 1 || playerIndex > 2) throw new IllegalArgumentException("The player index can only be either 1 or 2");
+    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(Player player) throws IllegalArgumentException {
+        if (player == null) throw new IllegalArgumentException("The specified player cannot be null");
 
         HashMap<BoardCell, List<BoardCell>> allMoves = new HashMap<>();
-        List<BoardCell> allPieces = getAllPlayerPieces(playerIndex);
+        List<BoardCell> allPieces = getAllPlayerPieces(player);
 
         for (BoardCell cell : allPieces) {
             allMoves.put(cell, cell.getPiece().getAllMoves(cell, BOARD));
@@ -382,10 +393,10 @@ public class GameBoard {
                 BoardTile tile = switch (tileChar) {
                     case 'L' -> new BoardTile(Tiles.LAND);
                     case 'R' -> new BoardTile(Tiles.RIVER);
-                    case 'T' -> new BoardTile(Tiles.TRAP, 1);
-                    case 't' -> new BoardTile(Tiles.TRAP, 2);
-                    case 'A' -> new BoardTile(Tiles.ANIMAL_DEN, 1);
-                    case 'a' -> new BoardTile(Tiles.ANIMAL_DEN, 2);
+                    case 'T' -> new BoardTile(Tiles.TRAP, PLAYER1);
+                    case 't' -> new BoardTile(Tiles.TRAP, PLAYER2);
+                    case 'A' -> new BoardTile(Tiles.ANIMAL_DEN, PLAYER1);
+                    case 'a' -> new BoardTile(Tiles.ANIMAL_DEN, PLAYER2);
                     default -> throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
                 };
 
@@ -435,20 +446,20 @@ public class GameBoard {
         for (String token : tokens) {
             char tileChar = token.charAt(token.length() - 1);
             int distance = (token.length() == 1) ? 0 : Integer.parseInt(token.substring(0, token.length() - 1));
-            int playerIndex = (Character.isUpperCase(tileChar)) ? 1 : 2;
+            Player player = (Character.isUpperCase(tileChar)) ? PLAYER1 : PLAYER2;
 
             boardIndex += distance;
             int row = boardIndex / COLUMNS;
             int col = boardIndex % COLUMNS;
             AnimalPiece piece = switch (tileChar) {
-                case 'M','m' -> new Mouse(playerIndex);
-                case 'C','c' -> new Cat(playerIndex);
-                case 'W','w' -> new Wolf(playerIndex);
-                case 'D','d' -> new Dog(playerIndex);
-                case 'P','p' -> new Leopard(playerIndex);
-                case 'N','n' -> new Lion(playerIndex);
-                case 'G','g' -> new Tiger(playerIndex);
-                case 'E','e' -> new Elephant(playerIndex);
+                case 'M','m' -> new Mouse(player);
+                case 'C','c' -> new Cat(player);
+                case 'W','w' -> new Wolf(player);
+                case 'D','d' -> new Dog(player);
+                case 'P','p' -> new Leopard(player);
+                case 'N','n' -> new Lion(player);
+                case 'G','g' -> new Tiger(player);
+                case 'E','e' -> new Elephant(player);
                 default -> throw new IllegalArgumentException("Invalid piece character. Expected: [MmCcWwDdPpNnGgEe], Actual: " + tileChar);
             };
 
@@ -571,7 +582,7 @@ public class GameBoard {
                         default -> '?';
                     };
 
-                    pieceChar = (piece.getPlayerIndex() == 1) ? pieceChar : Character.toLowerCase(pieceChar);
+                    pieceChar = (PLAYER1.equals(piece.getPlayer())) ? pieceChar : Character.toLowerCase(pieceChar);
 
                     if (distance > 0)
                         pattern.append(distance);
@@ -661,8 +672,8 @@ public class GameBoard {
         return switch (tile.getType()) {
             case LAND -> 'L';
             case RIVER -> 'R';
-            case TRAP -> (tile.getPlayerIndex() == 1) ? 'T' : 't';
-            case ANIMAL_DEN -> (tile.getPlayerIndex() == 1) ? 'A' : 'a';
+            case TRAP -> (PLAYER1.equals(tile.getPlayer())) ? 'T' : 't';
+            case ANIMAL_DEN -> (PLAYER1.equals(tile.getPlayer())) ? 'A' : 'a';
         };
     }
 
@@ -705,6 +716,14 @@ public class GameBoard {
      */
     public int getRows() {
         return ROWS;
+    }
+
+    public Player getPlayer1() {
+        return PLAYER1;
+    }
+
+    public Player getPlayer2() {
+        return PLAYER2;
     }
 
     /**

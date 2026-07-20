@@ -2,7 +2,7 @@
  * Represents the "Elephant" piece in the game Animal Chess.
  * <p>
  * This piece has the rank of 8.
- * It also has an immutable playerIndex field which represents which player
+ * It also has an immutable player field which represents which player
  * has control over this piece.
  * </p>
  * <p>
@@ -14,24 +14,26 @@
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
+ * @see Player
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.1
  */
 public class Elephant extends AnimalPiece{
 
     /**
-     * Creates an animal piece with the rank of 8, and the index
+     * Creates an animal piece with the rank of 8, and the player object
      * of the player that has control of this piece.
      *
-     * @param playerIndex the index of the player controlling this animal piece
+     * @param player the player object that has control/ownership of this piece
      *
      * @since 1.1
      * @see AnimalPiece
+     * @see Player
      */
-    public Elephant(int playerIndex) {
-        super(8, playerIndex);
+    public Elephant(Player player) {
+        super(8, player);
     }
 
     /**
@@ -45,6 +47,7 @@ public class Elephant extends AnimalPiece{
      * <li>A piece can always move to a cell that is empty/does not contain a piece</li>
      * <li>A piece cannot move to capture a piece that is controlled by the
      * same player</li>
+     * <li>A piece can always move to its own trap tile as long as it does not contain an enemy's mouse animal piece</li>
      * <li>A piece cannot move to capture an opponent's piece with a higher rank than its own rank</li>
      * <li>The elephant animal piece cannot capture an enemy's mouse animal piece</li>
      * </ol>
@@ -70,8 +73,8 @@ public class Elephant extends AnimalPiece{
         AnimalPiece movingPiece = source.getPiece();
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile targetTile = destination.getTile();
-        int distance = Math.abs(source.getCol() - destination.getCol()) +
-                Math.abs(source.getRow() - destination.getRow());
+        Player movingPlayer = movingPiece.getPlayer();
+        int distance = Math.abs(source.getCol() - destination.getCol()) + Math.abs(source.getRow() - destination.getRow());
 
         if (distance != 1)
             return false;
@@ -79,15 +82,17 @@ public class Elephant extends AnimalPiece{
         if (targetTile.getType() == Tiles.RIVER)
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
-                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)
             return true;
 
-        if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetPiece.getPlayer().equals(movingPlayer))
             return false;
+
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayer().equals(movingPiece.getPlayer()))
+            return !(targetPiece instanceof Mouse);
 
         return !(targetPiece instanceof Mouse) && targetPiece.getRank() <= movingPiece.getRank();
     }

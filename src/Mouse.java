@@ -2,7 +2,7 @@
  * Represents the "Mouse" piece in the game Animal Chess.
  * <p>
  * This piece has the rank of 1.
- * It also has an immutable playerIndex field which represents which player
+ * It also has an immutable Player field which represents which player
  * has control over this piece.
  * </p>
  * <p>
@@ -16,23 +16,25 @@
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
+ * @see Player
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.0
  */
 public class Mouse extends AnimalPiece {
 
     /**
-     * Creates an animal piece with rank 1, and the index of the player that has control of this piece.
+     * Creates an animal piece with rank 1, and the player object of the player that has control of this piece.
      *
-     * @param playerIndex the index of the player controlling this animal piece
+     * @param player the player object that has control/ownership of this piece
      *
      * @since 1.0
      * @see AnimalPiece
+     * @see Player
      */
-    public Mouse(int playerIndex) {
-        super(1, playerIndex);
+    public Mouse(Player player) {
+        super(1, player);
     }
 
     /**
@@ -71,14 +73,13 @@ public class Mouse extends AnimalPiece {
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile sourceTile = source.getTile();
         BoardTile targetTile = destination.getTile();
-        int distance = Math.abs(source.getCol() - destination.getCol()) +
-                Math.abs(source.getRow() - destination.getRow());
+        Player movingPlayer = movingPiece.getPlayer();
+        int distance = Math.abs(source.getCol() - destination.getCol()) + Math.abs(source.getRow() - destination.getRow());
 
         if (distance != 1)
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
-                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)
@@ -87,10 +88,10 @@ public class Mouse extends AnimalPiece {
         if (targetTile.getType().isLandBased() != sourceTile.getType().isLandBased())
             return false;
 
-        if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetPiece.getPlayer().equals(movingPlayer))
             return false;
 
-        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayer().equals(movingPiece.getPlayer()))
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank() || targetPiece instanceof Elephant;

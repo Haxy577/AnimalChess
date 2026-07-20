@@ -1,3 +1,5 @@
+import java.awt.*;
+
 /**
  * Represents an individual player.
  * <p>
@@ -6,10 +8,10 @@
  * Lastly, it also has a mutable field of index which represents the order players would take turns within the game.
  * </p>
  *
- * @see PlayerColor
+ * @see Color
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.26
  */
 public class Player {
@@ -21,92 +23,39 @@ public class Player {
     private String name;
 
     /**
-     * The desired foreground and background colors of the player
+     * The desired color of the player to represent its pieces
      *
-     * @since 1.26
-     * @see PlayerColor
+     * @since 2.2
+     * @see java.awt.Color
      */
-    private PlayerColor color;
+    private Color color;
 
     /**
-     * Represents the order players would take turns within the game
+     * Constructs the player with the specified name and color
      *
-     * @since 1.26
+     * @param name the username of the player
+     * @param color the color
+     * @throws IllegalArgumentException if the specified name and/or color is null
      */
-    private int index;
-
-    /**
-     * Constructs a player object with the specified name, a default PlayerColor of red, and an index of 0
-     *
-     * @param name the desired username of the player
-     *
-     * @since 1.26
-     */
-    public Player(String name) {
-        this(name, PlayerColor.RED);
-    }
-
-    /**
-     * Constructs a player object with the specified name and PlayerColor, with an initial index of 0
-     *
-     * @param name the desired username of the player
-     * @param ansiColor the desired PlayerColor of the player
-     *
-     * @since 1.26
-     * @see PlayerColor
-     */
-    public Player(String name, PlayerColor ansiColor) {
-        this(name, ansiColor, 0);
-    }
-
-    /**
-     * Constructs a player object with the specified name, PlayerColor, and index
-     *
-     * @param name the desired username of the player
-     * @param ansiColor the desired PlayerColor of the player
-     * @param index the turn order of the player relative to other players
-     *
-     * @since 1.26
-     * @see PlayerColor
-     */
-    public Player(String name, PlayerColor ansiColor, int index) {
-        this.name = name;
-        color = ansiColor;
-        this.index = index;
-    }
-
-    /**
-     * Swaps the current values contained within this object with the specified object
-     *
-     * @param player the other player object to swap with
-     *
-     * @since 1.26
-     */
-    public void swap(Player player) {
-        String name = player.getName();
-        PlayerColor color = player.getAnsiColor();
-        int index = player.getIndex();
-
-        player.setName(this.name);
-        player.setAnsiColor(this.color);
-        player.setIndex(this.index);
+    public Player(String name, Color color) throws IllegalArgumentException {
+        if (name == null || color == null)
+            throw new IllegalArgumentException("The name and/or color cannot be null");
 
         this.name = name;
         this.color = color;
-        this.index = index;
     }
 
     /**
      * Converts the fields of this class to a string representation
      *
-     * @return the name, color, and index of the player
+     * @return the name and color chosen by the player
      *
      * @since 1.26
-     * @see PlayerColor
+     * @see Color
      */
     @Override
     public String toString() {
-        return "Player[name=" + name + ",color=" + color + ",index=" + index + "]";
+        return "Player[name=" + name + ",color=" + color + "]";
     }
 
     /**
@@ -116,7 +65,7 @@ public class Player {
      * @return {@code true} if the name, color, and index of the objects are the same, {@code false} otherwise
      *
      * @since 1.26
-     * @see PlayerColor
+     * @see Color
      */
     @Override
     public boolean equals(Object obj) {
@@ -126,7 +75,7 @@ public class Player {
         if (!(obj instanceof Player player))
             return false;
 
-        return name.equals(player.getName()) && color.equals(player.getAnsiColor()) && index == player.getIndex();
+        return name.equals(player.getName()) && color.equals(player.getColor());
     }
 
     /**
@@ -143,44 +92,18 @@ public class Player {
     /**
      * A getter method for the player's color
      *
-     * @return the PlayerColor the player desired
+     * @return the color the player desired to represent its pieces
      *
      * @since 1.26
-     * @see PlayerColor
+     * @see Color
      */
-    public PlayerColor getAnsiColor() {
+    public Color getColor() {
         return color;
     }
 
-    /**
-     * A getter method for the player's index
-     *
-     * @return the set index of the player
-     *
-     * @since 1.26
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    /**
-     * A setter method for the index field of this class
-     *
-     * @param index the desired index to be set
-     * @throws IllegalArgumentException if the specified index is neither 1 nor 2
-     *
-     * @since 1.26
-     */
-    public void setIndex(int index) throws IllegalArgumentException {
-        if (index < 1 || index > 2)
-            throw new IllegalArgumentException("The index can only be either 1 or 2");
-
-        this.index = index;
-    }
 
     /**
      * A setter method for the name field of this class
-     *
      * @param name the desired name to be set
      *
      * @since 1.26
@@ -195,9 +118,9 @@ public class Player {
      * @param color the desired PlayerColor to be set
      *
      * @since 1.26
-     * @see PlayerColor
+     * @see Color
      */
-    public void setAnsiColor(PlayerColor color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 }

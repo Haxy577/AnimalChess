@@ -1,12 +1,16 @@
 /**
- * Represents the type of board tile a specific board cell has and the index of the player
- * that has ownership of this specific tile.
+ * Represents the type of board tile a specific board cell has
+ * <p>
+ * This has an immutable field of TYPE which represents the type of tile this object would be. Furthermore,
+ * it also has an immutable field of PLAYER which represents the player object that has ownership of this tile.
+ * </p>
  *
  * @see Tiles
  * @see BoardCell
+ * @see Player
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.11 7/1/2026
+ * @version 2.2 7/20/2026
  * @since 1.1
  */
 public class BoardTile {
@@ -20,49 +24,48 @@ public class BoardTile {
     private final Tiles TYPE;
 
     /**
-     * Represents what player has control over this tile. This field can only have 3 possible values:
-     * 1 represents player 1, 2 represents player 2, -1 represents that no player has control over this
-     * tile. This field cannot be changed once set
+     * Represents what player has control over this tile. This field can either be
+     * null or the Player object that has ownership of the tile. THIs field cannot be
+     * changed once set.
      *
-     * @since 1.1
+     * @since 2.2
+     * @see Player
      */
-    private final int PLAYER_INDEX;
+    private final Player PLAYER;
 
     /**
-     * Initializes the designated type of this board tile. {@link Tiles} contains all
-     * possible types. Also initializes the player index to be -1.
+     * Constructs the board tile with the specified Tile type with the player field set to null. Furthermore,
+     * only the following tile types can be set this way: LAND, RIVER
      *
      * @param type the type of BoardTiles this tile would be
      * @throws IllegalArgumentException if the specified type is either a trap or an animal den
      *
-     * @since 1.2
+     * @since 2.2
      * @see Tiles
+     * @see Player
      */
     public BoardTile(Tiles type) {
-        if (type == Tiles.TRAP || type == Tiles.ANIMAL_DEN)
-            throw new IllegalArgumentException("The specified board tile must have a player index");
-
-        this.TYPE = type;
-        this.PLAYER_INDEX = -1;
+        this(type, null);
     }
 
     /**
-     * Initializes the designated type of this board tile and the player index.
-     * {@link Tiles} contains all possible types.
+     * Constructs the object with the specified tile type and player object.
      *
      * @param type the type of BoardTiles this tile would be
-     * @throws IllegalArgumentException if the player index does not equal to -1, 1, or 2
+     * @param player the player object that has ownership of this tile
+     * @throws IllegalArgumentException if the specified tile is either a trap or an animal den
+     * and the specified player object is null
      *
-     * @since 1.1
+     * @since 2.2
      * @see Tiles
+     * @see Player
      */
-    public BoardTile(Tiles type, int playerIndex) throws IllegalArgumentException {
-        TYPE = type;
+    public BoardTile(Tiles type, Player player) throws IllegalArgumentException {
+        if ((type == Tiles.TRAP || type == Tiles.ANIMAL_DEN) && player == null)
+            throw new IllegalArgumentException("The player object cannot be null if the tile type to be created is either a trap or animal den");
 
-        if (playerIndex == -1 || playerIndex == 1 || playerIndex == 2)
-            PLAYER_INDEX = playerIndex;
-        else
-            throw new IllegalArgumentException("Invalid player index. Can only be: -1, 1, or 2");
+        TYPE = type;
+        PLAYER = player;
     }
 
     /**
@@ -78,36 +81,39 @@ public class BoardTile {
     }
 
     /**
-     * A getter for the playerIndex field
+     * A getter to get which player owns this tile
      *
-     * @return the index of the player that has control of this tile
+     * @return the player object that has control of this tile
      *
-     * @since 1.1
+     * @since 2.2
+     * @see Player
      */
-    public int getPlayerIndex() {
-        return PLAYER_INDEX;
+    public Player getPlayer() {
+        return PLAYER;
     }
 
     /**
      * Converts the field details of this class to a string
      *
-     * @return the type and player index of the tile
+     * @return the type and player object of the tile
      *
      * @since 1.5
      * @see Tiles
+     * @see Player#toString()
      */
     @Override
     public String toString() {
-        return "Tile[type=" + TYPE + ",player=" + PLAYER_INDEX + "]";
+        return "Tile[type=" + TYPE + ",player=" + PLAYER + "]";
     }
 
     /**
-     * Compares the specified object with the current object based on its type and player index it has
+     * Compares the specified object with the current object based on its type and player object it has
      * @param obj   the reference object with which to compare.
      * @return true if the fields of the objects are the same, false otherwise
      *
-     * @since 1.11
+     * @since 2.2
      * @see Tiles
+     * @see Player#equals(Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -117,6 +123,9 @@ public class BoardTile {
         if (!(obj instanceof BoardTile target))
             return false;
 
-        return target.getType() == TYPE && target.getPlayerIndex() == PLAYER_INDEX;
+        if (PLAYER == null)
+            return target.getType() == TYPE && target.getPlayer() == null;
+
+        return target.getType() == TYPE && PLAYER.equals(target.getPlayer());
     }
 }

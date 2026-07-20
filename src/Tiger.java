@@ -2,7 +2,7 @@
  * Represents the "Tiger" piece in the game Animal Chess.
  * <p>
  * This piece has the rank of 6.
- * It also has an immutable playerIndex field which represents which player
+ * It also has an immutable player field which represents which player
  * has control over this piece.
  * </p>
  * <p>
@@ -16,24 +16,26 @@
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
+ * @see Player
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.1
  */
 public class Tiger extends AnimalPiece{
 
     /**
-     * Creates an animal piece with the rank of 6, and the index
+     * Creates an animal piece with the rank of 6, and the player object
      * of the player that has control of this piece.
      *
-     * @param playerIndex the index of the player controlling this animal piece
+     * @param player the player object that has control/ownership of this piece
      *
      * @since 1.1
      * @see AnimalPiece
+     * @see Player
      */
-    public Tiger(int playerIndex) {
-        super(6, playerIndex);
+    public Tiger(Player player) {
+        super(6, player);
     }
 
     /**
@@ -135,21 +137,21 @@ public class Tiger extends AnimalPiece{
         AnimalPiece movingPiece = source.getPiece();
         AnimalPiece targetPiece = destination.getPiece();
         BoardTile targetTile = destination.getTile();
+        Player movingPlayer = movingPiece.getPlayer();
 
         if (targetTile.getType() == Tiles.RIVER)
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN &&
-                targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)
             return true;
 
-        if (targetPiece.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetPiece.getPlayer().equals(movingPlayer))
             return false;
 
-        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayerIndex() == movingPiece.getPlayerIndex())
+        if (targetTile.getType() == Tiles.TRAP && targetTile.getPlayer().equals(movingPiece.getPlayer()))
             return true;
 
         return targetPiece.getRank() <= movingPiece.getRank();

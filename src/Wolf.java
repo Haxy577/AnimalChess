@@ -2,7 +2,7 @@
  * Represents the "Wolf" piece in the game Animal Chess.
  * <p>
  * This piece has the rank of 3.
- * It also has an immutable playerIndex field which represents which player
+ * It also has an immutable player field which represents which player
  * has control over this piece.
  * </p>
  * <p>
@@ -11,24 +11,25 @@
  *
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  * @see AnimalPiece
+ * @see Player
  *
  * @author Richmond Jase Von M. Salvador
- * @version 1.26 7/11/2026
+ * @version 2.2 7/20/2026
  * @since 1.1
  */
 public class Wolf extends AnimalPiece{
 
     /**
-     * Creates an animal piece with the rank of 3, and the index
+     * Creates an animal piece with the rank of 3, and a player object
      * of the player that has control of this piece.
      *
-     * @param playerIndex the index of the player controlling this animal piece
+     * @param player the player object that has control/ownership of this piece
      *
      * @since 1.1
      * @see AnimalPiece
      */
-    public Wolf(int playerIndex) {
-        super(3, playerIndex);
+    public Wolf(Player player) {
+        super(3, player);
     }
 
     /**
