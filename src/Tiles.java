@@ -5,16 +5,16 @@ import java.awt.*;
  * color to be displayed
  *
  * @author Richmond Jase Von M. Salvador
- * @version 2.1 7/19/2026
+ * @version 2.3 7/20/2026
  * @since 1.0
  * @see <a href="https://ancientchess.com/page/play-doushouqi.htm">Animal Chess Rules</a>
  */
 public enum Tiles {
 
-    LAND(Color.GREEN),
-    RIVER(Color.CYAN),
-    TRAP(Color.RED),
-    ANIMAL_DEN(Color.ORANGE);
+    LAND(new Color(0, 153, 69)),
+    RIVER(new Color(64, 107, 166)),
+    TRAP(new Color(159, 67, 67)),
+    ANIMAL_DEN(null);
 
     /**
      * The assigned color to the specific type of tile
