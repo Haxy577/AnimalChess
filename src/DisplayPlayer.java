@@ -12,6 +12,8 @@ import java.awt.*;
  */
 public class DisplayPlayer extends JPanel {
     private final Player PLAYER;
+    private final Dimension DIMENSION;
+    private final AssetsManager ASSETS;
 
     /**
      * Constructs the object with the specified dimension and the player object to be displayed
@@ -24,7 +26,7 @@ public class DisplayPlayer extends JPanel {
      * @since 2.1
      * @see Player
      */
-    public DisplayPlayer(Dimension dimension, Player player) throws IllegalArgumentException {
+    public DisplayPlayer(AssetsManager assets, Dimension dimension, Player player) throws IllegalArgumentException {
         if (dimension == null || player == null)
             throw new IllegalArgumentException("The parameters cannot be null");
 
@@ -32,8 +34,34 @@ public class DisplayPlayer extends JPanel {
             throw new IllegalArgumentException("The given dimension can only contain positive values");
 
         PLAYER = player;
+        DIMENSION = dimension;
+        ASSETS = assets;
 
         setPreferredSize(dimension);
-        setBackground(Color.ORANGE);
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBackground(Color.DARK_GRAY);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+        final int padding = 7;
+        final int iconScale = DIMENSION.height - padding * 2;
+
+        g2d.setColor(PLAYER.getColor());
+        g2d.fillRoundRect(padding, padding, iconScale, iconScale, 10, 10);
+
+        final int nameX = DIMENSION.height;
+        final int nameY = (int) (DIMENSION.height / 2.5);
+        final int nameScale = (int) (iconScale / 2.5);
+
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.PLAIN, nameScale));
+        g2d.drawString(PLAYER.getName(), nameX, nameY);
     }
 }

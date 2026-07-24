@@ -39,10 +39,11 @@ public class DisplayPlayArea extends JPanel {
         int scale = dimension.width / board.getColumns();
         int boardHeight = scale * board.getRows();
         int playerHeight = (dimension.height - boardHeight) / 2;
+        AssetsManager assets = new AssetsManager();
 
-        DisplayPlayer player1 = new DisplayPlayer(new Dimension(dimension.width, playerHeight), p1);
-        DisplayPlayer player2 = new DisplayPlayer(new Dimension(dimension.width, playerHeight), p2);
-        DisplayBoard gameboard = new DisplayBoard(new Dimension(dimension.width, boardHeight), board);
+        DisplayPlayer player1 = new DisplayPlayer(assets, new Dimension(dimension.width, playerHeight), p1);
+        DisplayPlayer player2 = new DisplayPlayer(assets, new Dimension(dimension.width, playerHeight), p2);
+        DisplayBoard gameboard = new DisplayBoard(assets, new Dimension(dimension.width, boardHeight), board);
 
         add(player1, BorderLayout.SOUTH);
         add(player2, BorderLayout.NORTH);

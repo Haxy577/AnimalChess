@@ -43,13 +43,13 @@ public class Display {
         int height = RESOLUTION.height;
 
         int maxBoardWidth = (int) (2.0 / 3.0 * width);
-        int maxBoardHeight = (int) (height * 3.0 / 4.0 * .93); // To leave some space for the menu bar
+        int maxBoardHeight = (int) (height * 7.0 / 8.0 * .95); // To leave some space for the menu bar
 
         int scale = Math.min(maxBoardHeight / board.getRows(), maxBoardWidth / board.getColumns());
 
         int fittedBoardWidth = board.getColumns() * scale;
         int fittedBoardHeight = board.getRows() * scale;
-        int playerHeight = height / 8;
+        int playerHeight = height / 16;
         int playAreaHeight = 2 * playerHeight + fittedBoardHeight;
 
         Dimension playAreaDimension = new Dimension(fittedBoardWidth, playAreaHeight);
@@ -61,7 +61,7 @@ public class Display {
         FRAME.setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.X_AXIS));
 
         FRAME.add(new DisplayPlayArea(playAreaDimension, board, p1, p2));
-        FRAME.add(new DisplayHistory(historyDimension));
+        // FRAME.add(new DisplayHistory(historyDimension));
 
         FRAME.pack();
         FRAME.setLocationRelativeTo(null);
