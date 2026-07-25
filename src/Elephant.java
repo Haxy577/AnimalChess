@@ -82,7 +82,7 @@ public class Elephant extends AnimalPiece{
         if (targetTile.getType() == Tiles.RIVER)
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
+        if (targetTile.getType() == Tiles.DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)

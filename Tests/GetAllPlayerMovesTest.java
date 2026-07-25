@@ -50,7 +50,7 @@ public class GetAllPlayerMovesTest {
 
         assertEquals(test.getExpected().get("Key"), moves.size());
 
-        List<BoardCell> pieceMoves = moves.get(gameboard.getCell(1,1));
+        List<BoardCell> pieceMoves = moves.get(gameboard.getCellAt(1,1));
 
         assertEquals(test.getExpected().get("Value"), pieceMoves.size());
     }

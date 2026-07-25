@@ -148,7 +148,7 @@ public class GameBoard {
 
             for (int i = 0; i < ROWS; i++) {
                 for (int j = 0; j < COLUMNS; j++) {
-                    if (!BOARD[i][j].equals(board.getCell(i, j)))
+                    if (!BOARD[i][j].equals(board.getCellAt(i, j)))
                         return false;
                 }
             }
@@ -399,8 +399,8 @@ public class GameBoard {
                     case 'R' -> new BoardTile(Tiles.RIVER);
                     case 'T' -> new BoardTile(Tiles.TRAP, PLAYER1);
                     case 't' -> new BoardTile(Tiles.TRAP, PLAYER2);
-                    case 'A' -> new BoardTile(Tiles.ANIMAL_DEN, PLAYER1);
-                    case 'a' -> new BoardTile(Tiles.ANIMAL_DEN, PLAYER2);
+                    case 'A' -> new BoardTile(Tiles.DEN, PLAYER1);
+                    case 'a' -> new BoardTile(Tiles.DEN, PLAYER2);
                     default -> throw new IllegalArgumentException("Invalid tile character. Expected: [LRTtAa], Actual: " + tileChar);
                 };
 
@@ -677,7 +677,7 @@ public class GameBoard {
             case LAND -> 'L';
             case RIVER -> 'R';
             case TRAP -> (PLAYER1.equals(tile.getPlayer())) ? 'T' : 't';
-            case ANIMAL_DEN -> (PLAYER1.equals(tile.getPlayer())) ? 'A' : 'a';
+            case DEN -> (PLAYER1.equals(tile.getPlayer())) ? 'A' : 'a';
         };
     }
 
@@ -753,7 +753,7 @@ public class GameBoard {
      * @since 1.26
      * @see BoardCell
      */
-    public BoardCell getCell(int row, int column) throws IllegalArgumentException {
+    public BoardCell getCellAt(int row, int column) throws IllegalArgumentException {
         if (row < 0 || row >= ROWS || column < 0 || column >= COLUMNS)
             throw new IllegalArgumentException("The specified position exists outside the initialized board");
 

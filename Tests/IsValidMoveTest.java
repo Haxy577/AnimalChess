@@ -97,7 +97,7 @@ public class IsValidMoveTest {
     public void movingToEnemyDen(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         BoardTile land = new BoardTile(Tiles.LAND);
-        BoardTile den = new BoardTile(Tiles.ANIMAL_DEN, (piece.getPlayer().equals(p1)) ? p2 : p1);
+        BoardTile den = new BoardTile(Tiles.DEN, (piece.getPlayer().equals(p1)) ? p2 : p1);
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(den, 0, 1);
 
@@ -113,7 +113,7 @@ public class IsValidMoveTest {
     public void movingToOwnDen(TestBuilder<AnimalPiece, Boolean> test) {
         AnimalPiece piece = test.getInput();
         BoardTile land = new BoardTile(Tiles.LAND);
-        BoardTile den = new BoardTile(Tiles.ANIMAL_DEN, piece.getPlayer());
+        BoardTile den = new BoardTile(Tiles.DEN, piece.getPlayer());
         BoardCell source = new BoardCell(piece, land, 0, 0);
         BoardCell target = new BoardCell(den, 0, 1);
 

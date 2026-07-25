@@ -1,204 +1,248 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
- * A JPanel that would contain the visual representation of the game board.
+ * A JPanel that would contain the visual representation of the game "Animal Chess".
  *
  * @see GameBoard
  *
  * @author Richmond Jase Von M. Salvador
- * @version 2.4 7/24/2026
+ * @version 2.5 7/24/2026
  * @since 2.1
  */
-public class DisplayBoard extends JPanel {
-    private final GameBoard BOARD;
+public class DisplayBoard extends JPanel implements MouseListener, MouseMotionListener {
+    private final int ROW;
+    private final int COLUMN;
+    private final Controller CONTROL;
     private final int SCALE;
+
+    private final Color NEUTRAL;
+    private final Color LINE;
+
+    private Point cursor;
+    private Point selected;
     private final AssetsManager ASSETS;
-    private BoardCell[] moves;
 
-    /**
-     * Constructs the object with the given dimension and board
-     *
-     * @param dimension the width and height of the board display
-     * @param board the board to be displayed
-     * @throws IllegalArgumentException if the specified dimension or null are null, or the specified
-     * dimension contains negative integers
-     *
-     * @since 2.1
-     * @see GameBoard
-     */
-    public DisplayBoard(AssetsManager assets, Dimension dimension, GameBoard board) throws IllegalArgumentException{
-        if (dimension == null || board == null)
-            throw new IllegalArgumentException("The parameters cannot be null");
+    private boolean wasSelectedBefore;
+    private boolean isDragged;
 
-        if (dimension.width < 0 || dimension.height < 0)
-            throw new IllegalArgumentException("The given dimension can only contain positive values");
-
-        BOARD = board;
-        SCALE = Math.min(dimension.height / board.getRows(), dimension.width / board.getColumns());
+    DisplayBoard(Dimension dimension, Controller controller, AssetsManager assets) {
+        CONTROL = controller;
+        ROW = CONTROL.getRow();
+        COLUMN = CONTROL.getColumn();
+        SCALE = Math.min(dimension.height / ROW, dimension.width / COLUMN);
+        NEUTRAL = new Color(200, 170, 143);
+        LINE = Color.DARK_GRAY;
         ASSETS = assets;
-        moves = null;
 
-        setPreferredSize(dimension);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
-    /**
-     * Draws the specified game board
-     * @param g the <code>Graphics</code> object to protect
-     *
-     * @since 2.1
-     */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        BoardCell[][] board = BOARD.getBoard();
-        int rows = BOARD.getRows();
-        int cols = BOARD.getColumns();
-        int outerDiameter = (int) (SCALE * .60);
-        int outerRadius = outerDiameter / 2;
-        int middleDiameter = (int) (SCALE * .58);
-        int middleRadius = middleDiameter / 2;
-        int innerDiameter = (int) (SCALE * .50);
-        int innerRadius = innerDiameter / 2;
-        int border = 10;
+        final int tileBorder = 10;
+        final int pieceScale = (int) (SCALE * .60);
+        final int playerScale = (int) (pieceScale * .98);
+        final int backgroundScale = (int) (playerScale * .75);
 
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        for (int row = 0; row < ROW; row++) {
+            for (int col = 0; col < COLUMN; col++) {
+                drawTile(g, row, col, SCALE, tileBorder);
 
-        // draw the details in the board
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < cols; x++) {
-                final BoardCell cell = board[y][x];
-                final BoardTile tile = cell.getTile();
-                final AnimalPiece piece = cell.getPiece();
-                final Color neutralBackground = new Color(200, 170, 143);
-
-                int tileX = x * SCALE;
-                int tileY = y * SCALE;
-                int tileIconScale = SCALE - border * 2;
-                int iconX = tileX + border;
-                int iconY = tileY + border;
-
-                drawTile(g, cell, neutralBackground, SCALE, border);
-
-                if (tile.getType() != Tiles.LAND)
-                    g2d.drawImage(ASSETS.getTileIcon(tile.getType()), iconX, iconY, tileIconScale, tileIconScale, null);
-
-                // draw the piece
-                drawPiece(g, cell, neutralBackground, SCALE, (int) (SCALE * .60));
-            }
-        }
-
-        g2d.setColor(Color.DARK_GRAY);
-
-        if (moves != null) {
-            for (BoardCell move : moves) {
-                if (move == null)
+                if (new Point(col, row).equals(snapToCell(selected)) && isDragged){
                     continue;
-
-                int x = move.getCol();
-                int y = move.getRow();
-                int moveDiameter = (int) (SCALE * .25);
-                int outerCapture = (int) (SCALE * .70);
-                int innerCapture = (int) (SCALE * .67);
-
-                if (move.getPiece() != null) {
-                    g2d.fillOval(x, y, moveDiameter, moveDiameter);
                 }
+
+                int posX = col * SCALE;
+                int posY = row * SCALE;
+                drawPiece(g, posX, posY, row, col, SCALE, pieceScale, playerScale, backgroundScale);
             }
         }
 
-        // set the color for the grid lines
-        g2d.setColor(Color.DARK_GRAY);
+        drawGrid(g, ROW, COLUMN, SCALE);
+        drawHighlight(g, Color.GRAY, cursor, SCALE);
 
-        // Change the thickness of the line
-        g2d.setStroke(new BasicStroke(2));
-
-        // draw the vertical grid lines
-        for (int x = 0; x <= cols; x++) {
-            int xPos = x * SCALE;
-            g2d.drawLine(xPos, 0, xPos, rows * SCALE);
+        if (selected != null) {
+            drawHighlight(g, Color.LIGHT_GRAY, selected, SCALE);
         }
 
-        // draw the horizontal grid lines
-        for (int y = 0; y <= rows; y++) {
-            int yPos = y * SCALE;
-            g2d.drawLine(0, yPos, cols * SCALE, yPos);
+        if (isDragged && selected != null) {
+            int posX = cursor.x - pieceScale;
+            int posY = cursor.y - pieceScale;
+            int row = selected.y / SCALE;
+            int column = selected.x / SCALE;
+            drawPiece(g, posX, posY, row, column, SCALE, pieceScale, playerScale, backgroundScale);
         }
     }
 
-    private void drawTile(Graphics g, BoardCell cell, Color neutralBackground, int scale, int border) {
+    private void drawTile(Graphics g, int row, int column, int scale, int border) {
         Graphics2D g2d = (Graphics2D) g;
-        int x = cell.getCol() * scale;
-        int y = cell.getRow() * scale;
-        final BoardTile tile = cell.getTile();
+        int posX = column * scale;
+        int posY = row * scale;
 
-        if (tile.getPlayer() != null) {
-            g2d.setColor(tile.getPlayer().getColor());
-            g2d.fillRect(x, y, scale, scale);
+        Color color = CONTROL.getTileColorAt(row, column);
 
-            x += border;
-            y += border;
-            int innerScale = scale - border * 2;
+        if (CONTROL.isTilePlayerOwnedAt(row, column)) {
+            g2d.setColor(color);
+            g2d.fillRect(posX, posY, scale, scale);
 
-            g2d.setColor(neutralBackground);
-            g2d.fillRect(x, y, innerScale, innerScale);
-        } else {
-            g2d.setColor(tile.getType().COLOR);
-            g2d.fillRect(x, y, scale, scale);
+            posX += border;
+            posY += border;
+            scale -= border * 2;
+
+            g2d.setColor(NEUTRAL);
+            g2d.fillRect(posX, posY, scale, scale);
         }
+        else {
+            g2d.setColor(color);
+            g2d.fillRect(posX, posY, scale, scale);
+        }
+
+        int imageScale = scale - border * 2;
+        g2d.drawImage(ASSETS.getTileIcon(CONTROL.getTileAt(row, column)), posX + border, posY + border, imageScale, imageScale, null);
     }
 
-    /**
-     *
-     * @param g
-     * @param cell
-     * @param neutralBackground
-     * @param cellScale the scale of the cell
-     * @param pieceScale the diameter of the piece
-     */
-    private void drawPiece(Graphics g, BoardCell cell, Color neutralBackground, int cellScale, int pieceScale) {
-        if (cell.getPiece() == null)
+    private void drawPiece(Graphics g, int x, int y, int row, int column, int cellScale, int pieceScale, int playerScale, int backgroundScale) {
+        if (pieceScale < playerScale || playerScale < backgroundScale)
+            throw new IllegalArgumentException();
+
+        if (!CONTROL.doesPieceExistAt(row, column))
             return;
 
         Graphics2D g2d = (Graphics2D) g;
-        AnimalPiece piece = cell.getPiece();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        int x = cell.getCol() * cellScale;
-        int y = cell.getRow() * cellScale;
-        int midX = x + cellScale / 2;
-        int midY = y + cellScale / 2;
+        int outlineX = x + cellScale / 2 - pieceScale / 2;
+        int outlineY = y + cellScale / 2 - pieceScale / 2;
+        g2d.setColor(LINE);
+        g2d.fillOval(outlineX, outlineY, pieceScale, pieceScale);
 
-        int playerDiameter = (int) (pieceScale * .98);
-        int backgroundDiameter = (int) (playerDiameter * .80);
+        int playerX = x + cellScale / 2 - playerScale / 2;
+        int playerY = y + cellScale / 2 - playerScale / 2;
+        g2d.setColor(CONTROL.getPieceColorAt(row, column));
+        g2d.fillOval(playerX, playerY, playerScale, playerScale);
 
-        int posX = midX - pieceScale / 2;
-        int posY = midY - pieceScale / 2;
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.fillOval(posX, posY, pieceScale, pieceScale);
+        int backgroundX = x + cellScale / 2 - backgroundScale / 2;
+        int backgroundY = y + cellScale / 2 - backgroundScale / 2;
+        g2d.setColor(NEUTRAL);
+        g2d.fillOval(backgroundX, backgroundY, backgroundScale, backgroundScale);
 
-        posX = midX - playerDiameter / 2;
-        posY = midY - playerDiameter / 2;
-        g2d.setColor(cell.getPiece().getPlayer().getColor());
-        g2d.fillOval(posX, posY, playerDiameter, playerDiameter);
+        int imageScale = (int) (backgroundScale / 2.0 * Math.sqrt(2.0));
+        int imageX = x + cellScale / 2 - imageScale / 2;
+        int imageY = y + cellScale / 2 - imageScale / 2;
+        BufferedImage icon = ASSETS.getAnimalIcon(CONTROL.getPieceNameAt(row, column));
+        g2d.drawImage(icon, imageX, imageY, imageScale, imageScale, null);
 
-        posX = midX - backgroundDiameter / 2;
-        posY = midY - backgroundDiameter / 2;
-        g2d.setColor(neutralBackground);
-        g2d.fillOval(posX, posY, backgroundDiameter, backgroundDiameter);
-
-        int imageScale = (int) (playerDiameter / 2.0 * Math.sqrt(2));
-        int imageX = midX - imageScale / 2;
-        int imageY = midY - imageScale / 2;
-        g2d.drawImage(ASSETS.getAnimalIcon(piece), imageX, imageY, imageScale, imageScale, null);
+        int rankScale = (int) (imageScale * .25);
+        int rankX = x + cellScale / 2 + (int) (imageScale * .75) / 2;
+        int rankY = y + cellScale / 2 + (int) (imageScale * .75) / 2;
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Arial", Font.BOLD, rankScale));
+        g2d.drawString(CONTROL.getPieceRankAt(row, column), rankX, rankY);
     }
 
-    public void setMoves(BoardCell[] moves) {
-        this.moves = moves;
+    private void drawGrid(Graphics g, int rows, int columns, int scale) {
+        Graphics2D g2d = (Graphics2D) g;
+        int maxX = columns * scale;
+        int maxY = rows * scale;
+
+        g2d.setColor(LINE);
+        g2d.setStroke(new BasicStroke(2));
+
+        for (int i = 0; i < rows; i++) {
+            g2d.drawLine(0, i * scale, maxX, i * scale);
+        }
+
+        for (int i = 0; i < columns; i++) {
+            g2d.drawLine(i * scale, 0, i * scale, maxY);
+        }
+    }
+
+    private void drawHighlight(Graphics g, Color color, Point pos, int scale) {
+        if (pos == null)
+            return;
+
+        Graphics2D g2d = (Graphics2D) g;
+        int posX = pos.x / scale * scale;
+        int posY = pos.y / scale * scale;
+
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(2));
+
+        g2d.drawRect(posX, posY, scale, scale);
+    }
+
+    private Point snapToGrid(Point p) {
+        if (p == null) return null;
+        int x = p.x / SCALE * SCALE;
+        int y = p.y / SCALE * SCALE;
+        return new Point(x, y);
+    }
+
+    private Point snapToCell(Point p) {
+        if (p == null) return null;
+        int x = p.x / SCALE;
+        int y = p.y / SCALE;
+        return new Point(x, y);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Point pressedPoint = snapToGrid(e.getPoint());
+        wasSelectedBefore = pressedPoint.equals(selected);
+
+        if (!wasSelectedBefore)
+            selected = pressedPoint;
+
+        repaint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        Point release = snapToGrid(e.getPoint());
+
+        if (!isDragged) {
+            if (wasSelectedBefore && release.equals(selected)) {
+                selected = null;
+            }
+        }
+
+        isDragged = false;
+        repaint();
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        cursor = null;
+        repaint();
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        isDragged = true;
+        mouseMoved(e);
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        cursor = e.getPoint();
+        repaint();
     }
 }

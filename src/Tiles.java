@@ -13,8 +13,8 @@ public enum Tiles {
 
     LAND(new Color(0, 153, 69)),
     RIVER(new Color(64, 107, 166)),
-    TRAP(new Color(159, 67, 67)),
-    ANIMAL_DEN(null);
+    TRAP(null),
+    DEN(null);
 
     /**
      * The assigned color to the specific type of tile
@@ -43,7 +43,7 @@ public enum Tiles {
      * @since 1.26
      */
     public boolean isLandBased() {
-        return this == LAND || this == TRAP || this == ANIMAL_DEN;
+        return this == LAND || this == TRAP || this == DEN;
     }
 
     /**

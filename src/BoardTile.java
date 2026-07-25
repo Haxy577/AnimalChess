@@ -61,7 +61,7 @@ public class BoardTile {
      * @see Player
      */
     public BoardTile(Tiles type, Player player) throws IllegalArgumentException {
-        if ((type == Tiles.TRAP || type == Tiles.ANIMAL_DEN) && player == null)
+        if ((type == Tiles.TRAP || type == Tiles.DEN) && player == null)
             throw new IllegalArgumentException("The player object cannot be null if the tile type to be created is either a trap or animal den");
 
         TYPE = type;

@@ -11,34 +11,23 @@ import java.awt.*;
  * @since 2.1
  */
 public class DisplayPlayer extends JPanel {
-    private final Player PLAYER;
+    private final Controller CONTROL;
     private final Dimension DIMENSION;
-    private final AssetsManager ASSETS;
+    private final int INDEX;
 
-    /**
-     * Constructs the object with the specified dimension and the player object to be displayed
-     *
-     * @param dimension the width and height of the player display
-     * @param player the player object to be displayed
-     * @throws IllegalArgumentException if the specified parameters are null or the specified
-     * dimension contains negative integers
-     *
-     * @since 2.1
-     * @see Player
-     */
-    public DisplayPlayer(AssetsManager assets, Dimension dimension, Player player) throws IllegalArgumentException {
-        if (dimension == null || player == null)
+
+    public DisplayPlayer(Dimension dimension, Controller controller, int index) throws IllegalArgumentException {
+        if (dimension == null || controller == null)
             throw new IllegalArgumentException("The parameters cannot be null");
 
         if (dimension.width < 0 || dimension.height < 0)
             throw new IllegalArgumentException("The given dimension can only contain positive values");
 
-        PLAYER = player;
+        CONTROL = controller;
         DIMENSION = dimension;
-        ASSETS = assets;
+        INDEX = index;
 
         setPreferredSize(dimension);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(Color.DARK_GRAY);
     }
 
@@ -53,7 +42,7 @@ public class DisplayPlayer extends JPanel {
         final int padding = 7;
         final int iconScale = DIMENSION.height - padding * 2;
 
-        g2d.setColor(PLAYER.getColor());
+        g2d.setColor(CONTROL.getPlayerColor(INDEX));
         g2d.fillRoundRect(padding, padding, iconScale, iconScale, 10, 10);
 
         final int nameX = DIMENSION.height;
@@ -62,6 +51,6 @@ public class DisplayPlayer extends JPanel {
 
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.PLAIN, nameScale));
-        g2d.drawString(PLAYER.getName(), nameX, nameY);
+        g2d.drawString(CONTROL.getPlayerName(INDEX), nameX, nameY);
     }
 }

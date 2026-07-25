@@ -31,9 +31,7 @@ public class Display {
      * @see GameBoard
      * @see Player
      */
-    public Display(Dimension resolution, GameBoard board, Player p1, Player p2) throws IllegalArgumentException {
-        if (resolution == null || board == null || p1 == null || p2 == null)
-            throw new IllegalArgumentException("The resolution cannot be null");
+    public Display(Dimension resolution, Controller control) throws IllegalArgumentException {
 
         if (resolution.width < 0 || resolution.height < 0)
             throw new IllegalArgumentException("The given dimension can only contain positive values");
@@ -45,10 +43,10 @@ public class Display {
         int maxBoardWidth = (int) (2.0 / 3.0 * width);
         int maxBoardHeight = (int) (height * 7.0 / 8.0 * .95); // To leave some space for the menu bar
 
-        int scale = Math.min(maxBoardHeight / board.getRows(), maxBoardWidth / board.getColumns());
+        int scale = Math.min(maxBoardHeight / control.getRow(), maxBoardWidth / control.getColumn());
 
-        int fittedBoardWidth = board.getColumns() * scale;
-        int fittedBoardHeight = board.getRows() * scale;
+        int fittedBoardWidth = control.getColumn() * scale;
+        int fittedBoardHeight = control.getRow() * scale;
         int playerHeight = height / 16;
         int playAreaHeight = 2 * playerHeight + fittedBoardHeight;
 
@@ -60,7 +58,7 @@ public class Display {
         FRAME.setResizable(false);
         FRAME.setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.X_AXIS));
 
-        FRAME.add(new DisplayPlayArea(playAreaDimension, board, p1, p2));
+        FRAME.add(new DisplayPlayArea(playAreaDimension, control));
         // FRAME.add(new DisplayHistory(historyDimension));
 
         FRAME.pack();

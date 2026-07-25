@@ -40,19 +40,14 @@ public class AssetsManager {
         }
     }
 
-    public BufferedImage getTileIcon(Tiles tile) {
-        return switch (tile) {
-            case LAND -> LAND_TEXTURE;
-            case RIVER -> RIVER_TEXTURE;
-            case TRAP -> TRAP_TEXTURE;
-            case ANIMAL_DEN -> DEN_TEXTURE;
+    public BufferedImage getTileIcon(String tile) {
+        return switch (tile.toUpperCase().trim()) {
+            case "LAND" -> null;
+            case "RIVER" -> RIVER_TEXTURE;
+            case "TRAP" -> TRAP_TEXTURE;
+            case "DEN" -> DEN_TEXTURE;
+            default -> throw new IllegalStateException("Unexpected value: " + tile.toUpperCase().trim());
         };
-    }
-
-    public void drawPieceIcon(Graphics g, AnimalPiece piece, Point pos, int scale) {
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.drawImage(getAnimalIcon(piece), pos.x, pos.y, scale, scale, null);
     }
 
     /**
@@ -66,11 +61,11 @@ public class AssetsManager {
      * @since 2.3
      * @see AnimalPiece
      */
-    public BufferedImage getAnimalIcon(AnimalPiece piece) throws IllegalStateException{
+    public BufferedImage getAnimalIcon(String piece) throws IllegalStateException{
         if (piece == null)
             return null;
 
-        return switch (piece.pieceName().toLowerCase().trim()) {
+        return switch (piece.toLowerCase().trim()) {
             case "mouse" -> MOUSE_ICON;
             case "cat" -> CAT_ICON;
             case "wolf" -> WOLF_ICON;
@@ -79,7 +74,7 @@ public class AssetsManager {
             case "tiger" -> TIGER_ICON;
             case "lion" -> LION_ICON;
             case "elephant" -> ELEPHANT_ICON;
-            default -> throw new IllegalStateException("Unexpected value: " + piece.pieceName().toLowerCase().trim());
+            default -> throw new IllegalStateException("Unexpected value: " + piece.toLowerCase().trim());
         };
     }
 }

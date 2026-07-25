@@ -263,7 +263,7 @@ public abstract class AnimalPiece {
         if (targetTile.getType().isWaterBased())
             return false;
 
-        if (targetTile.getType() == Tiles.ANIMAL_DEN && movingPlayer.equals(targetTile.getPlayer()))
+        if (targetTile.getType() == Tiles.DEN && movingPlayer.equals(targetTile.getPlayer()))
             return false;
 
         if (targetPiece == null)

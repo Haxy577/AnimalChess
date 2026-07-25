@@ -15,7 +15,7 @@ public class Main {
         // GameBoard board = new GameBoard(9,7, "2Ltat5Lt11L2RL2R2L2RL2R2L2RL2R11LT5LTAT2L|n5g1d3c1m1p1w1e21E1W1P1M1C3D1G5N", p1, p2);
         // GameBoard board = new GameBoard(2, 4, "LRTALRta|mmmmMMMM", p1, p2);
         GameBoard board = new GameBoard(p1, p2);
-        new Display(screenSize, board, p1, p2);
+        new Display(screenSize, new Controller());
         // new DisplayMenu();
         // new DisplayOrderSelection("Player 1", "Player 2");
     }
