@@ -19,6 +19,7 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
     private final int COLUMN;
     private final Controller CONTROL;
     private final int SCALE;
+    private Point[] moves;
 
     private final Color NEUTRAL;
     private final Color LINE;
@@ -38,6 +39,7 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
         NEUTRAL = new Color(200, 170, 143);
         LINE = Color.DARK_GRAY;
         ASSETS = assets;
+        moves = new Point[0];
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -49,6 +51,8 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
         final int pieceScale = (int) (SCALE * .60);
         final int playerScale = (int) (pieceScale * .98);
         final int backgroundScale = (int) (playerScale * .75);
+        final int moveScale = (int) (SCALE * .25);
+        final int captureScale = (int) (SCALE * .80);
 
         for (int row = 0; row < ROW; row++) {
             for (int col = 0; col < COLUMN; col++) {
@@ -69,14 +73,41 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
 
         if (selected != null) {
             drawHighlight(g, Color.LIGHT_GRAY, selected, SCALE);
+            for (Point move : moves) {
+                drawMove(g, move.y, move.x, SCALE, moveScale, captureScale);
+            }
         }
 
-        if (isDragged && selected != null) {
+        if (isDragged && selected != null && cursor != null) {
             int posX = cursor.x - pieceScale;
             int posY = cursor.y - pieceScale;
             int row = selected.y / SCALE;
             int column = selected.x / SCALE;
             drawPiece(g, posX, posY, row, column, SCALE, pieceScale, playerScale, backgroundScale);
+        }
+    }
+
+    private void drawMove(Graphics g, int row, int column, int cellScale, int moveScale, int captureScale) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g2d.setColor(Color.GRAY);
+
+        int posX = column * cellScale;
+        int posY = row * cellScale;
+
+        if (CONTROL.doesPieceExistAt(row, column)) {
+            posX = posX + cellScale / 2 - captureScale / 2;
+            posY = posY + cellScale / 2 - captureScale / 2;
+
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawOval(posX, posY, captureScale, captureScale);
+        }
+        else {
+            posX = posX + cellScale / 2 - moveScale / 2;
+            posY = posY + cellScale / 2 - moveScale / 2;
+
+            g2d.fillOval(posX, posY, moveScale, moveScale);
         }
     }
 
@@ -192,6 +223,15 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
         return new Point(x, y);
     }
 
+    private boolean isOutsideDisplay(Point pos) {
+        if (pos == null) return true;
+
+        int maxWidth = COLUMN * SCALE;
+        int maxHeight = ROW * SCALE;
+
+        return pos.x < 0 || pos.x > maxWidth || pos.y < 0 || pos.y > maxHeight;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -202,8 +242,31 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
         Point pressedPoint = snapToGrid(e.getPoint());
         wasSelectedBefore = pressedPoint.equals(selected);
 
-        if (!wasSelectedBefore)
+        Point current = snapToCell(pressedPoint);
+        boolean isWithinMoves = false;
+
+        if (moves != null) {
+            for (Point move : moves) {
+                if (move != null && move.equals(current)) {
+                    isWithinMoves = true;
+                    break;
+                }
+            }
+        }
+
+        if (isWithinMoves && selected != null) {
+            Point previous = snapToCell(selected);
+            CONTROL.update(previous.y, previous.x, current.y, current.x);
+
+            if (CONTROL.isNextTurn()) {
+                selected = null;
+                moves = new Point[0];
+            }
+        }
+        else if (!wasSelectedBefore) {
             selected = pressedPoint;
+            moves = CONTROL.getMovesAt(current.y, current.x);
+        }
 
         repaint();
     }
@@ -212,9 +275,24 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
     public void mouseReleased(MouseEvent e) {
         Point release = snapToGrid(e.getPoint());
 
+        if (isOutsideDisplay(release))
+            return;
+
         if (!isDragged) {
             if (wasSelectedBefore && release.equals(selected)) {
                 selected = null;
+                moves = new Point[0];
+            }
+        }
+        else if (selected != null){
+            Point previous = snapToCell(selected);
+            Point current = snapToCell(release);
+
+            CONTROL.update(previous.y, previous.x, current.y, current.x);
+
+            if (CONTROL.isNextTurn()) {
+                selected = null;
+                moves = new Point[0];
             }
         }
 
@@ -230,14 +308,19 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mouseExited(MouseEvent e) {
         cursor = null;
+        isDragged = false;
         repaint();
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (isOutsideDisplay(e.getPoint())) {
+            mouseExited(e);
+            return;
+        }
+
         isDragged = true;
         mouseMoved(e);
-        repaint();
     }
 
     @Override
