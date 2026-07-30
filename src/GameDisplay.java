@@ -5,7 +5,6 @@ import java.awt.*;
  * A JFrame that would contain all the visual representation necessary for the game Animal Piece
  *
  * @see DisplayPlayArea
- * @see DisplayHistory
  * @see DisplayBoard
  * @see DisplayPlayer
  *
@@ -13,7 +12,7 @@ import java.awt.*;
  * @version 2.3 7/20/2026
  * @since 2.1
  */
-public class Display {
+public class GameDisplay {
     private final JFrame FRAME;
     private final Dimension RESOLUTION;
 
@@ -21,9 +20,6 @@ public class Display {
      * Constructs the JFrame based on the specified resolution, board, player 1, and player 2
      *
      * @param resolution the width and height of the screen, or the desired dimensions of the JFrame
-     * @param board the board to be displayed
-     * @param p1 the player object of player 1 to be displayed
-     * @param p2 the player object of player 2 to be displayed
      * @throws IllegalArgumentException if the specified arguments are null or the specified resolution contains
      * negative integers
      *
@@ -31,12 +27,27 @@ public class Display {
      * @see GameBoard
      * @see Player
      */
-    public Display(Dimension resolution, Controller control) throws IllegalArgumentException {
+    public GameDisplay(Dimension resolution, GameController control) throws IllegalArgumentException {
 
         if (resolution.width < 0 || resolution.height < 0)
             throw new IllegalArgumentException("The given dimension can only contain positive values");
 
         RESOLUTION = resolution;
+        Dimension playAreaDimension = getPlayAreaDimension(control);
+
+        FRAME = new JFrame("Animal Chess");
+        FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        FRAME.setResizable(false);
+        FRAME.setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.X_AXIS));
+
+        FRAME.add(new DisplayPlayArea(playAreaDimension, control));
+
+        FRAME.pack();
+        FRAME.setLocationRelativeTo(null);
+        FRAME.setVisible(true);
+    }
+
+    private Dimension getPlayAreaDimension(GameController control) {
         int width = RESOLUTION.width;
         int height = RESOLUTION.height;
 
@@ -50,20 +61,11 @@ public class Display {
         int playerHeight = height / 16;
         int playAreaHeight = 2 * playerHeight + fittedBoardHeight;
 
-        Dimension playAreaDimension = new Dimension(fittedBoardWidth, playAreaHeight);
-        Dimension historyDimension = new Dimension(width / 4, playAreaHeight);
+        return new Dimension(fittedBoardWidth, playAreaHeight);
+    }
 
-        FRAME = new JFrame("Animal Chess");
-        FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        FRAME.setResizable(false);
-        FRAME.setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.X_AXIS));
-
-        FRAME.add(new DisplayPlayArea(playAreaDimension, control));
-        // FRAME.add(new DisplayHistory(historyDimension));
-
-        FRAME.pack();
-        FRAME.setLocationRelativeTo(null);
-        FRAME.setVisible(true);
+    public void dispose() {
+        FRAME.dispose();
     }
 
     /**

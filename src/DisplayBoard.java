@@ -1,132 +1,362 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 /**
  * A JPanel that would contain the visual representation of the game "Animal Chess".
  *
- * @see GameBoard
- *
  * @author Richmond Jase Von M. Salvador
- * @version 2.5 7/24/2026
+ * @version 2.7 7/29/2026
  * @since 2.1
  */
-public class DisplayBoard extends JPanel implements MouseListener, MouseMotionListener {
-    private final int ROW;
-    private final int COLUMN;
-    private final Controller CONTROL;
-    private final int SCALE;
-    private Point[] moves;
+public class DisplayBoard extends JPanel{
+    /**
+     * Represents the color of the grid lines to be drawn
+     *
+     * @since 2.7
+     */
+    private static final Color GRID_COLOR = Color.DARK_GRAY;
 
-    private final Color NEUTRAL;
-    private final Color LINE;
+    /**
+     * Represents the color the square to be drawn would take which represents the current position of
+     * the cursor relative to the grid
+     *
+     * @since 2.7
+     */
+    private static final Color HOVER_COLOR = Color.GRAY;
 
-    private Point cursor;
-    private Point selected;
+    /**
+     * Represents the color the square to be drawn would take which represents the current position of
+     * the selected cell
+     *
+     * @since 2.7
+     */
+    private static final Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
+
+    /**
+     * Represents the thickness of the grid lines
+     *
+     * @since 2.7
+     */
+    private static final int GRID_LINE_THICKNESS = 2;
+
+    /**
+     * Represents the color to be displayed as a background for icons/text to be more legible
+     *
+     * @since 2.7
+     */
+    private static final Color NEUTRAL_BACKGROUND = new Color(200, 170, 143);
+
+    /**
+     * Represents the color to be displayed as a border/outline for the piece to be drawn
+     *
+     * @since 2.7
+     */
+    private static final Color PIECE_OUTLINE_COLOR = Color.DARK_GRAY;
+
+    /**
+     * Represents the thickness of the border/outline of the piece to be drawn
+     *
+     * @since 2.7
+     */
+    private static final int PIECE_OUTLINE_THICKNESS = 1;
+
+    /**
+     * Represents the scale of each piece relative to the scale of a cell
+     *
+     * @since 2.7
+     */
+    private static final double PIECE_SCALE_RATIO = .60;
+
+    /**
+     * Represents the scale of a circle inside the piece that would contain the piece's icon and rank
+     *
+     * @since 2.7
+     */
+    private static final double PIECE_BACKGROUND_RATIO = .75;
+
+    /**
+     * Represents the scale of the numerical rank to be displayed besides the icon relative to the {@link #PIECE_BACKGROUND_RATIO}
+     *
+     * @since 2.7
+     */
+    private static final double PIECE_RANK_RATIO = .25;
+
+    /**
+     * Represents the font the numerical rank to be drawn would take
+     *
+     * @since 2.7
+     */
+    private static final String PIECE_RANK_FONT = "Arial";
+
+    /**
+     * Represents the color to be displayed when drawing where pieces can move
+     *
+     * @since 2.7
+     */
+    private static final Color VALID_MOVE_COLOR = Color.GRAY;
+
+    /**
+     * Represents the scale of a filled circle that visually indicates a possible move of the player relative
+     * to the scale of each cell
+     *
+     * @since 2.7
+     */
+    private static final double VALID_MOVE_DOT_RATIO = .25;
+
+    /**
+     * Represents the scale of a circle that would surround a piece if it can be captured, its scale is relative to
+     * the scale of each cell
+     *
+     * @since 2.7
+     */
+    private static final double VALID_CAPTURE_RING_RATIO = .80;
+
+    /**
+     * Represents the thickness of the circle to be displayed when a piece can be captured
+     *
+     * @since 2.7
+     */
+    private static final int CAPTURE_RING_THICKNESS = 4;
+
+    /**
+     * Represents the scale of a filled square to be drawn inside a tile
+     *
+     * @since 2.7
+     */
+    private static final double TILE_BACKGROUND_RATIO = .80;
+
+    /**
+     * Contains the controller which would provide the details to be displayed from the model
+     *
+     * @since 2.7
+     * @see GameController
+     */
+    private final GameController CONTROL;
+
+    /**
+     * Contains the different icons for each tile and pieces
+     *
+     * @since 2.7
+     * @see AssetsManager
+     */
     private final AssetsManager ASSETS;
 
-    private boolean wasSelectedBefore;
+    /**
+     * Represents the total amount of rows to be displayed
+     *
+     * @since 2.7
+     */
+    private final int ROWS;
+
+    /**
+     * Represents the total amount of columns to be displayed
+     *
+     * @since 2.7
+     */
+    private final int COLUMNS;
+
+    /**
+     * Represents the width and height of each cell
+     *
+     * @since 2.7
+     */
+    private final int SCALE;
+
+    /**
+     * Represents the moves to be displayed
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
+    private Point[] moves;
+
+    /**
+     * Represents the position of the cursor within this panel with the position starting from the top-left
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
+    private Point cursor;
+
+    /**
+     * Represents the position of the cell that is currently selected by the player
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
+    private Point selected;
+
+    /**
+     * Contains the value if the user is currently dragging with the mouse or not
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     private boolean isDragged;
 
-    DisplayBoard(Dimension dimension, Controller controller, AssetsManager assets) {
+    /**
+     * Constructs the board display with the specified dimension, controller, and assets objects.
+     *
+     * @param dimension the width and height of the board display
+     * @param controller the source of the data to be displayed
+     * @param assets the source for the icons to be used for the tiles and pieces
+     * @throws NullPointerException if the specified arguments are null
+     * @throws IllegalArgumentException if the specified dimension contain negative value(s)
+     *
+     * @since 2.7
+     * @see GameController
+     * @see AssetsManager
+     */
+    DisplayBoard(Dimension dimension, GameController controller, AssetsManager assets) {
+        if (dimension == null || controller == null || assets == null)
+            throw new NullPointerException("The arguments cannot be null");
+
+        if (dimension.width < 0 || dimension.height < 0)
+            throw new IllegalArgumentException("The specified dimension cannot be negative");
+
         CONTROL = controller;
-        ROW = CONTROL.getRow();
-        COLUMN = CONTROL.getColumn();
-        SCALE = Math.min(dimension.height / ROW, dimension.width / COLUMN);
-        NEUTRAL = new Color(200, 170, 143);
-        LINE = Color.DARK_GRAY;
         ASSETS = assets;
+
+        ROWS = CONTROL.getRow();
+        COLUMNS = CONTROL.getColumn();
+        SCALE = Math.min(dimension.height / ROWS, dimension.width / COLUMNS);
         moves = new Point[0];
 
-        addMouseListener(this);
-        addMouseMotionListener(this);
+        setPreferredSize(dimension);
+
+        BoardInputHandler inputHandler = new BoardInputHandler(this);
+        addMouseListener(inputHandler);
+        addMouseMotionListener(inputHandler);
     }
 
+    /**
+     * Responsible for drawing all the details such as the tiles, pieces, and moves
+     *
+     * @param g the <code>Graphics</code> object to protect
+     *
+     * @since 2.7
+     * @see #drawGrid(Graphics, int, int)
+     * @see #drawMove(Graphics, int, int)
+     * @see #drawHighlight(Graphics, Color, int, int)
+     * @see #drawPiece(Graphics, int, int, int, int)
+     * @see #drawTile(Graphics, int, int)
+     */
     @Override
     protected void paintComponent(Graphics g) {
-        final int tileBorder = 10;
-        final int pieceScale = (int) (SCALE * .60);
-        final int playerScale = (int) (pieceScale * .98);
-        final int backgroundScale = (int) (playerScale * .75);
-        final int moveScale = (int) (SCALE * .25);
-        final int captureScale = (int) (SCALE * .80);
+        super.paintComponent(g);
 
-        for (int row = 0; row < ROW; row++) {
-            for (int col = 0; col < COLUMN; col++) {
-                drawTile(g, row, col, SCALE, tileBorder);
+        int selectedRow = (selected == null) ? -1 : selected.y;
+        int selectedColumn = (selected == null) ? -1 : selected.x;
+        int cursorX = (cursor == null) ? -1 : cursor.x / SCALE * SCALE;
+        int cursorY = (cursor == null) ? -1 : cursor.y / SCALE * SCALE;
 
-                if (new Point(col, row).equals(snapToCell(selected)) && isDragged){
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
+                drawTile(g, row, column);
+
+                if (row == selectedRow && column == selectedColumn && isDragged){
                     continue;
                 }
 
-                int posX = col * SCALE;
+                int posX = column * SCALE;
                 int posY = row * SCALE;
-                drawPiece(g, posX, posY, row, col, SCALE, pieceScale, playerScale, backgroundScale);
+                drawPiece(g, row, column, posX, posY);
             }
         }
 
-        drawGrid(g, ROW, COLUMN, SCALE);
-        drawHighlight(g, Color.GRAY, cursor, SCALE);
+        drawGrid(g, ROWS, COLUMNS);
+        drawHighlight(g, HOVER_COLOR, cursorX, cursorY);
 
         if (selected != null) {
-            drawHighlight(g, Color.LIGHT_GRAY, selected, SCALE);
+            drawHighlight(g, HIGHLIGHT_COLOR, selectedColumn * SCALE, selectedRow * SCALE);
             for (Point move : moves) {
-                drawMove(g, move.y, move.x, SCALE, moveScale, captureScale);
+                drawMove(g, move.y, move.x);
             }
         }
 
         if (isDragged && selected != null && cursor != null) {
-            int posX = cursor.x - pieceScale;
-            int posY = cursor.y - pieceScale;
-            int row = selected.y / SCALE;
-            int column = selected.x / SCALE;
-            drawPiece(g, posX, posY, row, column, SCALE, pieceScale, playerScale, backgroundScale);
+            int posX = cursor.x - SCALE / 2;
+            int posY = cursor.y - SCALE / 2;
+            drawPiece(g, selectedRow, selectedColumn, posX, posY);
         }
     }
 
-    private void drawMove(Graphics g, int row, int column, int cellScale, int moveScale, int captureScale) {
+    /**
+     * A helper method to get the position needed for the component to be drawn in the middle of the cell
+     *
+     * @param pos the x or y position where the component would be drawn
+     * @param scale the width/height of the component
+     * @return the position to draw the component in the center of the cell
+     *
+     * @since 2.7
+     */
+    private int getCentralPos(int pos, int scale) {
+        return pos + SCALE / 2 - scale / 2;
+    }
+
+    /**
+     * Draws the visual representation of what move can a piece can make, whether to move represented by a filled circle,
+     * or to capture represented by a hollow circle. This assumes that the piece can actually move to the specified location
+     *
+     * @param g the graphics object that would draw the details
+     * @param row the row where the move would be drawn
+     * @param column the column where the move would be drawn
+     *
+     * @since 2.7
+     */
+    private void drawMove(Graphics g, int row, int column) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(VALID_MOVE_COLOR);
 
-        int posX = column * cellScale;
-        int posY = row * cellScale;
+        final int captureScale = (int) (SCALE * VALID_CAPTURE_RING_RATIO);
+        final int moveScale = (int) (SCALE * VALID_MOVE_DOT_RATIO);
+        int x = column * SCALE;
+        int y = row * SCALE;
 
         if (CONTROL.doesPieceExistAt(row, column)) {
-            posX = posX + cellScale / 2 - captureScale / 2;
-            posY = posY + cellScale / 2 - captureScale / 2;
+            x = getCentralPos(x, captureScale);
+            y = getCentralPos(y, captureScale);
 
-            g2d.setStroke(new BasicStroke(3));
-            g2d.drawOval(posX, posY, captureScale, captureScale);
+            g2d.setStroke(new BasicStroke(CAPTURE_RING_THICKNESS));
+            g2d.drawOval(x, y, captureScale, captureScale);
         }
         else {
-            posX = posX + cellScale / 2 - moveScale / 2;
-            posY = posY + cellScale / 2 - moveScale / 2;
+            x = getCentralPos(x, moveScale);
+            y = getCentralPos(y, moveScale);
 
-            g2d.fillOval(posX, posY, moveScale, moveScale);
+            g2d.fillOval(x, y, moveScale, moveScale);
         }
     }
 
-    private void drawTile(Graphics g, int row, int column, int scale, int border) {
+    /**
+     * Draws the visual representation of a single tile which is a filled square with an inner square and an icon if applicable
+     *
+     * @param g the graphics object that would draw the details
+     * @param row the row where the tile would be drawn
+     * @param column the column where the move would be drawn
+     *
+     * @since 2.7
+     */
+    private void drawTile(Graphics g, int row, int column) {
         Graphics2D g2d = (Graphics2D) g;
-        int posX = column * scale;
-        int posY = row * scale;
 
         Color color = CONTROL.getTileColorAt(row, column);
+        int scale = SCALE;
+        int posX = column * scale;
+        int posY = row * scale;
 
         if (CONTROL.isTilePlayerOwnedAt(row, column)) {
             g2d.setColor(color);
             g2d.fillRect(posX, posY, scale, scale);
 
-            posX += border;
-            posY += border;
-            scale -= border * 2;
+            scale = (int) (scale * TILE_BACKGROUND_RATIO);
+            posX = getCentralPos(posX, scale);
+            posY = getCentralPos(posY, scale);
 
-            g2d.setColor(NEUTRAL);
+            g2d.setColor(NEUTRAL_BACKGROUND);
             g2d.fillRect(posX, posY, scale, scale);
         }
         else {
@@ -134,14 +364,23 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
             g2d.fillRect(posX, posY, scale, scale);
         }
 
-        int imageScale = scale - border * 2;
-        g2d.drawImage(ASSETS.getTileIcon(CONTROL.getTileAt(row, column)), posX + border, posY + border, imageScale, imageScale, null);
+        scale = (int) (scale * TILE_BACKGROUND_RATIO);
+        posX = getCentralPos(column * SCALE, scale);
+        posY = getCentralPos(row * SCALE, scale);
+        g2d.drawImage(ASSETS.getTileIcon(CONTROL.getTileAt(row, column)), posX, posY, scale, scale, null);
     }
 
-    private void drawPiece(Graphics g, int x, int y, int row, int column, int cellScale, int pieceScale, int playerScale, int backgroundScale) {
-        if (pieceScale < playerScale || playerScale < backgroundScale)
-            throw new IllegalArgumentException();
-
+    /**
+     * Draws the visual representation of a single piece which is a filled circle with an inner circle and an outline.
+     * The outer circle would represent which player controls it, while the inner circle would contain the piece icon and rank.
+     *
+     * @param g the graphics object that would draw the details
+     * @param row the row where the piece would be drawn
+     * @param column the column where the piece would be drawn
+     *
+     * @since 2.7
+     */
+    private void drawPiece(Graphics g, int row, int column, int posX, int posY) {
         if (!CONTROL.doesPieceExistAt(row, column))
             return;
 
@@ -149,183 +388,183 @@ public class DisplayBoard extends JPanel implements MouseListener, MouseMotionLi
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        int outlineX = x + cellScale / 2 - pieceScale / 2;
-        int outlineY = y + cellScale / 2 - pieceScale / 2;
-        g2d.setColor(LINE);
-        g2d.fillOval(outlineX, outlineY, pieceScale, pieceScale);
+        final int pieceScale = (int) (SCALE * PIECE_SCALE_RATIO);
+        final int backgroundScale = (int) (pieceScale * PIECE_BACKGROUND_RATIO);
+        final int imageScale = (int) (backgroundScale / 2.0 * Math.sqrt(2.0)); // find the maximal square in a circle
+        final int rankScale = (int) (imageScale * PIECE_RANK_RATIO);
 
-        int playerX = x + cellScale / 2 - playerScale / 2;
-        int playerY = y + cellScale / 2 - playerScale / 2;
+        int x = getCentralPos(posX, pieceScale);
+        int y = getCentralPos(posY, pieceScale);
+
         g2d.setColor(CONTROL.getPieceColorAt(row, column));
-        g2d.fillOval(playerX, playerY, playerScale, playerScale);
+        g2d.fillOval(x, y, pieceScale, pieceScale);
 
-        int backgroundX = x + cellScale / 2 - backgroundScale / 2;
-        int backgroundY = y + cellScale / 2 - backgroundScale / 2;
-        g2d.setColor(NEUTRAL);
-        g2d.fillOval(backgroundX, backgroundY, backgroundScale, backgroundScale);
+        g2d.setColor(PIECE_OUTLINE_COLOR);
+        g2d.setStroke(new BasicStroke(PIECE_OUTLINE_THICKNESS));
+        g2d.drawOval(x, y, pieceScale, pieceScale);
 
-        int imageScale = (int) (backgroundScale / 2.0 * Math.sqrt(2.0));
-        int imageX = x + cellScale / 2 - imageScale / 2;
-        int imageY = y + cellScale / 2 - imageScale / 2;
+        x = getCentralPos(posX, backgroundScale);
+        y = getCentralPos(posY, backgroundScale);
+
+        g2d.setColor(NEUTRAL_BACKGROUND);
+        g2d.fillOval(x, y, backgroundScale, backgroundScale);
+
+        x = getCentralPos(posX, imageScale);
+        y = getCentralPos(posY, imageScale);
+
         BufferedImage icon = ASSETS.getAnimalIcon(CONTROL.getPieceNameAt(row, column));
-        g2d.drawImage(icon, imageX, imageY, imageScale, imageScale, null);
+        g2d.drawImage(icon, x, y, imageScale, imageScale, null);
 
-        int rankScale = (int) (imageScale * .25);
-        int rankX = x + cellScale / 2 + (int) (imageScale * .75) / 2;
-        int rankY = y + cellScale / 2 + (int) (imageScale * .75) / 2;
+        x = posX + SCALE / 2 + (int) (imageScale * (1 - PIECE_RANK_RATIO) / 2.0);
+        y = posY + SCALE / 2 + (int) (imageScale * (1 - PIECE_RANK_RATIO) / 2.0);
+
         g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Arial", Font.BOLD, rankScale));
-        g2d.drawString(CONTROL.getPieceRankAt(row, column), rankX, rankY);
+        g2d.setFont(new Font(PIECE_RANK_FONT, Font.BOLD, rankScale));
+        g2d.drawString(CONTROL.getPieceRankAt(row, column), x, y);
     }
 
-    private void drawGrid(Graphics g, int rows, int columns, int scale) {
+    /**
+     * Draws the visual separator to differentiate different cells from one another. This would draw
+     * horizontal and vertical lines depending on the number of rows and columns respectively.
+     *
+     * @param g the graphics object that would draw the details
+     * @param rows the amount of rows
+     * @param columns the amount of columns
+     *
+     * @since 2.7
+     */
+    private void drawGrid(Graphics g, int rows, int columns) {
         Graphics2D g2d = (Graphics2D) g;
-        int maxX = columns * scale;
-        int maxY = rows * scale;
+        int maxX = columns * SCALE;
+        int maxY = rows * SCALE;
 
-        g2d.setColor(LINE);
-        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(GRID_COLOR);
+        g2d.setStroke(new BasicStroke(GRID_LINE_THICKNESS));
 
         for (int i = 0; i < rows; i++) {
-            g2d.drawLine(0, i * scale, maxX, i * scale);
+            g2d.drawLine(0, i * SCALE, maxX, i * SCALE);
         }
 
         for (int i = 0; i < columns; i++) {
-            g2d.drawLine(i * scale, 0, i * scale, maxY);
+            g2d.drawLine(i * SCALE, 0, i * SCALE, maxY);
         }
     }
 
-    private void drawHighlight(Graphics g, Color color, Point pos, int scale) {
-        if (pos == null)
+    /**
+     * Draws a visual representation of a highlight which is a hollow square
+     *
+     * @param g the graphics object that would draw the details
+     * @param color the color the hollow square would take
+     * @param x the position in the x-axis where the square would be drawn
+     * @param y the position in the y-axis where the square would be drawn
+     *
+     * @since 2.7
+     */
+    private void drawHighlight(Graphics g, Color color, int x, int y) {
+        if (x < 0 || y < 0)
             return;
 
         Graphics2D g2d = (Graphics2D) g;
-        int posX = pos.x / scale * scale;
-        int posY = pos.y / scale * scale;
-
         g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(2));
+        g2d.setStroke(new BasicStroke(GRID_LINE_THICKNESS));
 
-        g2d.drawRect(posX, posY, scale, scale);
+        g2d.drawRect(x, y, SCALE, SCALE);
     }
 
-    private Point snapToGrid(Point p) {
-        if (p == null) return null;
-        int x = p.x / SCALE * SCALE;
-        int y = p.y / SCALE * SCALE;
-        return new Point(x, y);
+    /**
+     * A getter method for the moves that are currently being displayed
+     *
+     * @return an array of Points that represents all the current moves
+     *
+     * @since 2.7
+     */
+    public Point[] getMoves() {
+        return moves;
     }
 
-    private Point snapToCell(Point p) {
-        if (p == null) return null;
-        int x = p.x / SCALE;
-        int y = p.y / SCALE;
-        return new Point(x, y);
+    /**
+     * A getter method for the scale of each cell
+     *
+     * @return the width and height of each cell
+     *
+     * @since 2.7
+     */
+    public int getScale() {
+        return SCALE;
     }
 
-    private boolean isOutsideDisplay(Point pos) {
-        if (pos == null) return true;
-
-        int maxWidth = COLUMN * SCALE;
-        int maxHeight = ROW * SCALE;
-
-        return pos.x < 0 || pos.x > maxWidth || pos.y < 0 || pos.y > maxHeight;
+    /**
+     * A getter method for the position of the cell that is currently selected
+     *
+     * @return the column and row position of the cell currently selected
+     */
+    public Point getSelected() {
+        return selected;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
+    /**
+     * A getter method for the controller that serves as a translator between the view and model
+     *
+     * @return the controller of this instance
+     *
+     * @since 2.7
+     */
+    public GameController getController() {
+        return CONTROL;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        Point pressedPoint = snapToGrid(e.getPoint());
-        wasSelectedBefore = pressedPoint.equals(selected);
-
-        Point current = snapToCell(pressedPoint);
-        boolean isWithinMoves = false;
-
-        if (moves != null) {
-            for (Point move : moves) {
-                if (move != null && move.equals(current)) {
-                    isWithinMoves = true;
-                    break;
-                }
-            }
-        }
-
-        if (isWithinMoves && selected != null) {
-            Point previous = snapToCell(selected);
-            CONTROL.update(previous.y, previous.x, current.y, current.x);
-
-            if (CONTROL.isNextTurn()) {
-                selected = null;
-                moves = new Point[0];
-            }
-        }
-        else if (!wasSelectedBefore) {
-            selected = pressedPoint;
-            moves = CONTROL.getMovesAt(current.y, current.x);
-        }
-
-        repaint();
+    /**
+     * A getter method for whether the user is dragging their mouse
+     *
+     * @return true if the user is currently dragging the mouse, false otherwise
+     *
+     * @since 2.7
+     */
+    public boolean isDragged() {
+        return isDragged;
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        Point release = snapToGrid(e.getPoint());
-
-        if (isOutsideDisplay(release))
-            return;
-
-        if (!isDragged) {
-            if (wasSelectedBefore && release.equals(selected)) {
-                selected = null;
-                moves = new Point[0];
-            }
-        }
-        else if (selected != null){
-            Point previous = snapToCell(selected);
-            Point current = snapToCell(release);
-
-            CONTROL.update(previous.y, previous.x, current.y, current.x);
-
-            if (CONTROL.isNextTurn()) {
-                selected = null;
-                moves = new Point[0];
-            }
-        }
-
-        isDragged = false;
-        repaint();
+    /**
+     * A setter method to change the state of the field indicating whether the user is dragging their mouse or not
+     *
+     * @param state the new state of this field
+     *
+     * @since 2.7
+     */
+    public void setDragged(boolean state) {
+        isDragged = state;
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
+    /**
+     * A setter method to change the previous moves with the specified array of moves
+     *
+     * @param moves the new moves to replace the old moves
+     *
+     * @since 2.7
+     */
+    public void setMoves(Point[] moves) {
+        this.moves = moves;
     }
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-        cursor = null;
-        isDragged = false;
-        repaint();
+    /**
+     * A setter method to change the previous selected cell to the specified cell
+     *
+     * @param position the column and row position of the new selected cell
+     *
+     * @since 2.7
+     */
+    public void setSelected(Point position) {
+        selected = position;
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        if (isOutsideDisplay(e.getPoint())) {
-            mouseExited(e);
-            return;
-        }
-
-        isDragged = true;
-        mouseMoved(e);
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        cursor = e.getPoint();
-        repaint();
+    /**
+     * A setter method to change the cursor position to reflect the current position of the cursor
+     *
+     * @param position the x and y position of the cursor
+     *
+     * @since 2.7
+     */
+    public void setCursor(Point position) {
+        cursor = position;
     }
 }

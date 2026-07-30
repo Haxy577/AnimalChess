@@ -1,8 +1,9 @@
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 
-public class Controller {
+public class GameController {
     private final int ROW;
     private final int COLUMN;
     private final GameBoard BOARD;
@@ -15,7 +16,7 @@ public class Controller {
 
     private Player winner;
 
-    public Controller(GameBoard board, Player p1, Player p2) {
+    public GameController(GameBoard board, Player p1, Player p2) {
         if (board == null || p1 == null || p2 == null)
             throw new NullPointerException("The parameters cannot be null");
 
@@ -48,6 +49,7 @@ public class Controller {
 
             if (target.getTile().getType() == Tiles.DEN) {
                 winner = activePlayer;
+                new DisplayWinner(new Dimension(250, 250), this);
                 System.out.println(winner);
             }
 
@@ -67,6 +69,7 @@ public class Controller {
 
             if (pieces.isEmpty() || !doesPiecesHaveMoves) {
                 winner = (activePlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
+                new DisplayWinner(new Dimension(250, 250), this);
                 System.out.println(winner);
             }
         }
@@ -74,6 +77,10 @@ public class Controller {
 
     public boolean isNextTurn() {
         return isNextTurn;
+    }
+
+    public int getWinnerIndex() {
+        return (PLAYER1.equals(winner)) ? 1 : 2;
     }
 
     public Point[] getMovesAt(int row, int column) {
@@ -97,10 +104,6 @@ public class Controller {
         }
 
         return points;
-    }
-
-    public Controller(Player p1, Player p2) {
-        this(new GameBoard(p1, p2), p1, p2);
     }
 
     public String getPieceNameAt(int row, int column) {

@@ -13,7 +13,7 @@ import java.awt.*;
  */
 public class DisplayPlayArea extends JPanel {
 
-    public DisplayPlayArea(Dimension dimension, Controller control) throws IllegalArgumentException {
+    public DisplayPlayArea(Dimension dimension, GameController control) throws IllegalArgumentException {
 
         if (dimension.width < 0 || dimension.height < 0)
             throw new IllegalArgumentException("The given dimension can only contain positive values");
