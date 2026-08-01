@@ -13,12 +13,9 @@ public class Main {
 
         Player p1 = new Player("Player 1", new Color(113, 126, 221));
         Player p2 = new Player("Player 2", new Color(214, 104, 104));
-        // GameBoard board = new GameBoard(p1, p2);
-        GameBoard board = new GameBoard(1, 4, "ALLa|1Cc", p1, p2);
-        GameController control = new GameController(board, p1, p2);
+        GameBoard board = new GameBoard(p1, p2);
+        // GameBoard board = new GameBoard(1, 5, "ALLLa|1C1m", p1, p2);
 
-        // new DisplayMenu();
-        new GameDisplay(screenSize, control);
-        // new DisplayWinner(new Dimension(100, 100), p1.getName(), p1.getColor());
+        new MainController(screenSize).showMainGame(board, p1, p2);
     }
 }

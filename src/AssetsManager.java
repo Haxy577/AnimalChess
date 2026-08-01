@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class AssetsManager {
 
-    private final BufferedImage LAND_TEXTURE;
     private final BufferedImage RIVER_TEXTURE;
     private final BufferedImage TRAP_TEXTURE;
     private final BufferedImage DEN_TEXTURE;
@@ -22,7 +21,6 @@ public class AssetsManager {
 
     public AssetsManager() {
         try {
-            LAND_TEXTURE = ImageIO.read(new File("src\\Land.png"));
             RIVER_TEXTURE = ImageIO.read(new File("src\\River.png"));
             TRAP_TEXTURE = ImageIO.read(new File("src\\Trap.png"));
             DEN_TEXTURE = ImageIO.read(new File("src\\Den.png"));
@@ -40,13 +38,12 @@ public class AssetsManager {
         }
     }
 
-    public BufferedImage getTileIcon(String tile) {
-        return switch (tile.toUpperCase().trim()) {
-            case "LAND" -> null;
-            case "RIVER" -> RIVER_TEXTURE;
-            case "TRAP" -> TRAP_TEXTURE;
-            case "DEN" -> DEN_TEXTURE;
-            default -> throw new IllegalStateException("Unexpected value: " + tile.toUpperCase().trim());
+    public BufferedImage getTileIcon(Tiles tile) {
+        return switch (tile) {
+            case LAND -> null;
+            case RIVER -> RIVER_TEXTURE;
+            case TRAP -> TRAP_TEXTURE;
+            case DEN -> DEN_TEXTURE;
         };
     }
 

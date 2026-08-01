@@ -37,7 +37,20 @@ public class GameBoard {
      */
     private final BoardCell[][] BOARD;
 
+    /**
+     * Represents the first moving player
+     *
+     * @since 1.11
+     * @see Player
+     */
     private final Player PLAYER1;
+
+    /**
+     * Represents the second moving player
+     *
+     * @since 1.11
+     * @see Player
+     */
     private final Player PLAYER2;
 
     /**
