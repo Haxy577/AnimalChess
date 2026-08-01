@@ -10,6 +10,10 @@ public class MainController {
         SCREEN = screen;
     }
 
+    public void showMenu() {
+
+    }
+
     public void showMainGame(GameBoard board, Player p1, Player p2) {
         closeActiveFrame();
 
@@ -47,7 +51,15 @@ public class MainController {
 
     public void showResults(Player winner, Player p1, Player p2) {
         JFrame frame = new JFrame("Animal Chess - Results");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+
+        Dimension dimension = getWinningDimension();
+
+        WinnerController control = new WinnerController(dimension, winner, p1, p2);
+        GenericPanel view = new GenericPanel(control, dimension.width, dimension.height);
+
+        frame.add(view);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -70,6 +82,10 @@ public class MainController {
     private Dimension getPlayerDimension(int boardWidth) {
         int playerHeight = SCREEN.height / 16;
         return new Dimension(boardWidth, playerHeight);
+    }
+
+    private Dimension getWinningDimension() {
+        return new Dimension(SCREEN.width / 4, SCREEN.height / 3);
     }
 
     private void closeActiveFrame() {

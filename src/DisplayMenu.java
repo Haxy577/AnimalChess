@@ -55,7 +55,7 @@ public class DisplayMenu extends JFrame {
         // Action: Close Menu & Open Player Name Input
         startButton.addActionListener(e -> {
             dispose(); // Close Main Menu
-            new DisplayNameInput().setVisible(true); // Open Player Input
+//            new DisplayNameInput(new GameController()).setVisible(true); // Open Player Input
         });
 
         // Add the centered wrapper instead of the raw text area
