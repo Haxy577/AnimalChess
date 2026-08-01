@@ -57,11 +57,11 @@ public class GameState {
         Set<BoardCell> moves = allMoves.keySet();
 
         for (BoardCell move : moves) {
-            if (allMoves.get(move).isEmpty())
-                return false;
+            if (!allMoves.get(move).isEmpty())
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     public boolean doesPieceExistAt(int row, int column) {

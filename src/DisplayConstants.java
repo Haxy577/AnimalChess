@@ -130,4 +130,46 @@ public class DisplayConstants {
      * @since 2.7
      */
     public static final double TILE_BACKGROUND_RATIO = .80;
+
+    /**
+     * Represents the color of the text to be drawn
+     *
+     * @since 2.7
+     */
+    public static final Color TEXT_COLOR = Color.WHITE;
+
+    /**
+     * Represents the font the text would take
+     *
+     * @since 2.7
+     */
+    public static final String TEXT_FONT = "Arial";
+
+    /**
+     * Represents the scale the text would take relative to the size of the component
+     *
+     * @since 2.7
+     */
+    public static final double TEXT_SCALE_RATIO = 2.5;
+
+    /**
+     * Represents the padding of the icon to be drawn
+     *
+     * @since 2.7
+     */
+    public static final int ICON_PADDING = 7;
+
+    /**
+     * Represents the arc of the corners of the icon
+     *
+     * @since 2.7
+     */
+    public static final int ICON_ARC = 10;
+    public static final double RESULTS_RATIO = 3.0 / 4.0;
+    public static final double RESULTS_TEXT_RATIO = 1.0 / 3.0;
+    public static final double ICON_RATIO = 0.60;
+    public static final double ICON_HEIGHT_RATIO = 1.0 / 3.0;
+    public static final Color CROWN_COLOR = Color.YELLOW;
+    public static final double BUTTONS_RATIO = 1.0 / 4.0;
+    
 }
