@@ -28,6 +28,7 @@ public class PlayerController implements ViewController{
      * the index of which player to display
      *
      * @param dimension the width and height of this component
+     * @param player the player to be displayed
      *
      * @since 2.7
      */

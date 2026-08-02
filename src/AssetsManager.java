@@ -34,18 +34,18 @@ public class AssetsManager {
      */
     public AssetsManager() {
         try {
-            RIVER_TEXTURE = ImageIO.read(new File("src\\River.png"));
-            TRAP_TEXTURE = ImageIO.read(new File("src\\Trap.png"));
-            DEN_TEXTURE = ImageIO.read(new File("src\\Den.png"));
+            RIVER_TEXTURE = ImageIO.read(new File("River.png"));
+            TRAP_TEXTURE = ImageIO.read(new File("Trap.png"));
+            DEN_TEXTURE = ImageIO.read(new File("Den.png"));
 
-            MOUSE_ICON = ImageIO.read(new File("src\\Mouse.png"));
-            CAT_ICON = ImageIO.read(new File("src\\Cat.png"));
-            WOLF_ICON = ImageIO.read(new File("src\\Wolf.png"));
-            DOG_ICON = ImageIO.read(new File("src\\Dog.png"));
-            LEOPARD_ICON = ImageIO.read(new File("src\\Leopard.png"));
-            TIGER_ICON = ImageIO.read(new File("src\\Tiger.png"));
-            LION_ICON = ImageIO.read(new File("src\\Lion.png"));
-            ELEPHANT_ICON = ImageIO.read(new File("src\\Elephant.png"));
+            MOUSE_ICON = ImageIO.read(new File("Mouse.png"));
+            CAT_ICON = ImageIO.read(new File("Cat.png"));
+            WOLF_ICON = ImageIO.read(new File("Wolf.png"));
+            DOG_ICON = ImageIO.read(new File("Dog.png"));
+            LEOPARD_ICON = ImageIO.read(new File("Leopard.png"));
+            TIGER_ICON = ImageIO.read(new File("Tiger.png"));
+            LION_ICON = ImageIO.read(new File("Lion.png"));
+            ELEPHANT_ICON = ImageIO.read(new File("Elephant.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
