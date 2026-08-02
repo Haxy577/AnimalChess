@@ -12,13 +12,6 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        Player p1 = new Player("Player 1", new Color(113, 126, 221));
-        Player p2 = new Player("Player 2", new Color(214, 104, 104));
-        // GameBoard board = new GameBoard(p1, p2);
-        GameBoard board = new GameBoard(1, 5, "ALLLa|2Mc", p1, p2);
-        // new DisplayMenu();
-        // new DisplayNameInput(new GameController());
-        new MainController(screenSize).showMainGame(board, p1, p2);
+        new MainController(screenSize).showMenu();
     }
 }

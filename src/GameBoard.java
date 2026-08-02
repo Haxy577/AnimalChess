@@ -70,17 +70,16 @@ public class GameBoard {
      * @param column the amount of columns every row would have
      * @param pattern the layout of tiles and pieces
      * @throws IllegalArgumentException if the row and/or column is less than 1
-     * @throws NullPointerException if the specified pattern, p1, and/or p2 are null
      *
      * @since 1.11
      * @see BoardCell
      * @see #initialize(String)
      */
-    public GameBoard(int row, int column, String pattern, Player p1, Player p2) throws IllegalArgumentException, NullPointerException {
+    public GameBoard(int row, int column, String pattern, Player p1, Player p2) throws IllegalArgumentException {
         if (row < 1 || column < 1)
             throw new IllegalArgumentException("The specified row and/or column cannot be less than 1");
         if (p1 == null || p2 == null)
-            throw new NullPointerException("The specified player(s) cannot be null");
+            throw new IllegalArgumentException("The specified player(s) cannot be null");
 
         ROWS = row;
         COLUMNS = column;
@@ -175,14 +174,14 @@ public class GameBoard {
      * in a list
      *
      * @param player the player object to search for
-     * @throws NullPointerException if the specified player is null
+     * @throws IllegalArgumentException if the specified player is null
      * @return all the available pieces of the specified player
      *
      * @since 1.1
      * @see BoardCell
      */
-    public List<BoardCell> getAllPlayerPieces(Player player) throws NullPointerException {
-        if (player == null) throw new NullPointerException("The specified player cannot be null");
+    public List<BoardCell> getAllPlayerPieces(Player player) throws IllegalArgumentException {
+        if (player == null) throw new IllegalArgumentException("The specified player cannot be null");
 
         List<BoardCell> allPieces = new ArrayList<>();
 
@@ -203,14 +202,14 @@ public class GameBoard {
      * Gets all the available moves of a player within a single turn
      *
      * @param player the player index of the player that currently has the turn
-     * @throws NullPointerException if the specified player is null
+     * @throws IllegalArgumentException if the specified player is null
      * @return a map that contains each piece as the key and the available moves of each piece
      * as the values
      *
      * @since 1.1
      */
-    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(Player player) throws NullPointerException {
-        if (player == null) throw new NullPointerException("The specified player cannot be null");
+    public HashMap<BoardCell, List<BoardCell>> getAllPlayerMoves(Player player) throws IllegalArgumentException {
+        if (player == null) throw new IllegalArgumentException("The specified player cannot be null");
 
         HashMap<BoardCell, List<BoardCell>> allMoves = new HashMap<>();
         List<BoardCell> allPieces = getAllPlayerPieces(player);
@@ -242,7 +241,6 @@ public class GameBoard {
      * @param pattern a series of tokens that represents the layout of each tile and piece within the gameboard
      * @throws IllegalArgumentException if the pattern does not contain the '|' character, or the provided patterns for the board and pieces
      * are invalid
-     * @throws NullPointerException if the specified pattern is invalid
      *
      * @since 1.7
      * @see #validateBoardPattern(String)
@@ -253,7 +251,7 @@ public class GameBoard {
     public void initialize(String pattern) throws IllegalArgumentException {
 
         if (pattern == null)
-            throw new NullPointerException("Invalid pattern. The pattern cannot be null");
+            throw new IllegalArgumentException("Invalid pattern. The pattern cannot be null");
 
         String cleanPattern = pattern.replaceAll("\\s", "");
 
@@ -733,14 +731,6 @@ public class GameBoard {
      */
     public int getRows() {
         return ROWS;
-    }
-
-    public Player getPlayer1() {
-        return PLAYER1;
-    }
-
-    public Player getPlayer2() {
-        return PLAYER2;
     }
 
     /**

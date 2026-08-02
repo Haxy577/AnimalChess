@@ -9,7 +9,7 @@ import java.awt.*;
  */
 public class DisplayMenu extends JFrame {
 
-    public DisplayMenu() {
+    public DisplayMenu(StartController control) {
         // Window Configuration
         setTitle("Animal Chess - Welcome");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,7 +55,7 @@ public class DisplayMenu extends JFrame {
         // Action: Close Menu & Open Player Name Input
         startButton.addActionListener(e -> {
             dispose(); // Close Main Menu
-//            new DisplayNameInput(new GameController()).setVisible(true); // Open Player Input
+            control.startPlayerSetup();
         });
 
         // Add the centered wrapper instead of the raw text area

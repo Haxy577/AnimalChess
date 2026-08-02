@@ -11,7 +11,7 @@ public class MainController {
     }
 
     public void showMenu() {
-
+        new StartController(this).displayMenu();
     }
 
     public void showMainGame(GameBoard board, Player p1, Player p2) {
