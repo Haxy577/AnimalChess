@@ -2,12 +2,57 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Represents a generic container that is only responsible for following the rendering instruction
+ * it receives from a controller
+ *
+ * @see ViewController
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 3.0
+ */
 public class GenericPanel extends JPanel implements Renderer, Displayer {
+
+    /**
+     * Contains the object that is responsible for drawing/painting on this component
+     *
+     * @since 3.0
+     * @see Graphics2D
+     */
     private Graphics2D GRAPHICS;
+
+    /**
+     * Contains the controller that would provide the instructions to display
+     *
+     * @since 3.0
+     * @see ViewController
+     */
     private final ViewController CONTROL;
+
+    /**
+     * The width of this component
+     *
+     * @since 3.0
+     */
     private final int WIDTH;
+
+    /**
+     * The height of this component
+     */
     private final int HEIGHT;
 
+    /**
+     * Constructs this component with the specified width and height, and the controller that would provide the
+     * instructions to display
+     *
+     * @param controller the controller that would provide the instructions
+     * @param width the width of this component
+     * @param height the height of this component
+     *
+     * @since 3.0
+     * @see ViewController
+     */
     public GenericPanel(ViewController controller, int width, int height) {
         CONTROL = controller;
         WIDTH = width;
@@ -16,6 +61,14 @@ public class GenericPanel extends JPanel implements Renderer, Displayer {
         setPreferredSize(new Dimension(width, height));
     }
 
+    /**
+     * Responsible for translating the instructions from the controller and painting these
+     * instructions within this component
+     *
+     * @param g the <code>Graphics</code> object to protect
+     *
+     * @since 3.0
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

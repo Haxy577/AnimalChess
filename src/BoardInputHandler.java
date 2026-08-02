@@ -4,7 +4,9 @@ import java.awt.event.MouseEvent;
 
 /**
  * Handles the mouse inputs within the board display component and passes these information
- * to the view and controller
+ * to the controller that controls the game state and the view
+ *
+ * @see BoardController
  *
  * @author Richmond Jase Von M. Salvador
  * @version 2.7 7/29/2026
@@ -21,20 +23,17 @@ public class BoardInputHandler extends MouseAdapter {
     private final BoardController CONTROL;
 
     /**
-     * A helper field created to track whether the selected cell has already been selected before
+     * Constructs this object with the specified controller that has control over the
+     * model and view
      *
-     * @since 2.7
+     * @param controller the controller that is responsible for the board
      */
-    private boolean wasSelectedBefore;
-
-
     BoardInputHandler(BoardController controller) {
         CONTROL = controller;
     }
 
     /**
-     * Invoked when a mouse button has been pressed within the component. It would either select the pressed cell
-     * or call the update method of the controller
+     * Invoked when a mouse button has been pressed within the component.
      *
      * @param e the event to be processed
      *
@@ -47,8 +46,7 @@ public class BoardInputHandler extends MouseAdapter {
     }
 
     /**
-     * Invoked when a mouse that had been clicked/dragged has been released within the component. It would either deselect
-     * the cell or call the update method of the controller if it was being dragged.
+     * Invoked when a mouse that had been clicked/dragged has been released within the component.
      *
      * @param e the event to be processed
      *

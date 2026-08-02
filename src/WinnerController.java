@@ -1,13 +1,59 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Responsible for telling the renderer on how to display the results page
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 3.0
+ */
 public class WinnerController implements ViewController {
 
+    /**
+     * The width and height of the component
+     *
+     * @since 3.0
+     */
     private final Dimension SIZE;
+
+    /**
+     * The player who had won the game
+     *
+     * @since 3.0
+     * @see Player
+     */
     private final Player WINNER;
+
+    /**
+     * The first player that had the first move advantage
+     *
+     * @since 3.0
+     * @see Player
+     */
     private final Player PLAYER1;
+
+    /**
+     * The second player
+     *
+     * @since 3.0
+     * @see Player
+     */
     private final Player PLAYER2;
 
+    /**
+     * Constructs this controller with the specified size of the component, the player who had won,
+     * the first player, and the second player
+     *
+     * @param size the width and height of the component
+     * @param winner the winner of the game
+     * @param p1 the first player
+     * @param p2 the second player
+     *
+     * @since 3.0
+     * @see Player
+     * @see GameState
+     */
     public WinnerController(Dimension size, Player winner, Player p1, Player p2) {
         SIZE = size;
 
@@ -60,6 +106,18 @@ public class WinnerController implements ViewController {
         drawCrown(renderer, scale, x, y);
     }
 
+    /**
+     * A helper method that would draw a crown at the specified x and y position. With the
+     * width being the specified scale and the height being half of the scale
+     *
+     * @param renderer the renderer that would display the instructions
+     * @param scale the width of the crown
+     * @param x the x position where the crown would be drawn
+     * @param y the y position where the crown would be drawn
+     *
+     * @since 3.0
+     * @see Renderer
+     */
     private void drawCrown(Renderer renderer, int scale, int x, int y) {
         int height = scale / 2;
 

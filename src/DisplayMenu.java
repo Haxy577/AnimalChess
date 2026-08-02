@@ -9,6 +9,13 @@ import java.awt.*;
  */
 public class DisplayMenu extends JFrame {
 
+    /**
+     * Constructs this view with its corresponding controller
+     *
+     * @param control the controller of this view
+     *
+     * @since 1.2
+     */
     public DisplayMenu(StartController control) {
         // Window Configuration
         setTitle("Animal Chess - Welcome");

@@ -6,14 +6,41 @@ import java.awt.*;
  * Graphical User Input screen to collect usernames.
  * 
  * @author Zachary Tan
+ * @author Richmond Jase Von M. Salvador
  * @version 1.5
  */
 public class DisplayNameInput extends JFrame {
 
+    /**
+     * Contains the controller for this view
+     *
+     * @since 1.5
+     * @see StartController
+     */
     private final StartController controller;
+
+    /**
+     * Contains the text field to set the username of player 1
+     *
+     * @since 1.5
+     */
     private JTextField p1NameField;
+
+    /**
+     * Contains the text field to set the username of player 1
+     *
+     * @since 1.5
+     */
     private JTextField p2NameField;
 
+    /**
+     * Constructs this view with the specified controller
+     *
+     * @param controller the controller of this view
+     *
+     * @since 1.5
+     * @see StartController
+     */
     public DisplayNameInput(StartController controller) {
         this.controller = controller;
 
@@ -58,6 +85,13 @@ public class DisplayNameInput extends JFrame {
         add(panel);
     }
 
+    /**
+     * A helper method to determine if the usernames entered by both players are valid and unique. If not
+     * it would display an error message. If its valid then it would pass these information to the controller
+     *
+     * @since 1.5
+     * @see StartController
+     */
     private void validateAndSubmit() {
         String p1Name = p1NameField.getText().trim();
         String p2Name = p2NameField.getText().trim();

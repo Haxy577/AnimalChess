@@ -4,6 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class is responsible for initializing all the images to be used as display for
+ * the GUI representation of a game board in the game "Animal Chess"
+ *
+ * @author Richmond Jase Vob M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 2.7
+ */
 public class AssetsManager {
 
     private final BufferedImage RIVER_TEXTURE;
@@ -19,6 +27,11 @@ public class AssetsManager {
     private final BufferedImage LION_ICON;
     private final BufferedImage ELEPHANT_ICON;
 
+    /**
+     * Initializes all the image assets to be displayed
+     *
+     * @since 2.7
+     */
     public AssetsManager() {
         try {
             RIVER_TEXTURE = ImageIO.read(new File("src\\River.png"));
@@ -38,6 +51,15 @@ public class AssetsManager {
         }
     }
 
+    /**
+     * Returns the corresponding image asset for the specified tile type
+     *
+     * @param tile the type of tile to get the icon of
+     * @return the image representation of the specified tile
+     *
+     * @since 2.7
+     * @see Tiles
+     */
     public BufferedImage getTileIcon(Tiles tile) {
         return switch (tile) {
             case LAND -> null;
@@ -48,7 +70,7 @@ public class AssetsManager {
     }
 
     /**
-     * A helper method that returns the corresponding image for the specified image
+     * A helper method that returns the corresponding image for the specified animal piece
      *
      * @param piece the piece to be converted
      * @return the image representation of the animal piece

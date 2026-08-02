@@ -8,30 +8,103 @@ import java.util.List;
  * Graphical UI screen that determines turn order.
  * 
  * @author Zachary Tan
+ * @author Richmond Jase Von M. Salvador
  * @version 2.4
  */
 public class DisplayOrderSelection extends JFrame {
 
-    private final StartController controller;
+    /**
+     * Contains the controller for this view
+     *
+     * @since 2.4
+     * @see StartController
+     */
+    private final StartController CONTROL;
 
+    /**
+     * The username chosen by the first player
+     *
+     * @since 2.4
+     */
     private final String p1Name;
+
+    /**
+     * The username chosen by the second player
+     *
+     * @since 2.4
+     */
     private final String p2Name;
+
+    /**
+     * The username of the player who won the draw
+     *
+     * @since 2.4
+     */
     private String winningPlayerName;
 
     // Hardcoded colors just for UI visual feedback during the draw
     private final Color uiP1Color = new Color(130, 60, 220); // Purple
     private final Color uiP2Color = new Color(60, 150, 220); // Blue
 
+    /**
+     * Contains the instructions for the players
+     *
+     * @since 2.4
+     */
     private JLabel statusLabel;
+
+    /**
+     * Contains the JButton to proceed to the main game
+     *
+     * @since 2.4
+     */
     private JButton proceedButton;
+
+    /**
+     * Represents the buttons the players has to click in order to determine the turn order
+     *
+     * @since 2.4
+     */
     private JButton[] boxButtons = new JButton[7];
+
+    /**
+     * Contains the hidden values of the buttons which would determine the turn order
+     *
+     * @since 2.4
+     */
     private List<Integer> hiddenValues;
-    private int currentPlayerPicking = 1; 
+
+    /**
+     * Represents which player is currently choosing a box to pick
+     *
+     * @since 2.4
+     */
+    private int currentPlayerPicking = 1;
+
+    /**
+     * Represents the chosen box of player 1
+     *
+     * @since 2.4
+     */
     private int p1ChoiceIndex = -1;
+
+    /**
+     * Represents the chosen box of player 2
+     */
     private int p2ChoiceIndex = -1;
 
+    /**
+     * Constructs the view with the specified controller, the name of player 1, and the name of player 2
+     *
+     * @param controller the controller for this view
+     * @param p1Name the chosen username of player 1
+     * @param p2Name the chosen username of player 2
+     *
+     * @since 2.4
+     * @see StartController
+     */
     public DisplayOrderSelection(StartController controller, String p1Name, String p2Name) {
-        this.controller = controller;
+        CONTROL = controller;
         this.p1Name = p1Name;
         this.p2Name = p2Name;
 
@@ -91,7 +164,7 @@ public class DisplayOrderSelection extends JFrame {
             dispose();
             String p1 = p1Name.equals(winningPlayerName) ? p1Name : p2Name;
             String p2 = p1.equals(p1Name) ? p2Name : p1Name;
-            controller.onTurnOrderDetermined(p1, p2);
+            CONTROL.onTurnOrderDetermined(p1, p2);
         });
 
         mainPanel.add(titleLabel);
@@ -107,6 +180,11 @@ public class DisplayOrderSelection extends JFrame {
         add(mainPanel);
     }
 
+    /**
+     * A helper method that shuffles a list containing the values of 1 to 7
+     *
+     * @since 2.4
+     */
     private void setupHiddenValues() {
         hiddenValues = new ArrayList<>();
         for (int i = 1; i <= 7; i++) {
@@ -115,6 +193,14 @@ public class DisplayOrderSelection extends JFrame {
         Collections.shuffle(hiddenValues);
     }
 
+    /**
+     * A helper method that would handle the selection of the boxes
+     *
+     * @param boxIndex the index of the box that had been clicked
+     * @param clickedBtn the button that had been clicked
+     *
+     * @since 2.4
+     */
     private void handleBoxPick(int boxIndex, JButton clickedBtn) {
         if (currentPlayerPicking == 1) {
             p1ChoiceIndex = boxIndex;
@@ -138,6 +224,12 @@ public class DisplayOrderSelection extends JFrame {
         }
     }
 
+    /**
+     * A helper method that would reveal the hidden values on the boxes that the
+     * players had clicked on
+     *
+     * @since 2.4
+     */
     private void revealBoxesAndDetermineWinner() {
         int p1Score = hiddenValues.get(p1ChoiceIndex);
         int p2Score = hiddenValues.get(p2ChoiceIndex);

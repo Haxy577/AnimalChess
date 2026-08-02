@@ -1,5 +1,12 @@
 import java.awt.*;
 
+/**
+ * Responsible for telling the renderer where and what to draw the details of a player
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 3.0
+ */
 public class PlayerController implements ViewController{
 
     /**
@@ -9,6 +16,11 @@ public class PlayerController implements ViewController{
      */
     private final Dimension AREA;
 
+    /**
+     * The player to be displayed
+     *
+     * @since 3.0
+     */
     private final Player PLAYER;
 
     /**

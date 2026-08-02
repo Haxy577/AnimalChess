@@ -3,25 +3,52 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Responsible for telling the component object where and what to draw. It is also
+ * responsible for updating the game state whenever a move has been made. Furthermore, it
+ * is also responsible for calling the results display whenever a player has won.
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 3.0
+ */
 public class BoardController implements ViewController {
 
+    /**
+     * The main controller that has control over the display of other frames
+     *
+     * @since 3.0
+     * @see MainController
+     */
     private final MainController CONTROL;
+
+    /**
+     * The display that this controller has control over
+     *
+     * @since 3.0
+     * @see GenericPanel
+     */
     private Displayer VIEW;
+
+    /**
+     * Represents the current game state of the game
+     *
+     * @since 3.0
+     * @see GameState
+     */
     private final GameState STATE;
 
     /**
      * Represents the list of moves the selected cell could do
      *
      * @since 2.7
-     * @see BoardInputHandler
      */
     private List<BoardCell> selectedMoves;
 
     /**
-     * Represents the position of the cursor within this panel with the position starting from the top-left
+     * Represents the position of the cursor within the displayer with the position starting from the top-left
      *
      * @since 2.7
-     * @see BoardInputHandler
      */
     private Point cursor;
 
@@ -29,17 +56,21 @@ public class BoardController implements ViewController {
      * Represents the position of the cell that is currently selected by the player
      *
      * @since 2.7
-     * @see BoardInputHandler
      */
     private Point selected;
 
+    /**
+     * A helper global field that checks whether the chosen cell has already
+     * been selected before
+     *
+     * @since 3.0
+     */
     private boolean wasSelectedBefore;
 
     /**
      * Contains the value if the user is currently dragging with the mouse or not
      *
      * @since 2.7
-     * @see BoardInputHandler
      */
     private boolean isDragged;
 
@@ -58,6 +89,17 @@ public class BoardController implements ViewController {
      */
     private final int SCALE;
 
+    /**
+     * Constructs this object with the specified controller, area, and the state of the board.
+     *
+     * @param controller the main controller that contains all controllers for display
+     * @param area the width and height of the
+     * @param state the object representing the current state of the game
+     *
+     * @since 3.0
+     * @see MainController
+     * @see GameState
+     */
     public BoardController(MainController controller, Dimension area, GameState state) {
         CONTROL = controller;
         STATE = state;
@@ -69,6 +111,16 @@ public class BoardController implements ViewController {
         SCALE = Math.min(area.height / rows, area.width / columns);
     }
 
+    /**
+     * The method that contains the instructions the renderer shall display
+     *
+     * @param renderer the object responsible for drawing the instructions from
+     *                 this controller
+     *
+     * @since 3.0
+     * @see ViewController
+     * @see Renderer
+     */
     @Override
     public void render(Renderer renderer) {
         renderer.fillBackground(DisplayConstants.BACKGROUND);
@@ -123,10 +175,29 @@ public class BoardController implements ViewController {
         }
     }
 
+    /**
+     * A helper method that converts the specified x and y positions into
+     * a position inside the game board
+     *
+     * @param x the x position to be converted
+     * @param y the y position to be converted
+     * @return the converted position relative to the game board
+     *
+     * @since 3.0
+     */
     private Point snapToCell(int x, int y) {
         return new Point(x / SCALE, y / SCALE);
     }
 
+    /**
+     * A helper method that determines whether the specified cell is
+     * within the current available moves
+     *
+     * @param cell the cell to be judged
+     * @return true if the list of moves does contain the specified cell, false otherwise
+     *
+     * @since 3.0
+     */
     private boolean existInMoves(BoardCell cell) {
         if (cell == null || selectedMoves == null) return false;
 
@@ -138,11 +209,25 @@ public class BoardController implements ViewController {
         return false;
     }
 
+    /**
+     * A helper method that sets the selected field to null and its moves into
+     * an empty list
+     *
+     * @since 3.0
+     */
     private void clearSelection() {
         selected = null;
         selectedMoves = new ArrayList<>();
     }
 
+    /**
+     * A helper method that is called whenever the state has determined a winner. If it
+     * has then it would call the main controller to display the results
+     *
+     * @since 3.0
+     * @see GameState#getWinner()
+     * @see MainController#showResults(Player, Player, Player)
+     */
     private void displayWinner() {
         Player winner = STATE.getWinner();
         if (winner != null) {
@@ -163,6 +248,16 @@ public class BoardController implements ViewController {
         return x < 0 || x > maxX || y < 0 || y > maxY;
     }
 
+    /**
+     * Invoked when a mouse button has been pressed within the component. It would either select the pressed cell
+     * or call the update method of the controller
+     *
+     * @param x the x positon relative to the component where the mouse had been pressed
+     * @param y the y positon relative to the component where the mouse had been pressed
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     public void handlePressEvent(int x, int y) {
         if (isOutsideBoard(x, y)) {
             handleMouseExit();
@@ -189,6 +284,16 @@ public class BoardController implements ViewController {
         VIEW.refresh();
     }
 
+    /**
+     * Invoked when a mouse that had been clicked/dragged has been released within the component. It would either deselect
+     * the cell or call the update method of the controller if it was being dragged.
+     *
+     * @param x the x positon relative to the component where the mouse had been released
+     * @param y the y positon relative to the component where the mouse had been released
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     public void handleReleaseEvent(int x, int y) {
         if (isOutsideBoard(x, y))
             return;
@@ -211,6 +316,15 @@ public class BoardController implements ViewController {
         VIEW.refresh();
     }
 
+    /**
+     * Invoked when a mouse has been pressed on a component and dragged.
+     *
+     * @param x the x positon relative to the component where the mouse is being dragged
+     * @param y the y positon relative to the component where the mouse is being dragged
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     public void handleDragEvent(int x, int y) {
         if (isOutsideBoard(x, y)) {
             handleMouseExit();
@@ -221,6 +335,15 @@ public class BoardController implements ViewController {
         handleMouseMovement(x, y);
     }
 
+    /**
+     * Invoked when a mouse has been moved within the component without any other inputs
+     *
+     * @param x the x positon relative to the component where the mouse had been moved to
+     * @param y the y positon relative to the component where the mouse had been moved to
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     public void handleMouseMovement(int x, int y) {
         if (isOutsideBoard(x, y)) {
             handleMouseExit();
@@ -231,6 +354,12 @@ public class BoardController implements ViewController {
         VIEW.refresh();
     }
 
+    /**
+     * Invoked whenever the mouse has exited the component.
+     *
+     * @since 2.7
+     * @see BoardInputHandler
+     */
     public void handleMouseExit() {
         cursor = null;
         isDragged = false;
@@ -253,10 +382,12 @@ public class BoardController implements ViewController {
     /**
      * Draws the visual representation of a single tile which is a filled square with an inner square and an icon if applicable
      *
+     * @param renderer the renderer that would display the instructions
      * @param row the row where the tile would be drawn
      * @param column the column where the move would be drawn
      *
      * @since 2.7
+     * @see Renderer
      */
     private void drawTile(Renderer renderer, int row, int column) {
         BoardTile tile = STATE.getCellAt(row, column).getTile();
@@ -289,10 +420,12 @@ public class BoardController implements ViewController {
      * Draws the visual representation of what move can a piece can make, whether to move represented by a filled circle,
      * or to capture represented by a hollow circle. This assumes that the piece can actually move to the specified location
      *
+     * @param renderer the renderer that would display the instructions
      * @param row the row where the move would be drawn
      * @param column the column where the move would be drawn
      *
      * @since 2.7
+     * @see Renderer
      */
     private void drawMove(Renderer renderer, int row, int column) {
         final int captureScale = (int) (SCALE * DisplayConstants.VALID_CAPTURE_RING_RATIO);
@@ -318,10 +451,12 @@ public class BoardController implements ViewController {
      * Draws the visual representation of a single piece which is a filled circle with an inner circle and an outline.
      * The outer circle would represent which player controls it, while the inner circle would contain the piece icon and rank.
      *
+     * @param renderer the renderer that would display the instructions
      * @param row the row where the piece would be drawn
      * @param column the column where the piece would be drawn
      *
      * @since 2.7
+     * @see Renderer
      */
     private void drawPiece(Renderer renderer, int row, int column, int posX, int posY) {
         AnimalPiece piece = STATE.getCellAt(row, column).getPiece();
@@ -363,10 +498,12 @@ public class BoardController implements ViewController {
      * Draws the visual separator to differentiate different cells from one another. This would draw
      * horizontal and vertical lines depending on the number of rows and columns respectively.
      *
+     * @param renderer the renderer that would display the instructions
      * @param rows the amount of rows
      * @param columns the amount of columns
      *
      * @since 2.7
+     * @see Renderer
      */
     private void drawGrid(Renderer renderer, int rows, int columns) {
         int maxX = columns * SCALE;
@@ -384,11 +521,13 @@ public class BoardController implements ViewController {
     /**
      * Draws a visual representation of a highlight which is a hollow square
      *
+     * @param renderer the renderer that would display the instructions
      * @param color the color the hollow square would take
      * @param x the position in the x-axis where the square would be drawn
      * @param y the position in the y-axis where the square would be drawn
      *
      * @since 2.7
+     * @see Renderer
      */
     private void drawHighlight(Renderer renderer, Color color, int x, int y) {
         if (x < 0 || y < 0)
@@ -397,6 +536,14 @@ public class BoardController implements ViewController {
         renderer.hollowRectangle(color, x, y, SCALE, SCALE, DisplayConstants.GRID_LINE_THICKNESS);
     }
 
+    /**
+     * Sets the view which this controller has control of
+     *
+     * @param display the view component
+     *
+     * @since 3.0
+     * @see Displayer
+     */
     public void setDisplay(Displayer display) {
         VIEW = display;
     }

@@ -1,5 +1,12 @@
 import java.awt.*;
 
+/**
+ * Contains constants to be used for the display
+ *
+ * @author Richmond Jase Von M. Salvador
+ * @version 3.0 8/2/2026
+ * @since 3.0
+ */
 public class DisplayConstants {
     /**
      * Represents the background color of this component
@@ -165,11 +172,47 @@ public class DisplayConstants {
      * @since 2.7
      */
     public static final int ICON_ARC = 10;
+
+    /**
+     * Represents the scale of the results display relative to the size of the component
+     *
+     * @since 3.0
+     */
     public static final double RESULTS_RATIO = 3.0 / 4.0;
+
+    /**
+     * Represents the scale of the text within the results display
+     *
+     * @since 3.0
+     */
     public static final double RESULTS_TEXT_RATIO = 1.0 / 3.0;
+
+    /**
+     * Represents the scale of the player icons
+     *
+     * @since 3.0
+     */
     public static final double ICON_RATIO = 0.60;
+
+    /**
+     * Represents the y position of the icon relative to the height of the component
+     *
+     * @since 3.0
+     */
     public static final double ICON_HEIGHT_RATIO = 1.0 / 3.0;
+
+    /**
+     * Represents the color of the crown indicating which player won
+     *
+     * @since 3.0
+     */
     public static final Color CROWN_COLOR = Color.YELLOW;
+
+    /**
+     * Represents the scale of the buttons display relative to the size of the component
+     *
+     * @since 3.0
+     */
     public static final double BUTTONS_RATIO = 1.0 / 4.0;
     
 }
